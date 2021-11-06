@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<config>
+
+  <window width="1280" height="940" title="DrinkAndDrive"/>
+
+  <game total_time="15">
+    <best_score id="Arek" score="10" time="15"/>
+  </game>
+
+  <players>
+    <player id="Arek" score="10" time="15"/>
+  </players>
+
+</config>
