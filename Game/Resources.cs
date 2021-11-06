@@ -18,9 +18,9 @@ namespace Game
         public XmlDocument document;
         public Sprite background_1, background_2;
         public RectangleShape shader;
+        public RectangleShape coins;
         public Texture cars;
         public Texture explosion;
-        public Texture coins;
         public Texture coinAnimated;
 
         public Resources() { }
@@ -37,20 +37,17 @@ namespace Game
 
                 //  cars
 
-                explosion = new Texture("..\\..\\..\\resource\\images\\explosion_animated.png")
+
+
+                coins = new RectangleShape
                 {
-                    Smooth = true
+                    Position = new Vector2f(100f, 100f),
+                    Size = new Vector2f(200f, 200f),
+                    Texture = new Texture("..\\..\\..\\resource\\images\\coins.png")
                 };
 
-                coins = new Texture("..\\..\\..\\resource\\images\\coins.png")
-                {
-                    Smooth = true
-                };
-
-                coinAnimated = new Texture("..\\..\\..\\resource\\images\\coin_animated.png")
-                {
-                    Smooth = true
-                };
+                coinAnimated = new Texture("..\\..\\..\\resource\\images\\coin_animated.png");
+                explosion = new Texture("..\\..\\..\\resource\\images\\explosion_animated.png");
             }
             catch (Exception exception)
             {

@@ -16,7 +16,7 @@ namespace Game
         static private float deltaTime = 0f;
         static private RenderWindow window;
         static private Engine engine;
-        static private Resources resources;
+        static public  Resources resources;
         static private Stopwatch stopwatch;
 
         static private void InitDeltaTime()

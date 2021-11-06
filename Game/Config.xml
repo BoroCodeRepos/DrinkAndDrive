@@ -6,6 +6,13 @@
 
   <game total_time="15">
     <best_score id="Arek" score="10" time="15"/>
+
+    <animation>
+      <coins frame_nr="10" max_frame_time="50" width="218" height="218"/>
+      <beers frame_nr="16" max_frame_time="100" width="218" height="218"/>
+    </animation>
+
+    <sobering_up step_time="5000" step_alkohol_level="0.1"/>
   </game>
 
   <players>
