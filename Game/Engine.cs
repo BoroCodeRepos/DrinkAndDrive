@@ -26,73 +26,61 @@ namespace Game
             public IntRect currentFrame;
         }
 
-        private struct SoberingUp
-        {
-            public float timeToStep;
-            public float alkoholLevelStep;
-            public float currentAlkoholLevel;
-        }
+        //------------------------------------------------------------------------------------
+        //                          Variables of game
+        //------------------------------------------------------------------------------------
+        Resources resources;        // zasoby gry
+        TimeCounter gameTime;       // czas gry
+        float level;                // aktualny poziom gry
+        float score;                // aktualny wynik gracza
+        float speed;                // szybkość przesuwania się drogi po ekranie
+        bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
+        List<Entity> coins;         // kolekcja coinsów na jezdni
+        List<Entity> beers;         // kolekcja butelek na jezdni
+        List<Entity> cars;          // kolekcja pojazdów na jezdni
+        Entity mainCar;             // samochód główny - gracza
+        Animation coinsAnimation,   // animacja monet i butelek
+            beersAnimation;
 
-        private struct Movement
-        {
-            public float aUp;
-            public float aDown;
-            public float aLeft;
-            public float aRight;
-
-            public float vUp;
-            public float vDown;
-            public float vLeft;
-            public float vRight;
-
-            public float maxVelocityUp;
-            public float maxVelocityDown;
-            public float maxVelocityLeft;
-            public float maxVelocityRight;
-        }
-
-        Resources resources;
-        float score, multiplier;
-        bool showDamageBoxes;
-
-        List<Entity> coins;
-        List<Entity> beers;
-        Animation coinsAnimation, beersAnimation;
-        SoberingUp sobering;
-        Movement movement;
+        //------------------------------------------------------------------------------------
+        //                          Variables of alcohol level
+        //------------------------------------------------------------------------------------
+        TimeCounter alcoTime;       // czas jazdy po alkoholu
+        TimeCounter alcoTimeToStep; // czas do obniżenia alkoholu we krwi
+        float alcoLevelStep;        // krok obniżenia alkoholu
+        float alcoLevel;            // aktualny poziom alkoholu we krwi
 
         public Engine(Resources resources)
         {
             this.resources = resources;
-            score = 0f;
-            multiplier = 0f;
-            showDamageBoxes = false;
-
-            coins = new List<Entity>();
-            beers = new List<Entity>();
-            coinsAnimation = new Animation();
-            beersAnimation = new Animation();
-            sobering = new SoberingUp();
-
             try
             {
+                InitGameResources();
                 InitCoinsAnimation();
                 InitBeersAnimation();
-                InitSoberingUp();
+                InitAlcoVars();
             }
             catch(Exception exception)
             {
                 Program.ShowError(exception);
             }
+        }
 
-            //
-            coins.Add(new Entity(
-                    resources.coinAnimated,
-                    coinsAnimation.currentFrame,
-                    new FloatRect(),
-                    new RectangleShape()
-                )
-            );
+        private void InitGameResources()
+        {
+            score = 0f;
+            showDamageBoxes = false;
+            speed = .1f;
+
+            gameTime = new TimeCounter();
+            alcoTime = new TimeCounter();
+            alcoTime.Start();
+            //mainCar = new Entity();
+            coins = new List<Entity>();
+            beers = new List<Entity>();
+            cars = new List<Entity>();
+            coinsAnimation = new Animation();
+            beersAnimation = new Animation();
         }
 
         private void InitCoinsAnimation()
@@ -121,26 +109,40 @@ namespace Game
             beersAnimation.currentFrameTime = 0f;
         }
 
-        private void InitSoberingUp()
+        private void InitAlcoVars()
         {
             XmlElement root = resources.document.DocumentElement;
             XmlElement soberingUpElement = root["game"]["sobering_up"];
-            sobering.alkoholLevelStep = float.Parse(
+            alcoLevelStep = float.Parse(
                 soberingUpElement.Attributes["step_alkohol_level"].Value
             );
-            sobering.timeToStep = float.Parse(
-                soberingUpElement.Attributes["step_time"].Value
+            alcoTimeToStep = new TimeCounter();
+            alcoTimeToStep.SetEventTime(
+                float.Parse(soberingUpElement.Attributes["step_time"].Value)
             );
-            sobering.currentAlkoholLevel = 0f;
+            alcoLevel = 0.0f;
         }
 
         public void Update(float dt)
         {
+            gameTime.Update(dt);
+            alcoTime.Update(dt);
+            UpdateBackground(dt);
             UpdateCars(dt);
             UpdateList(dt, coins);
             UpdateList(dt, beers);
             UpdateAnimation(dt, ref coinsAnimation, ref coins);
-            //UpdateAnimation(dt, beersAnimation, beers);
+            UpdateAnimation(dt, ref beersAnimation, ref beers);
+        }
+
+        private void UpdateBackground(float dt)
+        {
+            double time = alcoTime.GetCurrentTime() / 1000d;
+            Vector2f curr_pos = resources.background.Position;
+            resources.background.Position = new Vector2f(
+                10*alcoLevel * (float)Math.Sin((alcoLevel*time) % 2d*Math.PI),
+                (curr_pos.Y + dt * speed) % resources.background.Texture.Size.Y
+            );
         }
 
         private void UpdateCars(float dt)
@@ -171,19 +173,41 @@ namespace Game
                 item.sprite.TextureRect = animation.currentFrame;
         }
 
-        public void Render(RenderWindow window)
+        public void Render(ref RenderWindow window)
         {
-            //window.Draw(resources.coins);
-            RenderList(window, coins);
-            RenderList(window, beers);
+            RenderBackground(ref window);
+            RenderList(ref window, ref coins);
+            RenderList(ref window, ref beers);
+            window.Draw(resources.shader);
         }
 
-        private void RenderCars(RenderWindow window)
+        private void RenderBackground(ref RenderWindow window)
+        {
+            Vector2f curr_pos = resources.background.Position;
+            Vector2f temp_pos = curr_pos;
+            // with current position
+            window.Draw(resources.background);
+            // with position - size.Y
+            resources.background.Position = new Vector2f(
+                curr_pos.X,
+                curr_pos.Y - resources.background.Texture.Size.Y
+            );
+            window.Draw(resources.background);
+            // with position + size.Y
+            resources.background.Position = new Vector2f(
+                curr_pos.X,
+                curr_pos.Y + resources.background.Texture.Size.Y
+            );
+            window.Draw(resources.background);
+            resources.background.Position = curr_pos;
+        }
+
+        private void RenderCars(ref RenderWindow window)
         {
 
         }
 
-        private void RenderList(RenderWindow window, List<Entity> itemList)
+        private void RenderList(ref RenderWindow window, ref List<Entity> itemList)
         {
             foreach (Entity item in itemList)
                 window.Draw(item.sprite);
@@ -196,7 +220,8 @@ namespace Game
             if (key.Code == Keyboard.Key.Escape)
                 window.Close();
 
-
+            if (key.Code == Keyboard.Key.B)
+                showDamageBoxes = (!showDamageBoxes);
         }
 
         public void OnClose(object sender, EventArgs e)

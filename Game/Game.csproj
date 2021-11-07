@@ -94,6 +94,7 @@
     <Compile Include="Animation.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="TimeCounter.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

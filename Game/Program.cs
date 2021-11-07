@@ -11,6 +11,8 @@ using SFML.Window;
 
 namespace Game
 {
+    public enum DIRECTION { UP, DOWN, RIGHT, LEFT };
+
     static class Program
     {
         static private float deltaTime = 0f;
@@ -40,11 +42,13 @@ namespace Game
         {
             try
             {
-                XmlElement root = resources.document.DocumentElement;
-                uint width = Convert.ToUInt16(root["window"].Attributes["width"].Value);
-                uint height = Convert.ToUInt16(root["window"].Attributes["height"].Value);
-                string title = root["window"].Attributes["title"].Value;
-                window = new RenderWindow(new VideoMode(width, height), title);
+                window = new RenderWindow(
+                    new VideoMode(
+                        resources.options.winWidth,
+                        resources.options.winHeight
+                    ), 
+                    resources.options.winTitle
+                );
             }
             catch(Exception exception)
             {
@@ -85,7 +89,7 @@ namespace Game
                 CalcElapsedTime();
 
                 engine.Update(deltaTime);
-                engine.Render(window);
+                engine.Render(ref window);
 
                 window.Display();
             } 
