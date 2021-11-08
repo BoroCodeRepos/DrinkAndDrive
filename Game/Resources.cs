@@ -24,6 +24,8 @@ namespace Game
 
         public XmlDocument document;        // dokument XML
         public Sprite background;           // tło gry
+        public RectangleShape dmgBoxL;      // lewe pobocze
+        public RectangleShape dmgBoxR;      // prawe pobocze
         public RectangleShape shader;       // ściemnianie ekranu
         public RectangleShape coins;        // kształt stosu monet
         public Texture Tcars;               // textura wszystkich samochodów
@@ -74,6 +76,23 @@ namespace Game
                 (float)(background.Texture.Size.X - options.winWidth) / 2f,
                 0f
             );
+
+            dmgBoxL = new RectangleShape
+            {
+                Size = new Vector2f(272f, background.Texture.Size.Y),
+                Origin = background.Origin,
+                FillColor = new Color(255, 0, 0, 128),
+                OutlineThickness = 1f,
+                OutlineColor = new Color(Color.Black)
+            };
+            dmgBoxR = new RectangleShape
+            {
+                Size = new Vector2f(272f, background.Texture.Size.Y),
+                Origin = new Vector2f(-871f, 0f),
+                FillColor = new Color(255, 0, 0, 128),
+                OutlineThickness = 1f,
+                OutlineColor = new Color(Color.Black)
+            };
         }
 
         private void InitShader()
