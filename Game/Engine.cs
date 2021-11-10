@@ -30,12 +30,14 @@ namespace Game
         //                          Variables of game
         //------------------------------------------------------------------------------------
         Resources resources;        // zasoby gry
+        List<Entity> hearts;        // kolekcja serc na jezdni
         List<Entity> coins;         // kolekcja coinsów na jezdni
         List<Entity> beers;         // kolekcja butelek na jezdni
         List<Entity> cars;          // kolekcja pojazdów na jezdni
         Entity mainCar;             // samochód główny - gracza
-        Animation coinsAnimation,   // animacja monet i butelek
-            beersAnimation;
+        Animation coinsAnimation,   // animacja monet, butelek i serc
+            beersAnimation,
+            heartsAnimation;
         bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
         bool pause;                 // true <= pauza
 
@@ -51,9 +53,10 @@ namespace Game
         //                          Variables of game result
         //------------------------------------------------------------------------------------
         TimeCounter gameTime;       // czas gry
-        float level;                // aktualny poziom gry
-        float score;                // aktualny wynik gracza
+        int level;                // aktualny poziom gry
+        int score;                // aktualny wynik gracza
         float speed;                // szybkość przesuwania się drogi po ekranie
+        int  lives;                // ilość żyć
 
         //------------------------------------------------------------------------------------
         //                          Constructor
@@ -64,8 +67,9 @@ namespace Game
             try
             {
                 InitGameResources();
-                InitCoinsAnimation();
-                InitBeersAnimation();
+                InitAnimation("coins",  ref coinsAnimation);
+                InitAnimation("beers",  ref beersAnimation);
+                InitAnimation("hearts", ref heartsAnimation);
                 InitAlcoVars();
                 InitCars();
             }
@@ -80,45 +84,35 @@ namespace Game
         //------------------------------------------------------------------------------------
         private void InitGameResources()
         {
-            score = 0f;
-            level = 0f;
+            score = 0;
+            level = 1;
             showDamageBoxes = false;
             pause = false;
             speed = .1f;
+            lives = 3;
 
             gameTime = new TimeCounter();
             alcoTime = new TimeCounter();
-            coins = new List<Entity>();
-            beers = new List<Entity>();
-            cars  = new List<Entity>();
-            coinsAnimation = new Animation();
-            beersAnimation = new Animation();
+            hearts = new List<Entity>();
+            coins  = new List<Entity>();
+            beers  = new List<Entity>();
+            cars   = new List<Entity>();
+            coinsAnimation  = new Animation();
+            beersAnimation  = new Animation();
+            heartsAnimation = new Animation();
         }
 
-        private void InitCoinsAnimation()
+        private void InitAnimation(string attrName, ref Animation animation)
         {
             XmlElement root = resources.document.DocumentElement;
-            XmlElement coinsElement = root["game"]["animation"]["coins"];
-            coinsAnimation.framesNr = Convert.ToInt16(coinsElement.Attributes["frame_nr"].Value);
-            coinsAnimation.maxFrameTime = float.Parse(coinsElement.Attributes["max_frame_time"].Value);
-            int width = Convert.ToInt16(coinsElement.Attributes["width"].Value);
-            int height = Convert.ToInt16(coinsElement.Attributes["height"].Value);
-            coinsAnimation.currentFrame = new IntRect(0, 0, width, height);
-            coinsAnimation.currentFrameId = 0;
-            coinsAnimation.currentFrameTime = 0f;
-        }
-
-        private void InitBeersAnimation()
-        {
-            XmlElement root = resources.document.DocumentElement;
-            XmlElement beersElement = root["game"]["animation"]["beers"];
-            beersAnimation.framesNr = Convert.ToInt16(beersElement.Attributes["frame_nr"].Value);
-            beersAnimation.maxFrameTime = float.Parse(beersElement.Attributes["max_frame_time"].Value);
-            int width = Convert.ToInt16(beersElement.Attributes["width"].Value);
-            int height = Convert.ToInt16(beersElement.Attributes["height"].Value);
-            beersAnimation.currentFrame = new IntRect(0, 0, width, height);
-            beersAnimation.currentFrameId = 0;
-            beersAnimation.currentFrameTime = 0f;
+            XmlElement element = root["game"]["animation"][attrName];
+            animation.framesNr = Convert.ToInt16(element.Attributes["frame_nr"].Value);
+            animation.maxFrameTime = float.Parse(element.Attributes["max_frame_time"].Value);
+            int width = Convert.ToInt16(element.Attributes["width"].Value);
+            int height = Convert.ToInt16(element.Attributes["height"].Value);
+            animation.currentFrame = new IntRect(0, 0, width, height);
+            animation.currentFrameId = 0;
+            animation.currentFrameTime = 0f;
         }
 
         private void InitAlcoVars()
@@ -138,7 +132,7 @@ namespace Game
         private void InitCars()
         {
             XmlNode movement = resources.document.GetElementsByTagName("advanced_move")[0];
-            mainCar = new Entity(0, resources.carCollection);
+            mainCar = new Entity(9, resources.carCollection);
             mainCar.damageBox.FillColor = new Color(0, 255, 255, 128);
             mainCar.SetPosition(
                 resources.background.Texture.Size.X /2f - resources.background.Origin.X,
@@ -159,9 +153,16 @@ namespace Game
             // aktualizacja animacji
             UpdateAnimation(dt, ref coinsAnimation, ref coins);
             UpdateAnimation(dt, ref beersAnimation, ref beers);
+            UpdateAnimation(dt, ref heartsAnimation, ref hearts);
 
             // aktualizacja pojazdów
             mainCar.Update(dt);
+
+            // aktualizacja koliji
+            UpdateCollisions();
+
+            // wyjazd poza obszar mapy
+            UpdateMapBounds();
         }
 
         private void UpdateBackground(float dt)
@@ -202,11 +203,33 @@ namespace Game
 
         private void UpdateCollisions()
         {
+            FloatRect carRect = mainCar.damageBox.GetGlobalBounds();
+            FloatRect bgRectL = resources.dmgBoxL.GetGlobalBounds();
+            FloatRect bgRectR = resources.dmgBoxR.GetGlobalBounds();
+            if (carRect.Intersects(bgRectL) || carRect.Intersects(bgRectR))
+                LoseLive();
+
             foreach (Entity car in cars)
+                if (CollisionsCheck(car, mainCar))
+                    LoseLive();
+        }
+
+        private void UpdateMapBounds()
+        {
+            FloatRect top = new FloatRect(
+                new Vector2f(0f, 0f),
+                new Vector2f((float)resources.options.winWidth, 1f)
+            );
+            FloatRect bottom = new FloatRect(
+                new Vector2f(0f, (float)resources.options.winHeight),
+                new Vector2f((float)resources.options.winWidth,  1f)
+            );
+
+            if (mainCar.damageBox.GetGlobalBounds().Intersects(top) || 
+                mainCar.damageBox.GetGlobalBounds().Intersects(bottom))
             {
-                //if (CollisionsCheck(car, mainCar)) 
-                    
-            }
+                mainCar.StopVelocityY();
+            }  
         }
 
         //------------------------------------------------------------------------------------
@@ -220,6 +243,7 @@ namespace Game
             // wyświetlenie monet i butelek
             RenderList(ref window, ref coins);
             RenderList(ref window, ref beers);
+            RenderList(ref window, ref hearts);
 
             // wyświetlenie samochodów
             RenderList(ref window, ref cars);
@@ -227,6 +251,9 @@ namespace Game
 
             // wyświetlenie damage boxów
             RenderDamageBoxes(ref window);
+
+            // wyświetlenie interfejsu
+            RenderInterface(ref window);
         }
 
         private void RenderBackground(ref RenderWindow window)
@@ -272,6 +299,35 @@ namespace Game
 
                 foreach (Entity beer in beers)
                     window.Draw(beer.damageBox);
+            }
+        }
+
+        private void RenderInterface(ref RenderWindow window)
+        {
+            // score
+            window.Draw(resources.coins);
+            string scoreStr = score.ToString();
+            int N = scoreStr.Length;
+            for (int i = 0; i < N; i++)
+            {
+                char c = scoreStr[i];
+                int result = Convert.ToInt16(c.ToString());
+                Sprite num = new Sprite(resources.numbers[result])
+                {
+                    Position = new Vector2f(150f + (float)i * 64f, 25f)
+                };
+                window.Draw(num);
+            }
+
+            // hearts
+            Sprite heart = new Sprite(resources.Thearts, heartsAnimation.currentFrame);
+            for (int i = 0; i < lives; i++)
+            {
+                heart.Position = new Vector2f(
+                    (float)resources.options.winWidth - 90f,
+                    10f + i * 80f
+                );
+                window.Draw(heart);
             }
         }
 
@@ -334,6 +390,24 @@ namespace Game
                 return true;
 
             return false;
+        }
+
+        private void LoseLive()
+        {
+            lives--;
+            if (lives == 0)
+            {
+                lives++;
+            }
+            else
+            {
+                cars.Clear();
+                mainCar.SetPosition(
+                    resources.background.Texture.Size.X / 2f - resources.background.Origin.X,
+                    resources.background.Texture.Size.Y / 2f   
+                );
+                mainCar.movement.velocity = new Vector2f(0f, 0f);
+            }
         }
     }
 }

@@ -118,7 +118,7 @@ namespace Game
                         movement.velocity.X = movement.maxVelocity.X;
 
                     // deceleration
-                    movement.velocity.X -= movement.deceleration.X * dt;
+                    movement.velocity.X -= movement.deceleration.X * dt * ((movement.move.X == 0f) ? 8f : 1f);
                     if (movement.velocity.X < 0f)
                         movement.velocity.X = 0f;
                 }
@@ -129,7 +129,7 @@ namespace Game
                         movement.velocity.X = -movement.maxVelocity.X;
 
                     // deceleration
-                    movement.velocity.X += movement.deceleration.X * dt;
+                    movement.velocity.X += movement.deceleration.X * dt * ((movement.move.X == 0f) ? 8f : 1f);
                     if (movement.velocity.X > 0f)
                         movement.velocity.X = 0f;
                 }

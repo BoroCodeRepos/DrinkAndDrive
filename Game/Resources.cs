@@ -11,8 +11,11 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
+
+
 namespace Game
 {
+    using Numbers = Dictionary<int, Sprite>;
     class Resources
     {
         public class Options
@@ -29,10 +32,14 @@ namespace Game
         public RectangleShape shader;       // ściemnianie ekranu
         public RectangleShape coins;        // kształt stosu monet
         public Texture Tcars;               // textura wszystkich samochodów
+        public Texture Tnumbers;            // textura z numerami
+        public Texture Thearts;             // animoana textura serca
         public Texture Texplosion;          // textura eksplozji
         public Texture TcoinAnimated;       // textura animacji monety
         public List<Entity> carCollection;  // kolekcja wszystkich dostępnych samochodów
         public Options options;             // ustawienia okna
+
+        public Numbers numbers;             // słownik liczb
 
         public Resources() { }
 
@@ -47,6 +54,7 @@ namespace Game
                 InitCoinsShape();
                 InitTextures();
                 InitCarsCollection();
+                InitNumbers();
             }
             catch (Exception exception)
             {
@@ -112,17 +120,34 @@ namespace Game
         {
             coins = new RectangleShape
             {
-                Position = new Vector2f(100f, 100f),
-                Size = new Vector2f(200f, 200f),
+                Position = new Vector2f(10f, 10f),
+                Size = new Vector2f(120f, 120f),
                 Texture = new Texture("..\\..\\..\\resource\\images\\coins.png")
             };
         }
 
         private void InitTextures()
         {
-            Tcars = new Texture("..\\..\\..\\resource\\images\\cars.png");
-            TcoinAnimated = new Texture("..\\..\\..\\resource\\images\\coin_animated.png");
-            Texplosion = new Texture("..\\..\\..\\resource\\images\\explosion_animated.png");
+            Tnumbers = new Texture("..\\..\\..\\resource\\images\\numbers.png")
+            {
+                Smooth = true
+            };
+            Tcars = new Texture("..\\..\\..\\resource\\images\\cars.png")
+            {
+                Smooth = true
+            };
+            Thearts = new Texture("..\\..\\..\\resource\\images\\heart_animated.png")
+            {
+                Smooth = true
+            };
+            TcoinAnimated = new Texture("..\\..\\..\\resource\\images\\coin_animated.png")
+            {
+                Smooth = true
+            };
+            Texplosion = new Texture("..\\..\\..\\resource\\images\\explosion_animated.png")
+            {
+                Smooth = true
+            };
         }
 
         private void InitCarsCollection()
@@ -139,18 +164,25 @@ namespace Game
                     damageRect  = ParseAttributeRect(car.Attributes["damage_rect"]);
 
                     Entity entity = new Entity(Tcars, textureRect, damageRect, color);
-                    carCollection.Add(entity);
                     entity.CreateMovementCompontent(
                         ParseAttributeMoving(car.Attributes["acceleration"]),
                         ParseAttributeMoving(car.Attributes["deceleration"]),
                         ParseAttributeMoving(car.Attributes["max_velocity"])
                     );
+                    carCollection.Add(entity);
                 }
             }
             catch (Exception exception)
             {
                 Program.ShowError(exception);
             }
+        }
+
+        private void InitNumbers()
+        {
+            numbers = new Numbers();
+            for (int i = 0; i < 10; i++)
+                numbers.Add(i, new Sprite(Tnumbers, new IntRect(i*64, 0, 64, 82)));
         }
 
         private IntRect ParseAttributeRect(XmlAttribute attribute)
