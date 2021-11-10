@@ -49,6 +49,7 @@ namespace Game
                     ), 
                     resources.options.winTitle
                 );
+                window.SetVerticalSyncEnabled(true);
             }
             catch(Exception exception)
             {
@@ -57,6 +58,7 @@ namespace Game
 
             window.Closed += engine.OnClose;
             window.KeyPressed += engine.OnKeyPressed;
+            window.KeyReleased += engine.OnKeyReleased;
         }
 
         static private void CalcElapsedTime()

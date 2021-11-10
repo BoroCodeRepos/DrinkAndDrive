@@ -37,6 +37,7 @@ namespace Game
         Animation coinsAnimation,   // animacja monet i butelek
             beersAnimation;
         bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
+        bool pause;                 // true <= pauza
 
         //------------------------------------------------------------------------------------
         //                          Variables of alcohol level
@@ -66,6 +67,7 @@ namespace Game
                 InitCoinsAnimation();
                 InitBeersAnimation();
                 InitAlcoVars();
+                InitCars();
             }
             catch(Exception exception)
             {
@@ -79,16 +81,16 @@ namespace Game
         private void InitGameResources()
         {
             score = 0f;
+            level = 0f;
             showDamageBoxes = false;
+            pause = false;
             speed = .1f;
 
             gameTime = new TimeCounter();
             alcoTime = new TimeCounter();
-            alcoTime.Start();
-            //mainCar = new Entity();
             coins = new List<Entity>();
             beers = new List<Entity>();
-            cars = new List<Entity>();
+            cars  = new List<Entity>();
             coinsAnimation = new Animation();
             beersAnimation = new Animation();
         }
@@ -133,24 +135,43 @@ namespace Game
             alcoLevel = 0.8f;
         }
 
+        private void InitCars()
+        {
+            XmlNode movement = resources.document.GetElementsByTagName("advanced_move")[0];
+            mainCar = new Entity(0, resources.carCollection);
+            mainCar.damageBox.FillColor = new Color(0, 255, 255, 128);
+            mainCar.SetPosition(
+                resources.background.Texture.Size.X /2f - resources.background.Origin.X,
+                resources.background.Texture.Size.Y / 2f
+            );
+        }
+
         //------------------------------------------------------------------------------------
         //                          Update game methods
         //------------------------------------------------------------------------------------
         public  void Update(float dt)
         {
+            // aktualizacja zasobów
             gameTime.Update(dt);
             alcoTime.Update(dt);
             UpdateBackground(dt);
+
+            // aktualizacja animacji
             UpdateAnimation(dt, ref coinsAnimation, ref coins);
             UpdateAnimation(dt, ref beersAnimation, ref beers);
+
+            // aktualizacja pojazdów
+            mainCar.Update(dt);
         }
 
         private void UpdateBackground(float dt)
         {
             double time = alcoTime.GetCurrentTime() / 1000d;
+            float amp = 10 * (alcoLevel + level / 1000f) % resources.background.Origin.X;
+            float sin_func = (float)Math.Sin((alcoLevel * time) % 2d * Math.PI);
             Vector2f curr_pos = resources.background.Position;
             resources.background.Position = new Vector2f(
-                10*alcoLevel * (float)Math.Sin((alcoLevel*time) % 2d*Math.PI),
+                amp * sin_func,
                 (curr_pos.Y + dt * speed) % resources.background.Texture.Size.Y
             );
             resources.dmgBoxL.Position = new Vector2f(
@@ -179,14 +200,32 @@ namespace Game
                 item.sprite.TextureRect = animation.currentFrame;
         }
 
+        private void UpdateCollisions()
+        {
+            foreach (Entity car in cars)
+            {
+                //if (CollisionsCheck(car, mainCar)) 
+                    
+            }
+        }
+
         //------------------------------------------------------------------------------------
         //                          Render elements on screen
         //------------------------------------------------------------------------------------
         public  void Render(ref RenderWindow window)
         {
+            // wyswietlenie tła
             RenderBackground(ref window);
+
+            // wyświetlenie monet i butelek
             RenderList(ref window, ref coins);
             RenderList(ref window, ref beers);
+
+            // wyświetlenie samochodów
+            RenderList(ref window, ref cars);
+            window.Draw(mainCar.sprite);
+
+            // wyświetlenie damage boxów
             RenderDamageBoxes(ref window);
         }
 
@@ -223,27 +262,78 @@ namespace Game
             {
                 window.Draw(resources.dmgBoxL);
                 window.Draw(resources.dmgBoxR);
+                window.Draw(mainCar.damageBox);
+
+                foreach (Entity car in cars)
+                    window.Draw(car.damageBox);
+
+                foreach (Entity coin in coins)
+                    window.Draw(coin.damageBox);
+
+                foreach (Entity beer in beers)
+                    window.Draw(beer.damageBox);
             }
         }
 
         //------------------------------------------------------------------------------------
         //                          Supporting methods
         //------------------------------------------------------------------------------------
-        public void OnKeyPressed(object sender, KeyEventArgs key)
+        public  void OnKeyPressed(object sender, KeyEventArgs key)
         {
             RenderWindow window = (RenderWindow)sender;
 
-            if (key.Code == Keyboard.Key.Escape)
-                window.Close();
+            //if (key.Code == Keyboard.Key.Escape)
+            //    window.Close();                
 
             if (key.Code == Keyboard.Key.B)
                 showDamageBoxes = (!showDamageBoxes);
+
+            if (key.Code == Keyboard.Key.P || key.Code == Keyboard.Key.Escape)
+                pause = (!pause);
+
+            if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
+                mainCar.Move(-1, 0);
+
+            if (key.Code == Keyboard.Key.D || key.Code == Keyboard.Key.Right)
+                mainCar.Move(1, 0);
+
+            if (key.Code == Keyboard.Key.W || key.Code == Keyboard.Key.Up)
+                mainCar.Move(0, -1);
+
+            if (key.Code == Keyboard.Key.S || key.Code == Keyboard.Key.Down)
+                mainCar.Move(0, 1);
         }
 
-        public void OnClose(object sender, EventArgs e)
+        public  void OnKeyReleased(object sender, KeyEventArgs key)
+        {
+            if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
+                mainCar.Move(1, 0);
+
+            if (key.Code == Keyboard.Key.D || key.Code == Keyboard.Key.Right)
+                mainCar.Move(-1, 0);
+
+            if (key.Code == Keyboard.Key.W || key.Code == Keyboard.Key.Up)
+                mainCar.Move(0, 1);
+
+            if (key.Code == Keyboard.Key.S || key.Code == Keyboard.Key.Down)
+                mainCar.Move(0, -1);
+        }
+
+        public  void OnClose(object sender, EventArgs e)
         {
             RenderWindow window = (RenderWindow)sender;
             window.Close();
+        }
+
+        private bool CollisionsCheck(Entity A, Entity B)
+        {
+            FloatRect rectA = A.damageBox.GetGlobalBounds();
+            FloatRect rectB = B.damageBox.GetGlobalBounds();
+
+            if (rectA.Intersects(rectB))
+                return true;
+
+            return false;
         }
     }
 }

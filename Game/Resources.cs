@@ -31,7 +31,7 @@ namespace Game
         public Texture Tcars;               // textura wszystkich samochodów
         public Texture Texplosion;          // textura eksplozji
         public Texture TcoinAnimated;       // textura animacji monety
-        public List<Entity> cars;           // kolekcja wszystkich dostępnych samochodów
+        public List<Entity> carCollection;  // kolekcja wszystkich dostępnych samochodów
         public Options options;             // ustawienia okna
 
         public Resources() { }
@@ -129,25 +129,21 @@ namespace Game
         {
             try
             {
-                cars = new List<Entity>();
+                carCollection = new List<Entity>();
                 XmlNodeList carsList = document.GetElementsByTagName("car");
                 IntRect textureRect, damageRect;
-                string[] values;
+                Color color = new Color(255, 255, 0, 128);
                 foreach (XmlNode car in carsList)
                 {
-                    values = car.Attributes["texture_rect"].Value.Split(' ');
-                    textureRect = ParseRectString(values);
+                    textureRect = ParseAttributeRect(car.Attributes["texture_rect"]);
+                    damageRect  = ParseAttributeRect(car.Attributes["damage_rect"]);
 
-                    values = car.Attributes["damage_rect"].Value.Split(' ');
-                    damageRect = ParseRectString(values);
-
-                    cars.Add(
-                        new Entity(
-                            Tcars,
-                            textureRect,
-                            damageRect,
-                            new Color(255, 0, 0, 40)
-                        )    
+                    Entity entity = new Entity(Tcars, textureRect, damageRect, color);
+                    carCollection.Add(entity);
+                    entity.CreateMovementCompontent(
+                        ParseAttributeMoving(car.Attributes["acceleration"]),
+                        ParseAttributeMoving(car.Attributes["deceleration"]),
+                        ParseAttributeMoving(car.Attributes["max_velocity"])
                     );
                 }
             }
@@ -157,14 +153,24 @@ namespace Game
             }
         }
 
-        private IntRect ParseRectString(string[] values)
+        private IntRect ParseAttributeRect(XmlAttribute attribute)
         {
+            string[] values = attribute.Value.Split(' ');
             IntRect rect;
             rect.Left   = Convert.ToInt16(values[0]);
             rect.Top    = Convert.ToInt16(values[1]);
             rect.Width  = Convert.ToInt16(values[2]);
             rect.Height = Convert.ToInt16(values[3]);
             return rect;
+        }
+
+        private Vector2f ParseAttributeMoving(XmlAttribute attribute)
+        {
+            string[] values = attribute.Value.Split(' ');
+            Vector2f vector;
+            vector.X = float.Parse(values[0]);
+            vector.Y = float.Parse(values[1]);
+            return vector;
         }
     }
 }

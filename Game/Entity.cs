@@ -12,17 +12,43 @@ namespace Game
 {
     class Entity
     {
-        public uint id;
-        public string name;
-        public Texture texture;
-        public IntRect textureRect;
-        public IntRect damageRect;
-        public IntRect offset;
+        public class MovementComponent
+        {
+            public Vector2f acceleration;   // przyspieszanie
+            public Vector2f deceleration;   // hamowanie
+            public Vector2f velocity;       // prędkość
+            public Vector2f maxVelocity;    // prędkość maksymalna
+            public Vector2f move;           // aktualny współczynnik ruchu pojazdu
+
+            public MovementComponent(
+                Vector2f acceleration,   
+                Vector2f deceleration,            
+                Vector2f maxVelocity    
+            )
+            {
+                this.acceleration = new Vector2f(acceleration.X, acceleration.Y);
+                this.deceleration = new Vector2f(deceleration.X, deceleration.Y);
+                this.maxVelocity = new Vector2f(maxVelocity.X, maxVelocity.Y);
+                this.velocity = new Vector2f(0f, 0f);
+                this.move = new Vector2f(0f, 0f);
+            }
+
+            public MovementComponent(MovementComponent component)
+            {
+                acceleration = new Vector2f(component.acceleration.X, component.acceleration.Y);
+                deceleration = new Vector2f(component.deceleration.X, component.deceleration.Y);
+                maxVelocity = new Vector2f(component.maxVelocity.X, component.maxVelocity.Y);
+                velocity = new Vector2f(0f, 0f);
+                move = new Vector2f(0f, 0f);
+            }
+        }
+
+        //public uint id;
+        //public string name;
         public RectangleShape damageBox;
         public Sprite sprite;
-        public DIRECTION dir;
-        public bool isAnimated;
-        public Animation animation;
+        //public DIRECTION dir;
+        public MovementComponent movement;      // zapis aktualnych wartości określających ruch
 
         public Entity(
             Texture texture,
@@ -31,31 +57,152 @@ namespace Game
             Color damageRectColor
         )
         {
-            this.texture = texture;
-            this.textureRect = textureRect;
-            sprite = new Sprite(texture, textureRect);
-            sprite.Origin = new Vector2f(
-                0f,
-                (float)(textureRect.Height) / 2f
-            );
-            isAnimated = false;
+            sprite = new Sprite()
+            {
+                Texture = texture,
+                TextureRect = textureRect,
+                Origin = new Vector2f((float)(textureRect.Width) / 2f, 0f)
+            };
 
-            offset.Left = textureRect.Left - damageRect.Left;
-            offset.Top  = textureRect.Top  - damageRect.Top;
-            damageBox = new RectangleShape(
-                new Vector2f(
+            IntRect offset = new IntRect
+            {
+                Left = textureRect.Left - damageRect.Left,
+                Top = textureRect.Top - damageRect.Top
+            };
+
+            damageBox = new RectangleShape()
+            {
+                Size = new Vector2f(
                     (float)damageRect.Width,
                     (float)damageRect.Height
-                )
-            );
-            //damageBox.Origin = 
-            damageBox.FillColor = damageRectColor;
-            damageBox.OutlineThickness = 1f;
+                ),
+                Origin = new Vector2f(
+                    (float)damageRect.Width / 2f, 0f
+                ),
+                FillColor = damageRectColor,
+                OutlineThickness = 1f,
+                OutlineColor = Color.Black
+            };
         }
 
-        public void CreateAnimation()
+        public Entity(int carNr, List<Entity> carCollection)
         {
+            try
+            {
+                Entity car = carCollection[carNr];
+                sprite = new Sprite(car.sprite);
+                damageBox = new RectangleShape(car.damageBox);
 
+                if (car.movement != null)
+                    movement = new MovementComponent(car.movement);
+            }
+            catch(Exception exception)
+            {
+                Program.ShowError(exception);
+            }
+        }
+
+        public void Update(float dt)
+        {
+            if (movement != null)
+            {
+                dt = dt / 1000f;
+
+                movement.velocity.X += movement.acceleration.X * dt * movement.move.X;                
+                movement.velocity.Y += movement.acceleration.Y * dt * movement.move.Y;    
+                
+                if (movement.velocity.X > 0f)
+                {
+                    // max velocity check
+                    if (movement.velocity.X > movement.maxVelocity.X)
+                        movement.velocity.X = movement.maxVelocity.X;
+
+                    // deceleration
+                    movement.velocity.X -= movement.deceleration.X * dt;
+                    if (movement.velocity.X < 0f)
+                        movement.velocity.X = 0f;
+                }
+                else if (movement.velocity.X < 0f)
+                {
+                    // max velocity check
+                    if (movement.velocity.X < -movement.maxVelocity.X)
+                        movement.velocity.X = -movement.maxVelocity.X;
+
+                    // deceleration
+                    movement.velocity.X += movement.deceleration.X * dt;
+                    if (movement.velocity.X > 0f)
+                        movement.velocity.X = 0f;
+                }
+
+                if (movement.velocity.Y > 0f)
+                {
+                    // max velocity check
+                    if (movement.velocity.Y > movement.maxVelocity.Y)
+                        movement.velocity.Y = movement.maxVelocity.Y;
+
+                    // deceleration
+                    movement.velocity.Y -= movement.deceleration.Y * dt;
+                    if (movement.velocity.Y < 0f)
+                        movement.velocity.Y = 0f;
+                }
+                else if (movement.velocity.Y < 0f)
+                {
+                    // max velocity check
+                    if (movement.velocity.Y < -movement.maxVelocity.Y)
+                        movement.velocity.Y = -movement.maxVelocity.Y;
+
+                    // deceleration
+                    movement.velocity.Y += movement.deceleration.Y * dt;
+                    if (movement.velocity.Y > 0f)
+                        movement.velocity.Y = 0f;
+                }
+
+                SetPosition(
+                    sprite.Position.X + movement.velocity.X * dt,
+                    sprite.Position.Y + movement.velocity.Y * dt
+                );
+                sprite.Rotation = movement.velocity.X / 50f;
+                damageBox.Rotation = movement.velocity.X / 50f;
+            }
+        }
+
+        public void CreateMovementCompontent(
+            Vector2f acceleration,
+            Vector2f deceleration,
+            Vector2f maxVelocity
+        )
+        {
+            movement = new MovementComponent(
+                acceleration,
+                deceleration,
+                maxVelocity
+            );
+        }
+
+        public void SetPosition(float X, float Y)
+        {
+            sprite.Position = new Vector2f(X, Y);
+            damageBox.Position = new Vector2f(X, Y);
+        }
+
+        public void Move(int dx, int dy)
+        {
+            if (movement != null)
+            {
+                movement.move.X += dx;
+                movement.move.Y += dy;
+
+                if (movement.move.X >  1f) movement.move.X =  1f;
+                if (movement.move.X < -1f) movement.move.X = -1f;
+                if (movement.move.Y >  1f) movement.move.Y =  1f;
+                if (movement.move.Y < -1f) movement.move.Y = -1f;
+            }
+        }
+
+        public void StopVelocityY()
+        {
+            if (movement != null)
+                movement.velocity.Y = 0f;
         }
     }
 }
