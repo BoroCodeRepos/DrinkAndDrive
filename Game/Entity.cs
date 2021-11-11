@@ -102,67 +102,62 @@ namespace Game
             }
         }
 
-        public void Update(float dt)
+        public void UpdateMovementComponent(float dt)
         {
             if (movement != null)
             {
                 dt = dt / 1000f;
-
                 movement.velocity.X += movement.acceleration.X * dt * movement.move.X;                
-                movement.velocity.Y += movement.acceleration.Y * dt * movement.move.Y;    
-                
-                if (movement.velocity.X > 0f)
-                {
-                    // max velocity check
-                    if (movement.velocity.X > movement.maxVelocity.X)
-                        movement.velocity.X = movement.maxVelocity.X;
+                movement.velocity.Y += movement.acceleration.Y * dt * movement.move.Y;
 
-                    // deceleration
-                    movement.velocity.X -= movement.deceleration.X * dt * ((movement.move.X == 0f) ? 8f : 1f);
-                    if (movement.velocity.X < 0f)
-                        movement.velocity.X = 0f;
-                }
-                else if (movement.velocity.X < 0f)
-                {
-                    // max velocity check
-                    if (movement.velocity.X < -movement.maxVelocity.X)
-                        movement.velocity.X = -movement.maxVelocity.X;
+                UpdateVelocity(
+                    dt, 
+                    ref movement.velocity.X, 
+                    ref movement.maxVelocity.X, 
+                    ref movement.deceleration.X, 
+                    movement.move.X );
+                UpdateVelocity(
+                    dt,
+                    ref movement.velocity.Y,
+                    ref movement.maxVelocity.Y,
+                    ref movement.deceleration.Y,
+                    1f );
+                    //movement.move.Y );
 
-                    // deceleration
-                    movement.velocity.X += movement.deceleration.X * dt * ((movement.move.X == 0f) ? 8f : 1f);
-                    if (movement.velocity.X > 0f)
-                        movement.velocity.X = 0f;
-                }
+                Move(movement.velocity.X * dt, movement.velocity.Y * dt);
+                SetRotation(movement.velocity.X);
+            }
+        }
 
-                if (movement.velocity.Y > 0f)
-                {
-                    // max velocity check
-                    if (movement.velocity.Y > movement.maxVelocity.Y)
-                        movement.velocity.Y = movement.maxVelocity.Y;
+        private void UpdateVelocity(
+            float dt, 
+            ref float velocity, 
+            ref float maxVelocity, 
+            ref float deceleration, 
+            float dir
+        )
+        {
+            if (velocity > 0f)
+            {
+                // max velocity check
+                if (velocity > maxVelocity)
+                    velocity = maxVelocity;
 
-                    // deceleration
-                    movement.velocity.Y -= movement.deceleration.Y * dt;
-                    if (movement.velocity.Y < 0f)
-                        movement.velocity.Y = 0f;
-                }
-                else if (movement.velocity.Y < 0f)
-                {
-                    // max velocity check
-                    if (movement.velocity.Y < -movement.maxVelocity.Y)
-                        movement.velocity.Y = -movement.maxVelocity.Y;
+                // deceleration
+                velocity -= deceleration * dt * ((dir == 0f) ? 8f : 1f);
+                if (velocity < 0f)
+                    velocity = 0f;
+            }
+            else if (velocity < 0f)
+            {
+                // max velocity check
+                if (velocity < -maxVelocity)
+                    velocity = -maxVelocity;
 
-                    // deceleration
-                    movement.velocity.Y += movement.deceleration.Y * dt;
-                    if (movement.velocity.Y > 0f)
-                        movement.velocity.Y = 0f;
-                }
-
-                SetPosition(
-                    sprite.Position.X + movement.velocity.X * dt,
-                    sprite.Position.Y + movement.velocity.Y * dt
-                );
-                sprite.Rotation = movement.velocity.X / 50f;
-                damageBox.Rotation = movement.velocity.X / 50f;
+                // deceleration
+                velocity += deceleration * dt * ((dir == 0f) ? 8f : 1f);
+                if (velocity > 0f)
+                    velocity = 0f;
             }
         }
 
@@ -185,24 +180,32 @@ namespace Game
             damageBox.Position = new Vector2f(X, Y);
         }
 
-        public void Move(int dx, int dy)
+        public void Move(float dx, float dy)
+        {
+            Vector2f position = damageBox.Position;
+            position.X += dx;
+            position.Y += dy;
+            SetPosition(position.X, position.Y);
+        }
+
+        public void SetRotation(float angle)
+        {
+            sprite.Rotation = angle / 50f;
+            damageBox.Rotation = angle / 50f;
+        }
+
+        public void MoveDir(int X, int Y)
         {
             if (movement != null)
             {
-                movement.move.X += dx;
-                movement.move.Y += dy;
+                movement.move.X += X;
+                movement.move.Y += Y;
 
                 if (movement.move.X >  1f) movement.move.X =  1f;
                 if (movement.move.X < -1f) movement.move.X = -1f;
                 if (movement.move.Y >  1f) movement.move.Y =  1f;
                 if (movement.move.Y < -1f) movement.move.Y = -1f;
             }
-        }
-
-        public void StopVelocityY()
-        {
-            if (movement != null)
-                movement.velocity.Y = 0f;
         }
     }
 }

@@ -16,6 +16,8 @@ using SFML.Window;
 namespace Game
 {
     using Numbers = Dictionary<int, Sprite>;
+    using Entities = List<Entity>;
+
     class Resources
     {
         public class Options
@@ -36,7 +38,7 @@ namespace Game
         public Texture Thearts;             // animoana textura serca
         public Texture Texplosion;          // textura eksplozji
         public Texture TcoinAnimated;       // textura animacji monety
-        public List<Entity> carCollection;  // kolekcja wszystkich dostępnych samochodów
+        public Entities carCollection;      // kolekcja wszystkich dostępnych samochodów
         public Options options;             // ustawienia okna
 
         public Numbers numbers;             // słownik liczb

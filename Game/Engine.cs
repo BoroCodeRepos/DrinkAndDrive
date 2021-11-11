@@ -15,29 +15,11 @@ namespace Game
 {
     class Engine
     {
-        private struct Animation
-        {
-            public int currentFrameId;
-            public float currentFrameTime;
-
-            public int framesNr;
-            public float maxFrameTime;
-
-            public IntRect currentFrame;
-        }
-
         //------------------------------------------------------------------------------------
         //                          Variables of game
         //------------------------------------------------------------------------------------
         Resources resources;        // zasoby gry
-        List<Entity> hearts;        // kolekcja serc na jezdni
-        List<Entity> coins;         // kolekcja coinsów na jezdni
-        List<Entity> beers;         // kolekcja butelek na jezdni
-        List<Entity> cars;          // kolekcja pojazdów na jezdni
-        Entity mainCar;             // samochód główny - gracza
-        Animation coinsAnimation,   // animacja monet, butelek i serc
-            beersAnimation,
-            heartsAnimation;
+        EntitiesManager eManager;   // manager elementów gry
         bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
         bool pause;                 // true <= pauza
 
@@ -67,11 +49,9 @@ namespace Game
             try
             {
                 InitGameResources();
-                InitAnimation("coins",  ref coinsAnimation);
-                InitAnimation("beers",  ref beersAnimation);
-                InitAnimation("hearts", ref heartsAnimation);
                 InitAlcoVars();
-                InitCars();
+                InitEntitesManager();
+                InitPlayerCar();
             }
             catch(Exception exception)
             {
@@ -93,26 +73,6 @@ namespace Game
 
             gameTime = new TimeCounter();
             alcoTime = new TimeCounter();
-            hearts = new List<Entity>();
-            coins  = new List<Entity>();
-            beers  = new List<Entity>();
-            cars   = new List<Entity>();
-            coinsAnimation  = new Animation();
-            beersAnimation  = new Animation();
-            heartsAnimation = new Animation();
-        }
-
-        private void InitAnimation(string attrName, ref Animation animation)
-        {
-            XmlElement root = resources.document.DocumentElement;
-            XmlElement element = root["game"]["animation"][attrName];
-            animation.framesNr = Convert.ToInt16(element.Attributes["frame_nr"].Value);
-            animation.maxFrameTime = float.Parse(element.Attributes["max_frame_time"].Value);
-            int width = Convert.ToInt16(element.Attributes["width"].Value);
-            int height = Convert.ToInt16(element.Attributes["height"].Value);
-            animation.currentFrame = new IntRect(0, 0, width, height);
-            animation.currentFrameId = 0;
-            animation.currentFrameTime = 0f;
         }
 
         private void InitAlcoVars()
@@ -129,15 +89,21 @@ namespace Game
             alcoLevel = 0.8f;
         }
 
-        private void InitCars()
+        private void InitEntitesManager()
         {
-            XmlNode movement = resources.document.GetElementsByTagName("advanced_move")[0];
-            mainCar = new Entity(9, resources.carCollection);
-            mainCar.damageBox.FillColor = new Color(0, 255, 255, 128);
-            mainCar.SetPosition(
-                resources.background.Texture.Size.X /2f - resources.background.Origin.X,
-                resources.background.Texture.Size.Y / 2f
-            );
+            eManager = new EntitiesManager(resources)
+            {
+                onHeartCollision = new EntitiesManager.OnCollision(OnHeartCollision),
+                onCoinCollision  = new EntitiesManager.OnCollision(OnCoinCollision),
+                onBeerCollision  = new EntitiesManager.OnCollision(OnBeerCollision),
+                onCarCollision   = new EntitiesManager.OnCollision(OnCarCollision),
+                onMapCollision   = new EntitiesManager.OnMapCollision(OnMapCollision)
+            };
+        }
+
+        private void InitPlayerCar()
+        {
+            eManager.SetPlayerCarById(9);
         }
 
         //------------------------------------------------------------------------------------
@@ -150,19 +116,7 @@ namespace Game
             alcoTime.Update(dt);
             UpdateBackground(dt);
 
-            // aktualizacja animacji
-            UpdateAnimation(dt, ref coinsAnimation, ref coins);
-            UpdateAnimation(dt, ref beersAnimation, ref beers);
-            UpdateAnimation(dt, ref heartsAnimation, ref hearts);
-
-            // aktualizacja pojazdów
-            mainCar.Update(dt);
-
-            // aktualizacja koliji
-            UpdateCollisions();
-
-            // wyjazd poza obszar mapy
-            UpdateMapBounds();
+            eManager.Update(dt);
         }
 
         private void UpdateBackground(float dt)
@@ -183,53 +137,18 @@ namespace Game
             );
         }
 
-        private void UpdateAnimation(float dt, ref Animation animation, ref List<Entity> itemList)
+        private void CreateEntities()
         {
-            animation.currentFrameTime += dt;
+            // utworzenie obiektów pasów
+            Vector2f offset = resources.background.Position;
+            offset.X -= resources.background.Origin.X;
+            offset.Y -= resources.background.Origin.Y;
+            FloatRect[] lanes = new FloatRect[4];
 
-            if (animation.currentFrameTime >= animation.maxFrameTime)
-            {
-                animation.currentFrameTime = 0f;
-                animation.currentFrameId += 1;
-                if (animation.currentFrameId >= animation.framesNr)
-                    animation.currentFrameId = 0;
-            }
-                
-            animation.currentFrame.Left = animation.currentFrameId * animation.currentFrame.Width;
-
-            foreach (Entity item in itemList)
-                item.sprite.TextureRect = animation.currentFrame;
-        }
-
-        private void UpdateCollisions()
-        {
-            FloatRect carRect = mainCar.damageBox.GetGlobalBounds();
-            FloatRect bgRectL = resources.dmgBoxL.GetGlobalBounds();
-            FloatRect bgRectR = resources.dmgBoxR.GetGlobalBounds();
-            if (carRect.Intersects(bgRectL) || carRect.Intersects(bgRectR))
-                LoseLive();
-
-            foreach (Entity car in cars)
-                if (CollisionsCheck(car, mainCar))
-                    LoseLive();
-        }
-
-        private void UpdateMapBounds()
-        {
-            FloatRect top = new FloatRect(
-                new Vector2f(0f, 0f),
-                new Vector2f((float)resources.options.winWidth, 1f)
-            );
-            FloatRect bottom = new FloatRect(
-                new Vector2f(0f, (float)resources.options.winHeight),
-                new Vector2f((float)resources.options.winWidth,  1f)
-            );
-
-            if (mainCar.damageBox.GetGlobalBounds().Intersects(top) || 
-                mainCar.damageBox.GetGlobalBounds().Intersects(bottom))
-            {
-                mainCar.StopVelocityY();
-            }  
+            lanes[0] = new FloatRect(new Vector2f(319f + offset.X, -1f), new Vector2f(138f, 10f));
+            lanes[1] = new FloatRect(new Vector2f(466f + offset.X, -1f), new Vector2f(153f, 10f));
+            lanes[2] = new FloatRect(new Vector2f(627f + offset.X, -1f), new Vector2f(158f, 10f));
+            lanes[3] = new FloatRect(new Vector2f(792f + offset.X, -1f), new Vector2f(144f, 10f));
         }
 
         //------------------------------------------------------------------------------------
@@ -240,17 +159,9 @@ namespace Game
             // wyswietlenie tła
             RenderBackground(ref window);
 
-            // wyświetlenie monet i butelek
-            RenderList(ref window, ref coins);
-            RenderList(ref window, ref beers);
-            RenderList(ref window, ref hearts);
-
-            // wyświetlenie samochodów
-            RenderList(ref window, ref cars);
-            window.Draw(mainCar.sprite);
-
-            // wyświetlenie damage boxów
-            RenderDamageBoxes(ref window);
+            // wyświetlenie elementów gry
+            eManager.RenderEntities(ref window);
+            eManager.RenderDamageBoxes(ref window, showDamageBoxes);
 
             // wyświetlenie interfejsu
             RenderInterface(ref window);
@@ -277,31 +188,6 @@ namespace Game
             resources.background.Position = curr_pos;
         }
 
-        private void RenderList(ref RenderWindow window, ref List<Entity> itemList)
-        {
-            foreach (Entity item in itemList)
-                window.Draw(item.sprite);
-        }
-
-        private void RenderDamageBoxes(ref RenderWindow window)
-        {
-            if (showDamageBoxes)
-            {
-                window.Draw(resources.dmgBoxL);
-                window.Draw(resources.dmgBoxR);
-                window.Draw(mainCar.damageBox);
-
-                foreach (Entity car in cars)
-                    window.Draw(car.damageBox);
-
-                foreach (Entity coin in coins)
-                    window.Draw(coin.damageBox);
-
-                foreach (Entity beer in beers)
-                    window.Draw(beer.damageBox);
-            }
-        }
-
         private void RenderInterface(ref RenderWindow window)
         {
             // score
@@ -320,7 +206,7 @@ namespace Game
             }
 
             // hearts
-            Sprite heart = new Sprite(resources.Thearts, heartsAnimation.currentFrame);
+            Sprite heart = new Sprite(resources.Thearts, eManager.heartsAnimation.currentFrame);
             for (int i = 0; i < lives; i++)
             {
                 heart.Position = new Vector2f(
@@ -338,8 +224,8 @@ namespace Game
         {
             RenderWindow window = (RenderWindow)sender;
 
-            //if (key.Code == Keyboard.Key.Escape)
-            //    window.Close();                
+            if (key.Code == Keyboard.Key.Escape)
+                window.Close();                
 
             if (key.Code == Keyboard.Key.B)
                 showDamageBoxes = (!showDamageBoxes);
@@ -348,31 +234,31 @@ namespace Game
                 pause = (!pause);
 
             if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
-                mainCar.Move(-1, 0);
+                eManager.mainCar.MoveDir(-1, 0);
 
             if (key.Code == Keyboard.Key.D || key.Code == Keyboard.Key.Right)
-                mainCar.Move(1, 0);
+                eManager.mainCar.MoveDir(1, 0);
 
             if (key.Code == Keyboard.Key.W || key.Code == Keyboard.Key.Up)
-                mainCar.Move(0, -1);
+                eManager.mainCar.MoveDir(0, -1);
 
             if (key.Code == Keyboard.Key.S || key.Code == Keyboard.Key.Down)
-                mainCar.Move(0, 1);
+                eManager.mainCar.MoveDir(0, 1);
         }
 
         public  void OnKeyReleased(object sender, KeyEventArgs key)
         {
             if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
-                mainCar.Move(1, 0);
+                eManager.mainCar.MoveDir(1, 0);
 
             if (key.Code == Keyboard.Key.D || key.Code == Keyboard.Key.Right)
-                mainCar.Move(-1, 0);
+                eManager.mainCar.MoveDir(-1, 0);
 
             if (key.Code == Keyboard.Key.W || key.Code == Keyboard.Key.Up)
-                mainCar.Move(0, 1);
+                eManager.mainCar.MoveDir(0, 1);
 
             if (key.Code == Keyboard.Key.S || key.Code == Keyboard.Key.Down)
-                mainCar.Move(0, -1);
+                eManager.mainCar.MoveDir(0, -1);
         }
 
         public  void OnClose(object sender, EventArgs e)
@@ -381,15 +267,30 @@ namespace Game
             window.Close();
         }
 
-        private bool CollisionsCheck(Entity A, Entity B)
+        private void OnHeartCollision(List<Entity> itemList, Entity item)
         {
-            FloatRect rectA = A.damageBox.GetGlobalBounds();
-            FloatRect rectB = B.damageBox.GetGlobalBounds();
 
-            if (rectA.Intersects(rectB))
-                return true;
+        }
 
-            return false;
+        private void OnCoinCollision(List<Entity> itemList, Entity item)
+        {
+            
+        }
+
+        private void OnBeerCollision(List<Entity> itemList, Entity item)
+        {
+            
+        }
+
+        private void OnCarCollision(List<Entity> itemList, Entity item)
+        {
+
+            
+        }
+
+        private void OnMapCollision()
+        {
+            LoseLive();
         }
 
         private void LoseLive()
@@ -401,12 +302,13 @@ namespace Game
             }
             else
             {
-                cars.Clear();
-                mainCar.SetPosition(
+                eManager.ClearAll();
+                eManager.mainCar.SetPosition(
                     resources.background.Texture.Size.X / 2f - resources.background.Origin.X,
                     resources.background.Texture.Size.Y / 2f   
                 );
-                mainCar.movement.velocity = new Vector2f(0f, 0f);
+                eManager.mainCar.movement.velocity = new Vector2f(0f, 0f);
+                eManager.mainCar.SetRotation(0f);
             }
         }
     }
