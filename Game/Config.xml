@@ -8,9 +8,9 @@
     <best_score id="Arek" score="10" time="15"/>
 
     <animation>
-      <coins  frame_nr="10" max_frame_time="65" width="218" height="218"/>
-      <beers  frame_nr="16" max_frame_time="65" width="218" height="218"/>
-      <hearts frame_nr="6"  max_frame_time="70" width="84" height="80"/>
+      <coins  frame_nr="10" max_frame_time="65" width="87" height="87"/>
+      <beers  frame_nr="10" max_frame_time="10" width="87" height="87"/>
+      <hearts frame_nr="6"  max_frame_time="70" width="84"  height="80"/>
       <cars>
         <car id="0"  name="Car"        texture_rect="0 0 90 168"      damage_rect="0 0 76 168"  acceleration="2000 400" deceleration="100 100" max_velocity="1000 1000"/>
         <car id="1"  name="Car"        texture_rect="0 202 92 182"    damage_rect="0 0 75 182"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>

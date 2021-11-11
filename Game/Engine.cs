@@ -116,7 +116,8 @@ namespace Game
             alcoTime.Update(dt);
             UpdateBackground(dt);
 
-            eManager.Update(dt);
+            // aktualizacja elementów gry
+            eManager.Update(dt, speed);
         }
 
         private void UpdateBackground(float dt)
@@ -135,20 +136,6 @@ namespace Game
             resources.dmgBoxR.Position = new Vector2f(
                 resources.background.Position.X, 0f
             );
-        }
-
-        private void CreateEntities()
-        {
-            // utworzenie obiektów pasów
-            Vector2f offset = resources.background.Position;
-            offset.X -= resources.background.Origin.X;
-            offset.Y -= resources.background.Origin.Y;
-            FloatRect[] lanes = new FloatRect[4];
-
-            lanes[0] = new FloatRect(new Vector2f(319f + offset.X, -1f), new Vector2f(138f, 10f));
-            lanes[1] = new FloatRect(new Vector2f(466f + offset.X, -1f), new Vector2f(153f, 10f));
-            lanes[2] = new FloatRect(new Vector2f(627f + offset.X, -1f), new Vector2f(158f, 10f));
-            lanes[3] = new FloatRect(new Vector2f(792f + offset.X, -1f), new Vector2f(144f, 10f));
         }
 
         //------------------------------------------------------------------------------------
@@ -269,12 +256,17 @@ namespace Game
 
         private void OnHeartCollision(List<Entity> itemList, Entity item)
         {
-
+            if (lives < 3)
+            {
+                lives++;
+                itemList.Remove(item);
+            }
         }
 
         private void OnCoinCollision(List<Entity> itemList, Entity item)
         {
-            
+            score++;
+            itemList.Remove(item);
         }
 
         private void OnBeerCollision(List<Entity> itemList, Entity item)
@@ -284,8 +276,8 @@ namespace Game
 
         private void OnCarCollision(List<Entity> itemList, Entity item)
         {
-
-            
+            //LoseLive();
+            itemList.Remove(item);
         }
 
         private void OnMapCollision()

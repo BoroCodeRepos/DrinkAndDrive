@@ -17,7 +17,8 @@ namespace Game
 {
     using Numbers = Dictionary<int, Sprite>;
     using Entities = List<Entity>;
-
+    using EntitiesCollection = Dictionary<string, Entity>;
+  
     class Resources
     {
         public class Options
@@ -38,10 +39,13 @@ namespace Game
         public Texture Thearts;             // animoana textura serca
         public Texture Texplosion;          // textura eksplozji
         public Texture TcoinAnimated;       // textura animacji monety
+        public Texture TbeerAnimated;       // textura animacji butelki
         public Entities carCollection;      // kolekcja wszystkich dostępnych samochodów
         public Options options;             // ustawienia okna
 
         public Numbers numbers;             // słownik liczb
+        public EntitiesCollection
+            entitiesCollection;             // kolekcja zapisanych elementów gry
 
         public Resources() { }
 
@@ -56,6 +60,7 @@ namespace Game
                 InitCoinsShape();
                 InitTextures();
                 InitCarsCollection();
+                InitEntitiesCollection();
                 InitNumbers();
             }
             catch (Exception exception)
@@ -146,6 +151,10 @@ namespace Game
             {
                 Smooth = true
             };
+            TbeerAnimated = new Texture("..\\..\\..\\resource\\images\\beer_animated.png")
+            {
+                Smooth = true
+            };
             Texplosion = new Texture("..\\..\\..\\resource\\images\\explosion_animated.png")
             {
                 Smooth = true
@@ -165,7 +174,7 @@ namespace Game
                     textureRect = ParseAttributeRect(car.Attributes["texture_rect"]);
                     damageRect  = ParseAttributeRect(car.Attributes["damage_rect"]);
 
-                    Entity entity = new Entity(Tcars, textureRect, damageRect, color);
+                    Entity entity = new Entity(Tcars, textureRect, damageRect, color, TYPE.CAR);
                     entity.CreateMovementCompontent(
                         ParseAttributeMoving(car.Attributes["acceleration"]),
                         ParseAttributeMoving(car.Attributes["deceleration"]),
@@ -185,6 +194,20 @@ namespace Game
             numbers = new Numbers();
             for (int i = 0; i < 10; i++)
                 numbers.Add(i, new Sprite(Tnumbers, new IntRect(i*64, 0, 64, 82)));
+        }
+
+        private void InitEntitiesCollection()
+        {
+            entitiesCollection = new EntitiesCollection
+            {
+                //["heart"] = new Entity(
+                //    Thearts,
+                //    new IntRect(),
+
+                //),
+
+                //["car"]
+            };
         }
 
         private IntRect ParseAttributeRect(XmlAttribute attribute)

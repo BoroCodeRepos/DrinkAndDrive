@@ -11,7 +11,8 @@ using SFML.Window;
 
 namespace Game
 {
-    public enum DIRECTION { UP, DOWN, RIGHT, LEFT };
+    public enum DIRECTION { UP, DOWN, RIGHT, LEFT, COUNT };
+    public enum TYPE { HEART, COIN, BEER, CAR, COUNT };
 
     static class Program
     {
