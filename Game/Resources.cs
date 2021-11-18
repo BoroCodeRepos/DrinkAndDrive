@@ -15,10 +15,10 @@ using SFML.Window;
 
 namespace Game
 {
-    using Numbers = Dictionary<int, Sprite>;
+    using Numbers  = Dictionary<int, Sprite>;
+    using Textures = Dictionary<TYPE, Texture>;
     using Entities = List<Entity>;
-    using EntitiesCollection = Dictionary<string, Entity>;
-  
+
     class Resources
     {
         public class Options
@@ -34,22 +34,14 @@ namespace Game
         public RectangleShape dmgBoxR;      // prawe pobocze
         public RectangleShape shader;       // ściemnianie ekranu
         public RectangleShape coins;        // kształt stosu monet
-        public Texture Tcars;               // textura wszystkich samochodów
         public Texture Tnumbers;            // textura z numerami
-        public Texture Thearts;             // animoana textura serca
         public Texture Texplosion;          // textura eksplozji
-        public Texture TcoinAnimated;       // textura animacji monety
-        public Texture TbeerAnimated;       // textura animacji butelki
         public Entities carCollection;      // kolekcja wszystkich dostępnych samochodów
         public Options options;             // ustawienia okna
-
+        public Textures textures;           // utworzone tekstury monet, serc, butelek i samochodów
         public Numbers numbers;             // słownik liczb
-        public EntitiesCollection
-            entitiesCollection;             // kolekcja zapisanych elementów gry
 
-        public Resources() { }
-
-        public void Init()
+        public Resources()
         {
             try
             {
@@ -60,7 +52,6 @@ namespace Game
                 InitCoinsShape();
                 InitTextures();
                 InitCarsCollection();
-                InitEntitiesCollection();
                 InitNumbers();
             }
             catch (Exception exception)
@@ -135,26 +126,18 @@ namespace Game
 
         private void InitTextures()
         {
+            textures = new Dictionary<TYPE, Texture>
+            {
+                [TYPE.HEART] = new Texture("..\\..\\..\\resource\\images\\heart_animated.png") { Smooth = true },
+                [TYPE.COIN] = new Texture("..\\..\\..\\resource\\images\\coin_animated.png") { Smooth = true },
+                [TYPE.BEER] = new Texture("..\\..\\..\\resource\\images\\beer_animated.png") { Smooth = true },
+                [TYPE.CAR] = new Texture("..\\..\\..\\resource\\images\\cars.png") { Smooth = true }
+            };
             Tnumbers = new Texture("..\\..\\..\\resource\\images\\numbers.png")
             {
                 Smooth = true
             };
-            Tcars = new Texture("..\\..\\..\\resource\\images\\cars.png")
-            {
-                Smooth = true
-            };
-            Thearts = new Texture("..\\..\\..\\resource\\images\\heart_animated.png")
-            {
-                Smooth = true
-            };
-            TcoinAnimated = new Texture("..\\..\\..\\resource\\images\\coin_animated.png")
-            {
-                Smooth = true
-            };
-            TbeerAnimated = new Texture("..\\..\\..\\resource\\images\\beer_animated.png")
-            {
-                Smooth = true
-            };
+
             Texplosion = new Texture("..\\..\\..\\resource\\images\\explosion_animated.png")
             {
                 Smooth = true
@@ -165,16 +148,15 @@ namespace Game
         {
             try
             {
-                carCollection = new List<Entity>();
+                carCollection = new Entities();
                 XmlNodeList carsList = document.GetElementsByTagName("car");
                 IntRect textureRect, damageRect;
-                Color color = new Color(255, 255, 0, 128);
                 foreach (XmlNode car in carsList)
                 {
                     textureRect = ParseAttributeRect(car.Attributes["texture_rect"]);
                     damageRect  = ParseAttributeRect(car.Attributes["damage_rect"]);
 
-                    Entity entity = new Entity(Tcars, textureRect, damageRect, color, TYPE.CAR);
+                    Entity entity = new Entity(GetTexture(TYPE.CAR), textureRect, damageRect, TYPE.CAR);
                     entity.CreateMovementCompontent(
                         ParseAttributeMoving(car.Attributes["acceleration"]),
                         ParseAttributeMoving(car.Attributes["deceleration"]),
@@ -196,20 +178,6 @@ namespace Game
                 numbers.Add(i, new Sprite(Tnumbers, new IntRect(i*64, 0, 64, 82)));
         }
 
-        private void InitEntitiesCollection()
-        {
-            entitiesCollection = new EntitiesCollection
-            {
-                //["heart"] = new Entity(
-                //    Thearts,
-                //    new IntRect(),
-
-                //),
-
-                //["car"]
-            };
-        }
-
         private IntRect ParseAttributeRect(XmlAttribute attribute)
         {
             string[] values = attribute.Value.Split(' ');
@@ -228,6 +196,11 @@ namespace Game
             vector.X = float.Parse(values[0]);
             vector.Y = float.Parse(values[1]);
             return vector;
+        }
+
+        public Texture GetTexture(TYPE type)
+        {
+            return textures[type];
         }
     }
 }

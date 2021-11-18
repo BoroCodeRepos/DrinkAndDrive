@@ -11,13 +11,21 @@ namespace Game
         private double currentTime;
         private double eventTime;
         private bool isEvent;
-        private bool start;
+        private bool run;
 
         public TimeCounter()
         {
             currentTime = 0d;
             eventTime = 0d;
-            start = false;
+            run = false;
+            isEvent = false;
+        }
+
+        public TimeCounter(double evTime)
+        {
+            currentTime = 0d;
+            eventTime = evTime;
+            run = false;
             isEvent = false;
         }
 
@@ -28,17 +36,17 @@ namespace Game
 
         public void Start()
         {
-            start = true;
+            run = true;
         }
 
         public void Stop()
         {
-            start = false;
+            run = false;
         }
 
         public void Update(float dt)
         {
-            if (start)
+            if (run)
                 currentTime += (double)dt;
 
             if (eventTime > 0d && currentTime >= eventTime)
@@ -66,6 +74,11 @@ namespace Game
         public double GetCurrentTime()
         {
             return currentTime;
+        }
+
+        public bool IsRun()
+        {
+            return run;
         }
     }
 }

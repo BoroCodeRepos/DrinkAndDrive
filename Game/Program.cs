@@ -31,7 +31,6 @@ namespace Game
         static private void InitResources()
         {
             resources = new Resources();
-            resources.Init();
         }
 
         static private void InitEngine()
@@ -41,22 +40,12 @@ namespace Game
 
         static private void InitWindow()
         {
-            try
-            {
-                window = new RenderWindow(
-                    new VideoMode(
-                        resources.options.winWidth,
-                        resources.options.winHeight
-                    ), 
-                    resources.options.winTitle
-                );
-                window.SetVerticalSyncEnabled(true);
-            }
-            catch(Exception exception)
-            {
-                ShowError(exception);
-            }
+            VideoMode mode = new VideoMode(resources.options.winWidth, resources.options.winHeight);
+            string title = resources.options.winTitle;
 
+            window = new RenderWindow(mode, title);
+            window.SetVerticalSyncEnabled(true);
+            
             window.Closed += engine.OnClose;
             window.KeyPressed += engine.OnKeyPressed;
             window.KeyReleased += engine.OnKeyReleased;

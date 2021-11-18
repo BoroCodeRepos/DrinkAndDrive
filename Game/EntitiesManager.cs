@@ -13,33 +13,31 @@ using SFML.Window;
 namespace Game
 {
     using Entities = List<Entity>;
+    using EntitiesAnimation = Dictionary<TYPE, EntityAnimation>;
+    using Timers = Dictionary<TYPE, TimeCounter>;
 
     class EntitiesManager
     {
         public Resources resources;    // zasoby gry
-        public Entities hearts;        // kolekcja serc na jezdni
-        public Entities coins;         // kolekcja coinsów na jezdni
-        public Entities beers;         // kolekcja butelek na jezdni
-        public Entities cars;          // kolekcja pojazdów na jezdni
+        public Entities entities;      // elementy gry (serca, monety, butelki i samochody)
         public Entity mainCar;         // samochód główny - gracza
-        public EntityAnimation 
-            coinsAnimation,            // animacja monet
-            beersAnimation,            // animacja butelek
-            heartsAnimation;           // animacja serc
+        public EntitiesAnimation 
+            animation;                 // animacja serc, monet i butelek
+        public Timers timers;          // licznik czas do utworzenia następnego elementu               
 
-        public delegate void OnCollision(Entities itemList, Entity item);
-        public delegate void OnMapCollision();
+        public delegate bool OnCollision();
 
         public OnCollision onHeartCollision;
         public OnCollision onCoinCollision;
         public OnCollision onBeerCollision;
         public OnCollision onCarCollision;
-        public OnMapCollision onMapCollision;
+        public OnCollision onMapCollision;
 
-        public double heartPercent = .5d;
-        public double coinPercent = .5d;
-        public double beerPercent = .5d;
-        public double carPercent = .5d;
+        public double heartPercent = 1e-2d;
+        public double coinPercent = 8e-2d;
+        public double beerPercent = 6e-2d;
+        public double carPercent = 5e-2d;
+        public float offset = 0f;
 
         //------------------------------------------------------------------------------------
         //                          Constructor
@@ -48,22 +46,32 @@ namespace Game
         {
             this.resources = resources;
 
-            hearts = new Entities();
-            coins  = new Entities();
-            beers  = new Entities();
-            cars   = new Entities();
+            entities = new Entities();
+            animation = new EntitiesAnimation
+            {
+                [TYPE.COIN]  = new EntityAnimation(),
+                [TYPE.BEER]  = new EntityAnimation(),
+                [TYPE.HEART] = new EntityAnimation()
+            };
 
-            InitAnimation("coins",  ref coinsAnimation);
-            InitAnimation("beers",  ref beersAnimation);
-            InitAnimation("hearts", ref heartsAnimation);
+            InitAnimation("coins",  animation, TYPE.COIN);
+            InitAnimation("beers",  animation, TYPE.BEER);
+            InitAnimation("hearts", animation, TYPE.HEART);
+
+            timers = new Timers
+            {
+                [TYPE.COIN] = new TimeCounter(200d),
+                [TYPE.BEER] = new TimeCounter(200d),
+                [TYPE.CAR] = new TimeCounter(400d)
+            };
         }
 
         //------------------------------------------------------------------------------------
         //                          Initialization methods
         //------------------------------------------------------------------------------------
-        private void InitAnimation(string attrName, ref EntityAnimation animation)
+        private void InitAnimation(string attrName, EntitiesAnimation Tanimation, TYPE type)
         {
-            animation = new EntityAnimation();
+            EntityAnimation animation = Tanimation[type];
             XmlElement root = resources.document.DocumentElement;
             XmlElement element = root["game"]["animation"][attrName];
             animation.framesNr = Convert.ToInt16(element.Attributes["frame_nr"].Value);
@@ -73,6 +81,7 @@ namespace Game
             animation.currentFrame = new IntRect(0, 0, width, height);
             animation.currentFrameId = 0;
             animation.currentFrameTime = 0f;
+            Tanimation[type] = animation;
         }
 
         //------------------------------------------------------------------------------------
@@ -80,61 +89,82 @@ namespace Game
         //------------------------------------------------------------------------------------
         public  void Update(float dt, float speed)
         {
-            CreateEntities();                                           // próba utworzenia nowych elementów gry
-            DeleteEntities(ref hearts);                                 // usunięcie elementów poza mapą
-            DeleteEntities(ref coins);
-            DeleteEntities(ref beers);
-            DeleteEntities(ref cars);
-            UpdateAnimation(dt, ref coinsAnimation,  ref coins);        // aktualizacja animacji
-            UpdateAnimation(dt, ref beersAnimation,  ref beers);
-            UpdateAnimation(dt, ref heartsAnimation, ref hearts);
-            mainCar.UpdateMovementComponent(dt);                        // aktualizacja ruchu głównego pojazdu
-            UpdateEntitiesMove(dt, speed, ref hearts);                  // aktualizacja ruchu elementów gry
-            UpdateEntitiesMove(dt, speed, ref coins);
-            UpdateEntitiesMove(dt, speed, ref beers);
-            UpdateEntitiesMove(dt, speed, ref cars);
-            UpdateMapBounds();                                          // aktualizacja położenia na mapie głownego samochodu
-            UpdateMapCollision();                                       // sprawdzenie wyjazdu gracza poza jezdnię
-            UpdateListCollisions(ref hearts, onHeartCollision);         // aktualizacja kolizji obiektów
-            UpdateListCollisions(ref coins,  onCoinCollision);
-            UpdateListCollisions(ref beers,  onBeerCollision);
-            UpdateListCollisions(ref cars,   onCarCollision);
+            UpdateTimers(dt);
+            TryCreateEntities();                                // próba utworzenia nowych elementów gry
+            DeleteEntities();                                   // usunięcie elementów poza mapą
+            UpdateAnimation(dt);                                // aktualizacja animacji
+            mainCar.UpdateMove(dt, speed);                      // aktualizacja ruchu głównego pojazdu
+            UpdateEntitiesMove(dt, speed);                      // aktualizacja ruchu elementów gry
+            UpdateMapBounds();                                  // aktualizacja położenia na mapie głownego samochodu
+            UpdateMapCollision();                               // sprawdzenie wyjazdu gracza poza jezdnię
+            UpdateCollisions();                                 // aktualizacja kolizji obiektów
         }
 
-        private void UpdateAnimation(float dt, ref EntityAnimation animation, ref Entities itemList)
+        private void UpdateAnimation(float dt)
         {
-            animation.currentFrameTime += dt;
-
-            if (animation.currentFrameTime >= animation.maxFrameTime)
+            List<TYPE> types = new List<TYPE>
             {
-                animation.currentFrameTime = 0f;
-                animation.currentFrameId += 1;
-                if (animation.currentFrameId >= animation.framesNr)
-                    animation.currentFrameId = 0;
-            }
+                TYPE.HEART,
+                TYPE.COIN,
+                TYPE.BEER
+            };
 
-            animation.currentFrame.Left = animation.currentFrameId * animation.currentFrame.Width;
-
-            foreach (Entity item in itemList)
-                item.sprite.TextureRect = animation.currentFrame;
-        }
-
-        private void UpdateEntitiesMove(float dt, float speed, ref List<Entity> itemList)
-        {
-            foreach (var item in itemList)
-                item.UpdateMove(dt, speed);
-        }
-
-        private void UpdateListCollisions(ref List<Entity> itemList, OnCollision onCollision)
-        {
-            foreach (Entity item in itemList)
+            foreach (var type in types)
             {
-                if (CollisionsCheck(item, mainCar))
+                var animation = this.animation[type];
+                animation.currentFrameTime += dt;
+
+                if (animation.currentFrameTime >= animation.maxFrameTime)
                 {
-                    onCollision(itemList, item);
-                    return;
+                    animation.currentFrameTime = 0f ;
+                    animation.currentFrameId += 1;
+                    if (animation.currentFrameId >= animation.framesNr)
+                        animation.currentFrameId = 0;
                 }
-            }    
+
+                animation.currentFrame.Left = animation.currentFrameId * animation.currentFrame.Width;
+                this.animation[type] = animation;
+                var animatedEntities = entities.Where(entity => entity.type == type);
+                foreach (var item in animatedEntities)
+                    item.sprite.TextureRect = animation.currentFrame;
+            }
+        }
+
+        private void UpdateEntitiesMove(float dt, float speed)
+        {
+            foreach (var item in entities)
+            {
+                item.UpdateMove(dt, speed);
+            }
+        }
+
+        private void UpdateCollisions()
+        {
+            Entities toDelete = new Entities();
+            foreach (Entity entity in entities)
+            {
+                if (CollisionsCheck(mainCar, entity))
+                {
+                    if (entity.type == TYPE.HEART)
+                        if (onHeartCollision())
+                            toDelete.Add(entity);
+
+                    if (entity.type == TYPE.COIN)
+                        if (onCoinCollision())
+                            toDelete.Add(entity);
+                    
+                    if (entity.type == TYPE.BEER)
+                        if (onBeerCollision())
+                            toDelete.Add(entity);
+
+                    if (entity.type == TYPE.CAR)
+                        if (onCarCollision())
+                            toDelete.Add(entity);
+                }
+            }
+            // usunięcie żądanych elementów
+            foreach (Entity entity in toDelete)
+                entities.Remove(entity);
         }
 
         private void UpdateMapCollision()
@@ -163,18 +193,22 @@ namespace Game
             }
         }
 
+        private void UpdateTimers(float dt)
+        {
+            timers[TYPE.COIN].Update(dt);
+            timers[TYPE.BEER].Update(dt);
+            timers[TYPE.CAR].Update(dt);
+        }
+
         //------------------------------------------------------------------------------------
         //                          Render elements on screen
         //------------------------------------------------------------------------------------
         public  void RenderEntities(ref RenderWindow window)
         {
-            // wyświetlenie monet i butelek
-            RenderList(ref window, ref coins);
-            RenderList(ref window, ref beers);
-            RenderList(ref window, ref hearts);
-
-            // wyświetlenie samochodów
-            RenderList(ref window, ref cars);
+            // wyświetlenie monet, butelek, serc i  samochodów
+            foreach (var entity in entities)
+                window.Draw(entity.sprite);
+            // wyświetlenie samochodu gracza
             window.Draw(mainCar.sprite);
         }
 
@@ -186,132 +220,157 @@ namespace Game
                 window.Draw(resources.dmgBoxR);
                 window.Draw(mainCar.damageBox);
 
-                foreach (Entity car in cars)
-                    window.Draw(car.damageBox);
-
-                foreach (Entity coin in coins)
-                    window.Draw(coin.damageBox);
-
-                foreach (Entity beer in beers)
-                    window.Draw(beer.damageBox);
-
-                foreach (Entity heart in hearts)
-                    window.Draw(heart.damageBox);
+                foreach (Entity entity in entities)
+                    window.Draw(entity.damageBox);
             }
-        }
-
-        private void RenderList(ref RenderWindow window, ref Entities itemList)
-        {
-            foreach (Entity item in itemList)
-                window.Draw(item.sprite);
         }
 
         //------------------------------------------------------------------------------------
         //                          Supporting methods
         //------------------------------------------------------------------------------------
-        public void ClearAll()
+        public  void ClearAll()
         {
-            hearts.Clear();
-            coins.Clear();
-            beers.Clear();
-            cars.Clear();
-        }
-
-        public void CreateEntities()
-        {
-            Vector2f offset = resources.background.Position;
-            offset.X -= resources.background.Origin.X;
-            offset.Y -= resources.background.Origin.Y;
-            // utworzenie obiektów pasów
-            FloatRect[] lanes = new FloatRect[4];
-            lanes[0] = new FloatRect(new Vector2f(319f + offset.X, -1f), new Vector2f(138f, 10f));
-            lanes[1] = new FloatRect(new Vector2f(466f + offset.X, -1f), new Vector2f(153f, 10f));
-            lanes[2] = new FloatRect(new Vector2f(627f + offset.X, -1f), new Vector2f(158f, 10f));
-            lanes[3] = new FloatRect(new Vector2f(792f + offset.X, -1f), new Vector2f(144f, 10f));
-
-            for (int i = 0; i < lanes.Length; i++)
-            {
-                if (BusyCheck(lanes[i]))
-                {
-                    Random rand = new Random();
-                    double percent = rand.NextDouble();
-                    TYPE type = (TYPE)rand.Next((int)TYPE.COUNT);
-                    DIRECTION dir = (i < 2) ? DIRECTION.DOWN : DIRECTION.UP;
-                    Vector2f position = new Vector2f(lanes[i].Left + lanes[i].Width / 2f, 0f );
-                    
-                    // utworzenie obiektu danego typu jeśli zostanie poprawnie określony procentowo
-                    switch (type)
-                    {
-                    case TYPE.HEART:
-                        if (heartPercent > percent)
-                            CreateElement(ref hearts, heartsAnimation, resources.Thearts, position, type, dir);
-                        break;
-
-                    case TYPE.COIN:
-                        if (coinPercent > percent)
-                            CreateElement(ref coins, coinsAnimation, resources.TcoinAnimated, position, type, dir);
-                        break;
-
-                    case TYPE.BEER:
-                        if (beerPercent > percent)
-                            CreateElement(ref beers, beersAnimation, resources.TbeerAnimated, position, type, dir);
-                        break;
-
-                    case TYPE.CAR:
-                        if (carPercent > percent)
-                        {
-                            Entity car = new Entity(rand.Next(14), resources.carCollection, dir);
-                            position.Y -= (dir == DIRECTION.UP) ? car.damageBox.Size.Y : 0f;
-                            car.SetPosition(position.X, position.Y);
-                            cars.Add(car);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void DeleteEntities(ref Entities itemList)
-        {
-            Vector2f position;
-            foreach (Entity item in itemList)
-            {
-                position = item.damageBox.Position;
-                switch (item.dir)
-                {
-                    case DIRECTION.DOWN:
-                        position.Y -= item.damageBox.Size.Y;
-                        if (position.Y > resources.options.winHeight)
-                        {
-                            itemList.Remove(item);
-                            return;
-                        } 
-                        break;
-
-                    case DIRECTION.UP:
-                        position.Y += item.damageBox.Size.Y;
-                        if (position.Y < 0f)
-                        {
-                            itemList.Remove(item);
-                            return;
-                        }
-                        break;
-
-                    default: break;
-                }
-            }
+            entities.Clear();
         }
 
         public  void SetPlayerCarById(int id)
         {
             id = id % 14;
-            XmlNode movement = resources.document.GetElementsByTagName("advanced_move")[0];
             mainCar = new Entity(id, resources.carCollection);
             mainCar.damageBox.FillColor = new Color(0, 255, 255, 128);
             mainCar.SetPosition(
                 resources.background.Texture.Size.X / 2f - resources.background.Origin.X,
                 resources.background.Texture.Size.Y / 2f
             );
+        }
+
+        private void TryCreateEntities()
+        {
+            Vector2f offset = resources.background.Position;
+            offset.X -= resources.background.Origin.X;
+            offset.Y -= resources.background.Origin.Y;
+            // utworzenie obiektów pasów
+            FloatRect[] lanes = new FloatRect[4];
+            lanes[0] = new FloatRect(319f + offset.X, -1f, 138f, 10f);
+            lanes[1] = new FloatRect(466f + offset.X, -1f, 153f, 10f);
+            lanes[2] = new FloatRect(627f + offset.X, -1f, 158f, 10f);
+            lanes[3] = new FloatRect(792f + offset.X, -1f, 144f, 10f);
+
+            for (int i = 0; i < lanes.Length; i++)
+                if (BusyCheck(lanes[i]))
+                {
+                    Random rand = new Random();
+                    double percent = rand.NextDouble();
+                    TYPE type = (TYPE)rand.Next((int)TYPE.COUNT);
+                    DIRECTION dir = (i < 2) ? DIRECTION.DOWN : DIRECTION.UP;
+                    Vector2f position = new Vector2f(lanes[i].Left + lanes[i].Width / 2f, 0f);
+                    CheckPercentageChances(type, dir, percent, position);
+                }
+        }
+
+        private bool BusyCheck(FloatRect lane)
+        {
+            foreach (var item in entities)
+                if (lane.Intersects(item.damageBox.GetGlobalBounds()))
+                    return false;
+
+            return true;
+        }
+
+        private void CheckPercentageChances(TYPE type, DIRECTION dir, double percent, Vector2f position)
+        {
+            // utworzenie obiektu danego typu jeśli zostanie poprawnie określony procentowo
+            bool create = false;
+            double chances = 0d;
+            if (type == TYPE.HEART)
+                chances = heartPercent;
+            if (type == TYPE.COIN)
+                chances = coinPercent;
+            if (type == TYPE.BEER)
+                chances = beerPercent;
+            if (type == TYPE.CAR)
+                chances = carPercent;
+
+            if (type != TYPE.HEART)
+            {
+                TimeCounter timer = timers[type];
+                if (timer.IsRun())
+                {
+                    if (timer.GetEventStatus())
+                    {
+                        create = true;
+                        timer.ClearEventStatus();
+                    }
+                }
+                else
+                {
+                    create = true;
+                    timer.Start();
+                }
+            }
+            else
+            {
+                create = true;
+            }
+
+            if (create && chances > percent)
+                CreateElement(position, type, dir);
+        }
+
+        private void CreateElement(Vector2f position, TYPE type, DIRECTION dir)
+        {
+            if (type == TYPE.CAR)
+            {
+                Random rnd = new Random();
+                Entity car = new Entity(rnd.Next(14), resources.carCollection, false, dir);
+                position.Y -= (dir == DIRECTION.UP) ? car.damageBox.Size.Y : 0f;
+                car.SetPosition(position.X, position.Y);
+                entities.Add(car);
+            }
+            else
+            {
+                IntRect damageRect = new IntRect()
+                {
+                    Left = 0, Top = 0,
+                    Width = animation[type].currentFrame.Width,
+                    Height = animation[type].currentFrame.Height
+                };
+                Entity entity = new Entity(
+                    resources.GetTexture(type),
+                    animation[type].currentFrame,
+                    damageRect,
+                    type,
+                    dir );
+                position.Y -= (dir == DIRECTION.UP) ? entity.damageBox.Size.Y : 0f;
+                entity.SetPosition(position.X, position.Y);
+                entities.Add(entity);
+            }
+        }
+
+        private void DeleteEntities()
+        {
+            Vector2f position;
+            Entities toDelete = new Entities();
+            foreach (Entity entity in entities)
+            {
+                position = entity.damageBox.Position;
+                switch (entity.dir)
+                {
+                case DIRECTION.DOWN:
+                    position.Y -= entity.damageBox.Size.Y;
+                    if (position.Y > resources.options.winHeight)
+                        toDelete.Add(entity);
+                    break;
+
+                case DIRECTION.UP:
+                    if (position.Y > resources.options.winHeight)
+                        toDelete.Add(entity);
+                    break;
+                }
+            }
+            // usunięcie wszystkich elementów
+            foreach (Entity entity in toDelete)
+                entities.Remove(entity);      
         }
 
         private bool CollisionsCheck(Entity A, Entity B)
@@ -323,55 +382,6 @@ namespace Game
                 return true;
 
             return false;
-        }
-
-        private bool BusyCheck(FloatRect lane)
-        {
-            foreach (var item in hearts)
-                if (lane.Intersects(item.damageBox.GetGlobalBounds()))
-                    return false;
-
-            foreach (var item in coins)
-                if (lane.Intersects(item.damageBox.GetGlobalBounds()))
-                    return false;
-
-            foreach (var item in beers)
-                if (lane.Intersects(item.damageBox.GetGlobalBounds()))
-                    return false;
-
-            foreach (var item in cars)
-                if (lane.Intersects(item.damageBox.GetGlobalBounds()))
-                    return false;
-
-            return true;
-        }
-
-        private void CreateElement(
-            ref Entities list, 
-            EntityAnimation animation,
-            Texture texture,
-            Vector2f position, 
-            TYPE type, 
-            DIRECTION dir
-        )
-        {
-            IntRect damageRect = new IntRect()
-            {
-                Left = 0, Top = 0,
-                Width = animation.currentFrame.Width,
-                Height = animation.currentFrame.Height
-            };
-            Entity entity = new Entity(
-                texture,
-                animation.currentFrame,
-                damageRect,
-                new Color(255, 255, 255, 128),
-                type,
-                dir
-            );
-            position.Y -= (dir == DIRECTION.UP) ? entity.damageBox.Size.Y : 0f;
-            entity.SetPosition(position.X, position.Y);
-            list.Add(entity);
         }
     }
 

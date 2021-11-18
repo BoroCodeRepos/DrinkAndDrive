@@ -28,7 +28,6 @@ namespace Game
         //------------------------------------------------------------------------------------
         TimeCounter alcoTime;       // czas jazdy po alkoholu
         TimeCounter alcoTimeToStep; // czas do obniżenia alkoholu we krwi
-        float alcoLevelStep;        // krok obniżenia alkoholu
         float alcoLevel;            // aktualny poziom alkoholu we krwi
 
         //------------------------------------------------------------------------------------
@@ -73,20 +72,21 @@ namespace Game
 
             gameTime = new TimeCounter();
             alcoTime = new TimeCounter();
+            alcoTimeToStep = new TimeCounter(1000d);
         }
 
         private void InitAlcoVars()
         {
             XmlElement root = resources.document.DocumentElement;
             XmlElement soberingUpElement = root["game"]["sobering_up"];
-            alcoLevelStep = float.Parse(
-                soberingUpElement.Attributes["step_alkohol_level"].Value
-            );
+            //alcoLevelStep = float.Parse(
+            //    soberingUpElement.Attributes["step_alkohol_level"].Value
+            //);
             alcoTimeToStep = new TimeCounter();
             alcoTimeToStep.SetEventTime(
                 float.Parse(soberingUpElement.Attributes["step_time"].Value)
             );
-            alcoLevel = 0.8f;
+            alcoLevel = 0f;
         }
 
         private void InitEntitesManager()
@@ -97,13 +97,13 @@ namespace Game
                 onCoinCollision  = new EntitiesManager.OnCollision(OnCoinCollision),
                 onBeerCollision  = new EntitiesManager.OnCollision(OnBeerCollision),
                 onCarCollision   = new EntitiesManager.OnCollision(OnCarCollision),
-                onMapCollision   = new EntitiesManager.OnMapCollision(OnMapCollision)
+                onMapCollision   = new EntitiesManager.OnCollision(OnMapCollision)
             };
         }
 
         private void InitPlayerCar()
         {
-            eManager.SetPlayerCarById(9);
+            eManager.SetPlayerCarById(2);
         }
 
         //------------------------------------------------------------------------------------
@@ -118,13 +118,16 @@ namespace Game
 
             // aktualizacja elementów gry
             eManager.Update(dt, speed);
+
+            // aktualizacja liczników
+            UpdateAlcoTime(dt);
         }
 
         private void UpdateBackground(float dt)
         {
             double time = alcoTime.GetCurrentTime() / 1000d;
             float amp = 10 * (alcoLevel + level / 1000f) % resources.background.Origin.X;
-            float sin_func = (float)Math.Sin((alcoLevel * time) % 2d * Math.PI);
+            float sin_func = (float)Math.Sin((alcoLevel * time) % (2d * Math.PI));
             Vector2f curr_pos = resources.background.Position;
             resources.background.Position = new Vector2f(
                 amp * sin_func,
@@ -136,6 +139,30 @@ namespace Game
             resources.dmgBoxR.Position = new Vector2f(
                 resources.background.Position.X, 0f
             );
+        }
+
+        private void UpdateGameTime(float dt)
+        {
+            gameTime.Update(dt);
+        }
+
+        private void UpdateAlcoTime(float dt)
+        {
+            alcoTime.Update(dt);
+            alcoTimeToStep.Update(dt);
+            if (alcoTimeToStep.GetEventStatus())
+            {
+                alcoTimeToStep.ClearEventStatus();
+                alcoLevel -= 0.1f;
+                if (alcoLevel <= 0f)
+                {
+                    alcoLevel = 0f;
+                    alcoTime.Stop();
+                    alcoTimeToStep.Stop();
+                    alcoTimeToStep.ClearTime();
+                }
+            }
+            Console.WriteLine(alcoLevel);
         }
 
         //------------------------------------------------------------------------------------
@@ -193,7 +220,8 @@ namespace Game
             }
 
             // hearts
-            Sprite heart = new Sprite(resources.Thearts, eManager.heartsAnimation.currentFrame);
+            TYPE type = TYPE.HEART;
+            Sprite heart = new Sprite(resources.GetTexture(type), eManager.animation[type].currentFrame);
             for (int i = 0; i < lives; i++)
             {
                 heart.Position = new Vector2f(
@@ -221,31 +249,31 @@ namespace Game
                 pause = (!pause);
 
             if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
-                eManager.mainCar.MoveDir(-1, 0);
+                eManager.mainCar.DirectionMove(-1, 0);
 
             if (key.Code == Keyboard.Key.D || key.Code == Keyboard.Key.Right)
-                eManager.mainCar.MoveDir(1, 0);
+                eManager.mainCar.DirectionMove(1, 0);
 
             if (key.Code == Keyboard.Key.W || key.Code == Keyboard.Key.Up)
-                eManager.mainCar.MoveDir(0, -1);
+                eManager.mainCar.DirectionMove(0, -1);
 
             if (key.Code == Keyboard.Key.S || key.Code == Keyboard.Key.Down)
-                eManager.mainCar.MoveDir(0, 1);
+                eManager.mainCar.DirectionMove(0, 1);
         }
 
         public  void OnKeyReleased(object sender, KeyEventArgs key)
         {
             if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
-                eManager.mainCar.MoveDir(1, 0);
+                eManager.mainCar.DirectionMove(1, 0);
 
             if (key.Code == Keyboard.Key.D || key.Code == Keyboard.Key.Right)
-                eManager.mainCar.MoveDir(-1, 0);
+                eManager.mainCar.DirectionMove(-1, 0);
 
             if (key.Code == Keyboard.Key.W || key.Code == Keyboard.Key.Up)
-                eManager.mainCar.MoveDir(0, 1);
+                eManager.mainCar.DirectionMove(0, 1);
 
             if (key.Code == Keyboard.Key.S || key.Code == Keyboard.Key.Down)
-                eManager.mainCar.MoveDir(0, -1);
+                eManager.mainCar.DirectionMove(0, -1);
         }
 
         public  void OnClose(object sender, EventArgs e)
@@ -254,35 +282,43 @@ namespace Game
             window.Close();
         }
 
-        private void OnHeartCollision(List<Entity> itemList, Entity item)
+        private bool OnHeartCollision()
         {
             if (lives < 3)
             {
                 lives++;
-                itemList.Remove(item);
+                return true;
             }
+            return false;
         }
 
-        private void OnCoinCollision(List<Entity> itemList, Entity item)
+        private bool OnCoinCollision()
         {
             score++;
-            itemList.Remove(item);
+            speed += score * 0.0001f;
+            return true;
         }
 
-        private void OnBeerCollision(List<Entity> itemList, Entity item)
+        private bool OnBeerCollision()
         {
+            alcoLevel += 0.4f + score / 1000f;
+            alcoTime.Start();
+            alcoTimeToStep.Start();
+            alcoTimeToStep.ClearTime();
             
+            return true;
         }
 
-        private void OnCarCollision(List<Entity> itemList, Entity item)
+        private bool OnCarCollision()
         {
             //LoseLive();
-            itemList.Remove(item);
+            return true;
         }
 
-        private void OnMapCollision()
+        private bool OnMapCollision()
         {
             LoseLive();
+            return false;
         }
 
         private void LoseLive()
