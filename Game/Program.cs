@@ -13,6 +13,7 @@ namespace Game
 {
     public enum DIRECTION { UP, DOWN, RIGHT, LEFT, COUNT };
     public enum TYPE { HEART, COIN, BEER, CAR, COUNT };
+    public enum STATE { OPENING, OPEN, CLOSING, CLOSED };
 
     static class Program
     {

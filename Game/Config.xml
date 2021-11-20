@@ -14,7 +14,7 @@
       <cars>
         <car id="0"  name="Car"        texture_rect="0 0 90 168"      damage_rect="0 0 76 168"  acceleration="2000 400" deceleration="100 100" max_velocity="1000 1000"/>
         <car id="1"  name="Car"        texture_rect="0 202 92 182"    damage_rect="0 0 75 182"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="2"  name="Car"        texture_rect="3 414 84 174"    damage_rect="0 0 74 174"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
+        <car id="2"  name="Car"        texture_rect="3 414 84 174"    damage_rect="0 0 74 174"  acceleration="1000 500" deceleration="300 300" max_velocity="1500 1000"/>
         <car id="3"  name="Car"        texture_rect="124 420 88 166"  damage_rect="0 0 74 166"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
         <car id="4"  name="Car"        texture_rect="692 0 86 168"    damage_rect="0 0 76 168"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
         <car id="5"  name="Taxi"       texture_rect="142 0 82 168"    damage_rect="0 0 70 168"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>

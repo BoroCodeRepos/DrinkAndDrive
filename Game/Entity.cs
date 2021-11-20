@@ -10,16 +10,18 @@ using SFML.System;
 
 namespace Game
 {
+    using DIR = DIRECTION;
+
     class Entity
     {
         public TYPE type;                       // typ elementu
-        public DIRECTION dir;                   // kierunek ruchu
+        public DIR dir;                         // kierunek ruchu
         public Sprite sprite;                   // element wyświetlany na ekranie
         public RectangleShape damageBox;        // model uszkodzeń
-        
         public MovementComponent movement;      // zapis aktualnych wartości określających ruch
+        public float primaryPosX;               // pozycja inicjalizacyjna
 
-        public Entity(Texture texture, IntRect textureRect, IntRect damageRect, TYPE type, DIRECTION dir = DIRECTION.UP)
+        public Entity(Texture texture, IntRect textureRect, IntRect damageRect, TYPE type, DIR dir = DIR.UP)
         {
             this.type = type;
             this.dir = dir;
@@ -28,12 +30,6 @@ namespace Game
                 Texture = texture,
                 TextureRect = textureRect,
                 Origin = new Vector2f((float)(textureRect.Width) / 2f, 0f)
-            };
-
-            IntRect offset = new IntRect
-            {
-                Left = textureRect.Left - damageRect.Left,
-                Top = textureRect.Top - damageRect.Top
             };
 
             damageBox = new RectangleShape()
@@ -52,7 +48,7 @@ namespace Game
             SetDirection();
         }
 
-        public Entity(int carNr, List<Entity> carCollection, bool createMovementComponent = true, DIRECTION dir = DIRECTION.UP)
+        public Entity(int carNr, List<Entity> carCollection, bool createMovementComponent = true, DIR dir = DIR.UP)
         {
             try
             {
@@ -61,7 +57,7 @@ namespace Game
                 damageBox = new RectangleShape(car.damageBox);
                 type = TYPE.CAR;
                 this.dir = dir;
-                SetRotation((dir == DIRECTION.DOWN) ? 9000f : 0f);
+                SetRotation((dir == DIR.DOWN) ? 9000f : 0f);
 
                 if (car.movement != null && createMovementComponent)
                     movement = new MovementComponent(car.movement);
@@ -81,7 +77,7 @@ namespace Game
             );
         }
 
-        public void UpdateMove(float dt, float speed)
+        public void UpdateMove(float dt, float speed, float offset)
         {
             if (movement != null)
             {
@@ -92,8 +88,11 @@ namespace Game
             }
             else
             {
-                speed = ((dir == DIRECTION.UP) ? 0.6f : 1.5f) * Math.Abs(speed) * dt;
-                Move(0f, speed);
+                Vector2f position = damageBox.Position;
+                speed = ((dir == DIR.UP) ? 0.6f : 1.5f) * Math.Abs(speed) * dt;
+                position.X = primaryPosX + offset;
+                position.Y += speed;
+                SetPosition(position.X, position.Y);
             }
         }
 

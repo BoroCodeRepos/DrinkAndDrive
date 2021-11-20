@@ -96,6 +96,7 @@
     <Compile Include="EntitiesManager.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="MovementComponent.cs" />
+    <Compile Include="Shader.cs" />
     <Compile Include="TimeCounter.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Program.cs" />

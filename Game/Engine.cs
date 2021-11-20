@@ -20,6 +20,7 @@ namespace Game
         //------------------------------------------------------------------------------------
         Resources resources;        // zasoby gry
         EntitiesManager eManager;   // manager elementów gry
+        Shader shader;              // shader object
         bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
         bool pause;                 // true <= pauza
 
@@ -34,11 +35,11 @@ namespace Game
         //                          Variables of game result
         //------------------------------------------------------------------------------------
         TimeCounter gameTime;       // czas gry
-        int level;                // aktualny poziom gry
-        int score;                // aktualny wynik gracza
+        int lives;                  // ilość żyć
+        int level;                  // aktualny poziom gry
+        int score;                  // aktualny wynik gracza
         float speed;                // szybkość przesuwania się drogi po ekranie
-        int  lives;                // ilość żyć
-
+        
         //------------------------------------------------------------------------------------
         //                          Constructor
         //------------------------------------------------------------------------------------
@@ -70,9 +71,11 @@ namespace Game
             speed = .1f;
             lives = 3;
 
+            shader = new Shader(resources.options.winWidth, resources.options.winHeight, true);
+            shader.SetUp(255, 1, .011f);
+            shader.SetState(STATE.CLOSING);
+
             gameTime = new TimeCounter();
-            alcoTime = new TimeCounter();
-            alcoTimeToStep = new TimeCounter(1000d);
         }
 
         private void InitAlcoVars()
@@ -82,7 +85,8 @@ namespace Game
             //alcoLevelStep = float.Parse(
             //    soberingUpElement.Attributes["step_alkohol_level"].Value
             //);
-            alcoTimeToStep = new TimeCounter();
+            alcoTime = new TimeCounter();
+            alcoTimeToStep = new TimeCounter(1000d);
             alcoTimeToStep.SetEventTime(
                 float.Parse(soberingUpElement.Attributes["step_time"].Value)
             );
@@ -117,7 +121,10 @@ namespace Game
             UpdateBackground(dt);
 
             // aktualizacja elementów gry
-            eManager.Update(dt, speed);
+            eManager.UpdateAnimation(dt);
+            if (shader.GetState() == STATE.CLOSED)
+                eManager.Update(dt, speed, CalcOffset());
+            shader.Update(dt);
 
             // aktualizacja liczników
             UpdateAlcoTime(dt);
@@ -125,12 +132,9 @@ namespace Game
 
         private void UpdateBackground(float dt)
         {
-            double time = alcoTime.GetCurrentTime() / 1000d;
-            float amp = 10 * (alcoLevel + level / 1000f) % resources.background.Origin.X;
-            float sin_func = (float)Math.Sin((alcoLevel * time) % (2d * Math.PI));
             Vector2f curr_pos = resources.background.Position;
             resources.background.Position = new Vector2f(
-                amp * sin_func,
+                CalcOffset(),
                 (curr_pos.Y + dt * speed) % resources.background.Texture.Size.Y
             );
             resources.dmgBoxL.Position = new Vector2f(
@@ -162,7 +166,6 @@ namespace Game
                     alcoTimeToStep.ClearTime();
                 }
             }
-            Console.WriteLine(alcoLevel);
         }
 
         //------------------------------------------------------------------------------------
@@ -179,6 +182,7 @@ namespace Game
 
             // wyświetlenie interfejsu
             RenderInterface(ref window);
+            RenderShader(ref window);
         }
 
         private void RenderBackground(ref RenderWindow window)
@@ -232,6 +236,11 @@ namespace Game
             }
         }
 
+        private void RenderShader(ref RenderWindow window)
+        {
+            window.Draw(shader.GetShape());
+        }
+
         //------------------------------------------------------------------------------------
         //                          Supporting methods
         //------------------------------------------------------------------------------------
@@ -239,14 +248,28 @@ namespace Game
         {
             RenderWindow window = (RenderWindow)sender;
 
-            if (key.Code == Keyboard.Key.Escape)
-                window.Close();                
+            //if (key.Code == Keyboard.Key.Escape)
+                //window.Close();                
 
             if (key.Code == Keyboard.Key.B)
                 showDamageBoxes = (!showDamageBoxes);
 
             if (key.Code == Keyboard.Key.P || key.Code == Keyboard.Key.Escape)
-                pause = (!pause);
+                if (true)
+                {
+                    pause = (!pause);
+                    shader.SetUp(210, 10, .002f);
+                    if (pause)
+                    {
+                        shader.SetState(STATE.OPENING);
+                        gameTime.Stop();
+                    }
+                    else
+                    {
+                        shader.SetState(STATE.CLOSING);
+                        gameTime.Start();
+                    }
+                }
 
             if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
                 eManager.mainCar.DirectionMove(-1, 0);
@@ -280,6 +303,14 @@ namespace Game
         {
             RenderWindow window = (RenderWindow)sender;
             window.Close();
+        }
+
+        public float CalcOffset()
+        {
+            double time = alcoTime.GetCurrentTime() / 1000d;
+            float amp = 10 * (alcoLevel + level / 1000f) % resources.background.Origin.X;
+            float sin_func = (float)Math.Sin((alcoLevel * time) % (2d * Math.PI));
+            return amp * sin_func;
         }
 
         private bool OnHeartCollision()

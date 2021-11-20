@@ -87,20 +87,20 @@ namespace Game
         //------------------------------------------------------------------------------------
         //                          Update game methods
         //------------------------------------------------------------------------------------
-        public  void Update(float dt, float speed)
+        public  void Update(float dt, float speed, float offset)
         {
-            UpdateTimers(dt);
+            UpdateTimers(dt);                                   // aktualizacja timerów
             TryCreateEntities();                                // próba utworzenia nowych elementów gry
             DeleteEntities();                                   // usunięcie elementów poza mapą
-            UpdateAnimation(dt);                                // aktualizacja animacji
-            mainCar.UpdateMove(dt, speed);                      // aktualizacja ruchu głównego pojazdu
-            UpdateEntitiesMove(dt, speed);                      // aktualizacja ruchu elementów gry
+            //UpdateAnimation(dt);                                // aktualizacja animacji
+            mainCar.UpdateMove(dt, speed, 0f);                  // aktualizacja ruchu głównego pojazdu
+            UpdateEntitiesMove(dt, speed, offset);              // aktualizacja ruchu elementów gry
             UpdateMapBounds();                                  // aktualizacja położenia na mapie głownego samochodu
             UpdateMapCollision();                               // sprawdzenie wyjazdu gracza poza jezdnię
             UpdateCollisions();                                 // aktualizacja kolizji obiektów
         }
 
-        private void UpdateAnimation(float dt)
+        public  void UpdateAnimation(float dt)
         {
             List<TYPE> types = new List<TYPE>
             {
@@ -130,12 +130,36 @@ namespace Game
             }
         }
 
-        private void UpdateEntitiesMove(float dt, float speed)
+        private void UpdateEntitiesMove(float dt, float speed, float offset)
         {
             foreach (var item in entities)
             {
-                item.UpdateMove(dt, speed);
+                item.UpdateMove(dt, speed, offset);
             }
+        }
+
+        private void UpdateMapBounds()
+        {
+            Vector2f pos = mainCar.damageBox.Position;
+            if (pos.Y < 0f)
+            {
+                mainCar.SetPosition(pos.X, 0f);
+                mainCar.movement.velocity.Y = 0f;
+            }
+            pos.Y += mainCar.damageBox.Size.Y;
+            if (pos.Y > resources.options.winHeight)
+            {
+                pos.Y = resources.options.winHeight - mainCar.damageBox.Size.Y;
+                mainCar.SetPosition(pos.X, pos.Y);
+                mainCar.movement.velocity.Y = 0f;
+            }
+        }
+
+        private void UpdateTimers(float dt)
+        {
+            timers[TYPE.COIN].Update(dt);
+            timers[TYPE.BEER].Update(dt);
+            timers[TYPE.CAR].Update(dt);
         }
 
         private void UpdateCollisions()
@@ -174,30 +198,6 @@ namespace Game
             FloatRect bgRectR = resources.dmgBoxR.GetGlobalBounds();
             if (carRect.Intersects(bgRectL) || carRect.Intersects(bgRectR))
                 onMapCollision();
-        }
-
-        private void UpdateMapBounds()
-        {
-            Vector2f pos = mainCar.damageBox.Position;
-            if (pos.Y < 0f)
-            {
-                mainCar.SetPosition(pos.X, 0f);
-                mainCar.movement.velocity.Y = 0f;
-            }
-            pos.Y += mainCar.damageBox.Size.Y;
-            if (pos.Y > resources.options.winHeight)
-            {
-                pos.Y = resources.options.winHeight - mainCar.damageBox.Size.Y;
-                mainCar.SetPosition(pos.X, pos.Y);
-                mainCar.movement.velocity.Y = 0f;
-            }
-        }
-
-        private void UpdateTimers(float dt)
-        {
-            timers[TYPE.COIN].Update(dt);
-            timers[TYPE.BEER].Update(dt);
-            timers[TYPE.CAR].Update(dt);
         }
 
         //------------------------------------------------------------------------------------
@@ -246,15 +246,14 @@ namespace Game
 
         private void TryCreateEntities()
         {
-            Vector2f offset = resources.background.Position;
-            offset.X -= resources.background.Origin.X;
-            offset.Y -= resources.background.Origin.Y;
+            float offset = resources.background.Position.X;
+            offset -= resources.background.Origin.X;
             // utworzenie obiektów pasów
             FloatRect[] lanes = new FloatRect[4];
-            lanes[0] = new FloatRect(319f + offset.X, -1f, 138f, 10f);
-            lanes[1] = new FloatRect(466f + offset.X, -1f, 153f, 10f);
-            lanes[2] = new FloatRect(627f + offset.X, -1f, 158f, 10f);
-            lanes[3] = new FloatRect(792f + offset.X, -1f, 144f, 10f);
+            lanes[0] = new FloatRect(319f + offset, -1f, 138f, 10f);
+            lanes[1] = new FloatRect(466f + offset, -1f, 153f, 10f);
+            lanes[2] = new FloatRect(627f + offset, -1f, 158f, 10f);
+            lanes[3] = new FloatRect(792f + offset, -1f, 144f, 10f);
 
             for (int i = 0; i < lanes.Length; i++)
                 if (BusyCheck(lanes[i]))
@@ -263,6 +262,7 @@ namespace Game
                     double percent = rand.NextDouble();
                     TYPE type = (TYPE)rand.Next((int)TYPE.COUNT);
                     DIRECTION dir = (i < 2) ? DIRECTION.DOWN : DIRECTION.UP;
+                    lanes[i].Left -= (offset + resources.background.Origin.X);
                     Vector2f position = new Vector2f(lanes[i].Left + lanes[i].Width / 2f, 0f);
                     CheckPercentageChances(type, dir, percent, position);
                 }
@@ -324,6 +324,7 @@ namespace Game
                 Random rnd = new Random();
                 Entity car = new Entity(rnd.Next(14), resources.carCollection, false, dir);
                 position.Y -= (dir == DIRECTION.UP) ? car.damageBox.Size.Y : 0f;
+                car.primaryPosX = position.X;
                 car.SetPosition(position.X, position.Y);
                 entities.Add(car);
             }
@@ -342,6 +343,7 @@ namespace Game
                     type,
                     dir );
                 position.Y -= (dir == DIRECTION.UP) ? entity.damageBox.Size.Y : 0f;
+                entity.primaryPosX = position.X;
                 entity.SetPosition(position.X, position.Y);
                 entities.Add(entity);
             }
