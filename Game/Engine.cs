@@ -26,6 +26,7 @@ namespace Game
         bool gameOver;              // koniec gry <= wyświetlenie wyników
         bool initialization;        // inicjalizacja gry
         float iniTime;              // czas inicjalizacji
+        List<Component> GUI;        // lista przycisków
 
         //------------------------------------------------------------------------------------
         //                          Variables of alcohol level
@@ -58,6 +59,7 @@ namespace Game
                 InitAlcoVars();
                 InitEntitesManager();
                 InitPlayerCar();
+                InitGUI();
             }
             catch(Exception exception)
             {
@@ -77,9 +79,8 @@ namespace Game
             speed = .1f;
             lives = 3;
 
-            shader = new Shader(resources.options.winWidth, resources.options.winHeight, true);
-            shader.SetUp(255, 1, .011f);
-            shader.SetState(STATE.CLOSING);
+            shader = new Shader(resources.options.winWidth, resources.options.winHeight, 210, true);
+            shader.SetUp(210, 1, .005f);
 
             gameTime = new TimeCounter();
         }
@@ -116,17 +117,51 @@ namespace Game
             eManager.SetPlayerCarById(2);
         }
 
+        private void InitGUI()
+        {
+            GUI = new List<Component>();
+            
+            Color idle = new Color(0xDCDCDC);
+            Color hover = new Color(0xF5FFFA);
+            Color active = new Color(Color.White);
+            Vector2f size = new Vector2f(1000f, 100f);
+            float posX = resources.options.winWidth / 2f;
+
+            Button ContinueBtn = new Button(size, new Vector2f(posX, 220f), "continue", resources.font, idle, hover, active);
+            Button StartAgainBtn = new Button(size, new Vector2f(posX, 340f), "start again", resources.font, idle, hover, active);
+            Button ResultsBtn = new Button(size, new Vector2f(posX, 460f), "other players results", resources.font, idle, hover, active);
+            Button ExitBtn = new Button(size, new Vector2f(posX, 580f), "exit game", resources.font, idle, hover, active);
+
+            ContinueBtn.onClick = new Component.Function(OnContinue);
+            StartAgainBtn.onClick = new Component.Function(OnStartAgain);
+            ExitBtn.onClick = new Component.Function(OnExit);
+
+            GUI.Add(ContinueBtn);
+            GUI.Add(StartAgainBtn);
+            GUI.Add(ResultsBtn);
+            GUI.Add(ExitBtn);
+        }
+
         //------------------------------------------------------------------------------------
         //                          Update game methods
         //------------------------------------------------------------------------------------
-        public  void Update(float dt)
+        public  void Update(float dt, ref RenderWindow window)
         {
             // aktualizacja zasobów
             UpdateInitialization(dt);
-            UpdateBackground(dt);
-            gameTime.Update(dt);
-            alcoTime.Update(dt);
 
+            if (!pause)
+            {
+                UpdateBackground(dt);
+                gameTime.Update(dt);
+                alcoTime.Update(dt);
+            }
+            else
+            {
+                foreach (var component in GUI)
+                    component.Update(ref window);
+            }
+            
             // aktualizacja elementów gry
             eManager.UpdateAnimation(dt);
             if (!initialization && !pause && !gameOver)
@@ -142,6 +177,9 @@ namespace Game
             if (initialization)
             {
                 iniTime += dt / 1000f;
+
+                if (iniTime > 2f)
+                    shader.SetState(STATE.CLOSING);
 
                 if (iniTime >= 4f)
                 {
@@ -270,7 +308,6 @@ namespace Game
             {
                 int nr = 3 - (int)iniTime;
                 IntRect origin = resources.numbers[nr].TextureRect;
-                Console.WriteLine("{0}", origin);
                 Sprite number = new Sprite(resources.numbers[nr])
                 {
                     Origin = new Vector2f(origin.Width / 2f, origin.Height / 2f),
@@ -285,7 +322,15 @@ namespace Game
         {
             if (pause)
             {
+                foreach (var component in GUI)
+                    component.Render(ref window);
 
+                double time = gameTime.GetCurrentTime();
+                if (time > 0d)
+                {
+                    Text text = new Text(string.Format(" Game Time: {0:0.00} sec", time), resources.font, 25);
+                    window.Draw(text);
+                }
             }
         }
 
@@ -300,20 +345,14 @@ namespace Game
                 showDamageBoxes = (!showDamageBoxes);
 
             if (key.Code == Keyboard.Key.P || key.Code == Keyboard.Key.Escape)
-                if (true)
+                if (!initialization)
                 {
                     pause = (!pause);
                     shader.SetUp(210, 10, .002f);
                     if (pause)
-                    {
                         shader.SetState(STATE.OPENING);
-                        gameTime.Stop();
-                    }
                     else
-                    {
                         shader.SetState(STATE.CLOSING);
-                        gameTime.Start();
-                    }
                 }
 
             if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
@@ -348,6 +387,30 @@ namespace Game
         {
             RenderWindow window = (RenderWindow)sender;
             window.Close();
+        }
+
+        public void OnContinue(Component c)
+        {
+            pause = (!pause);
+            shader.SetUp(210, 10, .002f);
+            shader.SetState(STATE.CLOSING);
+        }
+
+        public void OnExit(Component c)
+        {
+            Program.window.Close();
+        }
+
+        public void OnStartAgain(Component c)
+        {
+            initialization = true;
+            iniTime = 0f;
+            eManager.ClearAll();
+            eManager.SetPlayerCarById(0);
+            shader.SetUp(210, 1, .005f);
+            pause = false;
+            gameTime.ClearTime();
+            gameTime.Stop();
         }
 
         public float CalcOffset()

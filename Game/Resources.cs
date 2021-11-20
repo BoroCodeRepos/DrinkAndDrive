@@ -40,6 +40,7 @@ namespace Game
         public Options options;             // ustawienia okna
         public Textures textures;           // utworzone tekstury monet, serc, butelek i samochodów
         public Numbers numbers;             // słownik liczb
+        public Font font;
 
         public Resources()
         {
@@ -53,6 +54,7 @@ namespace Game
                 InitTextures();
                 InitCarsCollection();
                 InitNumbers();
+                InitFont();
             }
             catch (Exception exception)
             {
@@ -176,6 +178,11 @@ namespace Game
             numbers = new Numbers();
             for (int i = 0; i < 10; i++)
                 numbers.Add(i, new Sprite(Tnumbers, new IntRect(i*64, 0, 64, 82)));
+        }
+
+        private void InitFont()
+        {
+            font = new Font("..\\..\\..\\resource\\fonts\\MPLUSCodeLatin-Bold.ttf");
         }
 
         private IntRect ParseAttributeRect(XmlAttribute attribute)

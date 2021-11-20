@@ -17,11 +17,11 @@ namespace Game
 
     static class Program
     {
-        static private float deltaTime = 0f;
-        static private RenderWindow window;
+        static public RenderWindow window;
+        static public Resources resources;
         static private Engine engine;
-        static public  Resources resources;
         static private Stopwatch stopwatch;
+        static private float deltaTime = 0f;
 
         static private void InitDeltaTime()
         {
@@ -81,7 +81,7 @@ namespace Game
 
                 CalcElapsedTime();
 
-                engine.Update(deltaTime);
+                engine.Update(deltaTime, ref window);
                 engine.Render(ref window);
 
                 window.Display();

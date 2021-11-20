@@ -21,16 +21,16 @@ namespace Game
         private float timeToAlphaStep;
         private float time;
 
-        public Shader(uint width, uint height, bool state = false)
+        public Shader(uint width, uint height, byte alphaTarget, bool state = false)
         {
             shader = new RectangleShape(new Vector2f(width, height));
-            this.timeToAlphaStep = timeToAlphaStep;
-            this.alphaStep = alphaStep;
+            timeToAlphaStep = 1f;
+            alphaStep = 1;
             time = 0f;
             if (state)
             {
                 this.state = STATE.OPEN;
-                alpha = byte.MaxValue;
+                alpha = alphaTarget;
             }
             else
             {

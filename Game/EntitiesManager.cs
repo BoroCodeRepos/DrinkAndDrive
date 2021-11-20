@@ -92,7 +92,6 @@ namespace Game
             UpdateTimers(dt);                                   // aktualizacja timerów
             TryCreateEntities();                                // próba utworzenia nowych elementów gry
             DeleteEntities();                                   // usunięcie elementów poza mapą
-            //UpdateAnimation(dt);                                // aktualizacja animacji
             mainCar.UpdateMove(dt, speed, 0f);                  // aktualizacja ruchu głównego pojazdu
             UpdateEntitiesMove(dt, speed, offset);              // aktualizacja ruchu elementów gry
             UpdateMapBounds();                                  // aktualizacja położenia na mapie głownego samochodu
