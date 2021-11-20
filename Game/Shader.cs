@@ -40,11 +40,6 @@ namespace Game
             shader.FillColor = new Color(0, 0, 0, alpha);
         }
 
-        public STATE GetState()
-        {
-            return state;
-        }
-
         public void SetState(STATE state)
         {
             this.state = state;
@@ -55,6 +50,16 @@ namespace Game
             this.alphaTarget = alphaTarget;
             this.alphaStep = alphaStep;
             this.timeToAlphaStep = timeToAlphaStep;
+        }
+
+        public STATE GetState()
+        {
+            return state;
+        }
+
+        public Shape GetShape()
+        {
+            return shader;
         }
 
         public void Update(float dt)
@@ -102,9 +107,5 @@ namespace Game
             }
         }
 
-        public Shape GetShape()
-        {
-            return shader;
-        }
     }
 }

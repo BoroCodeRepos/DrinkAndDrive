@@ -47,7 +47,7 @@ namespace Game
         public void Update(float dt)
         {
             if (run)
-                currentTime += (double)dt;
+                currentTime += (double)(dt / 1000f);
 
             if (eventTime > 0d && currentTime >= eventTime)
             {

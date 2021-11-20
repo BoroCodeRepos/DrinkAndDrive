@@ -23,6 +23,9 @@ namespace Game
         Shader shader;              // shader object
         bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
         bool pause;                 // true <= pauza
+        bool gameOver;              // koniec gry <= wyświetlenie wyników
+        bool initialization;        // inicjalizacja gry
+        float iniTime;              // czas inicjalizacji
 
         //------------------------------------------------------------------------------------
         //                          Variables of alcohol level
@@ -45,6 +48,9 @@ namespace Game
         //------------------------------------------------------------------------------------
         public Engine(Resources resources)
         {
+            initialization = true;
+            gameOver = false;
+            iniTime = -0.7f;
             this.resources = resources;
             try
             {
@@ -86,7 +92,7 @@ namespace Game
             //    soberingUpElement.Attributes["step_alkohol_level"].Value
             //);
             alcoTime = new TimeCounter();
-            alcoTimeToStep = new TimeCounter(1000d);
+            alcoTimeToStep = new TimeCounter(1d);
             alcoTimeToStep.SetEventTime(
                 float.Parse(soberingUpElement.Attributes["step_time"].Value)
             );
@@ -116,18 +122,33 @@ namespace Game
         public  void Update(float dt)
         {
             // aktualizacja zasobów
+            UpdateInitialization(dt);
+            UpdateBackground(dt);
             gameTime.Update(dt);
             alcoTime.Update(dt);
-            UpdateBackground(dt);
 
             // aktualizacja elementów gry
             eManager.UpdateAnimation(dt);
-            if (shader.GetState() == STATE.CLOSED)
+            if (!initialization && !pause && !gameOver)
                 eManager.Update(dt, speed, CalcOffset());
             shader.Update(dt);
 
             // aktualizacja liczników
             UpdateAlcoTime(dt);
+        }
+
+        private void UpdateInitialization(float dt)
+        {
+            if (initialization)
+            {
+                iniTime += dt / 1000f;
+
+                if (iniTime >= 4f)
+                {
+                    initialization = false;
+                    gameTime.Start();
+                }
+            }
         }
 
         private void UpdateBackground(float dt)
@@ -183,6 +204,8 @@ namespace Game
             // wyświetlenie interfejsu
             RenderInterface(ref window);
             RenderShader(ref window);
+            RenderInitCounting(ref window);
+            RenderPauseMenu(ref window);
         }
 
         private void RenderBackground(ref RenderWindow window)
@@ -241,15 +264,37 @@ namespace Game
             window.Draw(shader.GetShape());
         }
 
+        private void RenderInitCounting(ref RenderWindow window)
+        {
+            if (initialization)
+            {
+                int nr = 3 - (int)iniTime;
+                IntRect origin = resources.numbers[nr].TextureRect;
+                Console.WriteLine("{0}", origin);
+                Sprite number = new Sprite(resources.numbers[nr])
+                {
+                    Origin = new Vector2f(origin.Width / 2f, origin.Height / 2f),
+                    Position = new Vector2f(resources.options.winWidth / 2f, resources.options.winHeight / 2f),
+                    Scale = new Vector2f(4f, 4f)
+                };
+                window.Draw(number);
+            }
+        }
+
+        private void RenderPauseMenu(ref RenderWindow window)
+        {
+            if (pause)
+            {
+
+            }
+        }
+
         //------------------------------------------------------------------------------------
         //                          Supporting methods
         //------------------------------------------------------------------------------------
         public  void OnKeyPressed(object sender, KeyEventArgs key)
         {
             RenderWindow window = (RenderWindow)sender;
-
-            //if (key.Code == Keyboard.Key.Escape)
-                //window.Close();                
 
             if (key.Code == Keyboard.Key.B)
                 showDamageBoxes = (!showDamageBoxes);
