@@ -19,6 +19,13 @@ namespace Game
             public string name;
             public int score;
             public float time;
+
+            public Player(string name, int score, float time)
+            {
+                this.name = name;
+                this.score = score;
+                this.time = time;
+            }
         }
 
         Resources resources;
@@ -38,26 +45,45 @@ namespace Game
             InitMainMenu();
         }
 
+        public void Update(ref RenderWindow window)
+        {
+            try
+            {
+                foreach (var component in components)
+                    component.Update(ref window);
+            }
+            catch(Exception exc) { }
+        }
+
+        public void Render(ref RenderWindow window)
+        {
+            foreach (var component in components)
+                component.Render(ref window);
+        }
+
         private void InitMainMenu()
         {
             components.Clear();
             Vector2f size = new Vector2f(1000f, 100f);
             float posX = resources.options.winWidth / 2f;
 
-            GUI.Button ContinueBtn = new GUI.Button(size, new Vector2f(posX, 150f), 78, "continue", resources.font, idle, hover, active);
-            GUI.Button StartAgainBtn = new GUI.Button(size, new Vector2f(posX, 270f), 78, "start again", resources.font, idle, hover, active);
-            GUI.Button ResultsBtn = new GUI.Button(size, new Vector2f(posX, 390f), 78, "other players results", resources.font, idle, hover, active);
-            GUI.Button ControlBnt = new GUI.Button(size, new Vector2f(posX, 510f), 78, "show control", resources.font, idle, hover, active);
-            GUI.Button ExitBtn = new GUI.Button(size, new Vector2f(posX, 630f), 78, "exit game", resources.font, idle, hover, active);
+            GUI.Button ContinueBtn   = new GUI.Button(size, new Vector2f(posX, 100f), 78, "continue", resources.font, idle, hover, active);
+            GUI.Button StartAgainBtn = new GUI.Button(size, new Vector2f(posX, 206f), 78, "start again", resources.font, idle, hover, active);
+            GUI.Button SelectCarBtn  = new GUI.Button(size, new Vector2f(posX, 312f), 78, "select car", resources.font, idle, hover, active);
+            GUI.Button ResultsBtn    = new GUI.Button(size, new Vector2f(posX, 418f), 78, "other players results", resources.font, idle, hover, active);
+            GUI.Button ControlBnt    = new GUI.Button(size, new Vector2f(posX, 524f), 78, "show control", resources.font, idle, hover, active);
+            GUI.Button ExitBtn       = new GUI.Button(size, new Vector2f(posX, 630f), 78, "exit game", resources.font, idle, hover, active);
 
-            ContinueBtn.onClick = new GUI.Component.Function(engine.OnContinue);
+            ContinueBtn.onClick   = new GUI.Component.Function(engine.OnContinue);
             StartAgainBtn.onClick = new GUI.Component.Function(engine.OnStartAgain);
-            ResultsBtn.onClick = new GUI.Component.Function(InitResults);
-            ControlBnt.onClick = new GUI.Component.Function(InitControl);
-            ExitBtn.onClick = new GUI.Component.Function(engine.OnExit);
+            SelectCarBtn.onClick  = new GUI.Component.Function(InitSelectCars);
+            ResultsBtn.onClick    = new GUI.Component.Function(InitPlayersResults);
+            ControlBnt.onClick    = new GUI.Component.Function(InitControl);
+            ExitBtn.onClick       = new GUI.Component.Function(engine.OnExit);
 
             components.Add(ContinueBtn);
             components.Add(StartAgainBtn);
+            components.Add(SelectCarBtn);
             components.Add(ResultsBtn);
             components.Add(ControlBnt);
             components.Add(ExitBtn);
@@ -73,8 +99,8 @@ namespace Game
                 " > / d - move right \n" +
                 " P / Esc - open / close menu \n" +
                 " B - show / hide hitboxes";
-            GUI.Button ctrl = new GUI.Button(new Vector2f(1000f, 550f), new Vector2f(512f, 384f), 60, control, resources.font, hover, hover, hover);
-            GUI.Button back = new GUI.Button(new Vector2f(200f, 80f), new Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
+            GUI.Button ctrl = new GUI.Button(new Vector2f(1000f, 550f), new SFML.System.Vector2f(512f, 384f), 60, control, resources.font, hover, hover, hover);
+            GUI.Button back = new GUI.Button(new Vector2f(200f, 80f), new SFML.System.Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
             {
                 onClick = new GUI.Component.Function(InitMainMenu)
             };
@@ -83,92 +109,125 @@ namespace Game
             components.Add(back);
         }
 
-        private void InitResults()
+        private void InitPlayersResults()
         {
-            ShowResults(1);
+            ShowPlayersResults(1);
         }
 
-        private void ShowResults(int page)
+        private void InitSelectCars()
+        {
+            components.Clear();
+
+            List<Vector2f> shapeSizes = new List<Vector2f>
+            {
+                new Vector2f(130f, 200f), new Vector2f(130f, 200f),
+                new Vector2f(130f, 200f), new Vector2f(130f, 200f),
+                new Vector2f(130f, 200f), new Vector2f(130f, 200f),
+                new Vector2f(130f, 200f), new Vector2f(130f, 230f),
+                new Vector2f(115f, 300f), new Vector2f(120f, 250f),
+                new Vector2f(140f, 380f), new Vector2f(140f, 350f),
+                new Vector2f(140f, 390f), new Vector2f(130f, 370f),
+            };
+
+            List<Vector2f> textureSize = new List<Vector2f>
+            {
+                new Vector2f(100f, 190f), new Vector2f(100f, 190f),
+                new Vector2f(100f, 190f), new Vector2f(100f, 190f),
+                new Vector2f(100f, 190f), new Vector2f(100f, 190f),
+                new Vector2f(100f, 190f), new Vector2f(100f, 220f),
+                new Vector2f(105f, 290f), new Vector2f(110f, 240f),
+                new Vector2f(130f, 370f), new Vector2f(130f, 340f),
+                new Vector2f(130f, 380f), new Vector2f(120f, 360f),
+            };
+
+            List<Vector2f> pos = new List<Vector2f>
+            {
+                new Vector2f(80f, 150f), new Vector2f(253f, 150f),
+                new Vector2f(426f, 150f),new Vector2f(599f, 150f),
+                new Vector2f(772f, 150f),new Vector2f(945f, 150f),
+                new Vector2f(80f, 375f), new Vector2f(80f, 620f),
+                new Vector2f(339f, 702f),new Vector2f(253f, 400f),
+                new Vector2f(772f, 465f),new Vector2f(426f, 448f),
+                new Vector2f(945f, 475f),new Vector2f(599f, 465f),
+            };
+
+            for (int id = 0; id < 14; id++)
+            {
+                int carID = id;
+                float rotation = (id == 8) ? 90f : 0f;
+                components.Add(new GUI.Texture(id, resources.carCollection, shapeSizes[id], textureSize[id], pos[id], new Color(Color.Transparent), new Color(Color.Green), new Color(Color.Blue), rotation)
+                    {
+                        onClick = new GUI.Component.Function(delegate() { InitMainMenu(); engine.OnSelectCar(carID); })
+                    }
+                );
+            }
+
+            components.Add(new GUI.Button(new Vector2f(200f, 80f), new Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
+                {
+                    onClick = new GUI.Component.Function(InitMainMenu)
+                }
+            );
+        }
+
+        private void ShowPlayersResults(int page)
         {
             components.Clear();
             int itemsPerPage = 6;
 
             List<Player> playerList = new List<Player>();
-            XmlNodeList players = resources.document.GetElementsByTagName("player");
+            XmlNodeList playerNodes = resources.document.GetElementsByTagName("player");
             // utworzenie wewnętrznej listy z graczami
-            foreach (XmlNode player in players)
+            foreach (XmlNode node in playerNodes)
             {
-                string name = player.Attributes["name"].Value;
-                int score = Convert.ToInt32(player.Attributes["score"].Value);
-                float time = float.Parse(player.Attributes["time"].Value);
-                playerList.Add(new Player() { name = name, score = score, time = time });
+                string name = node.Attributes["name"].Value;
+                int score = Convert.ToInt32(node.Attributes["score"].Value);
+                float time = float.Parse(node.Attributes["time"].Value);
+                playerList.Add(new Player(name, score, time));
             }
             // sortowanie listy
             playerList.Sort(
-                delegate (Player A, Player B) 
+                delegate (Player A, Player B)
                 {
                     if (A.score > B.score) return -1;
                     else if (A.score < B.score) return 1;
                     return 0;
                 }
             );
-
             // paginacja
             // obliczenie ilości stron
             int pages = (int)Math.Ceiling((float)playerList.Count / (float)itemsPerPage);
             // dodanie elementów stron do listy componentów
             for (int i = 1; i <= pages; i++)
             {
-                int p = i;
-                GUI.Button pageBtn = new GUI.Button(new Vector2f(80f, 50f), new Vector2f(200f + i * 80f, 100f), 40, $"{i}", resources.font, idle, hover, active)
+                int pagePtr = i;
+                components.Add(new GUI.Button(new Vector2f(80f, 50f), new Vector2f(200f + i * 80f, 100f), 40, $"{i}", resources.font, idle, hover, active)
                 {
-                    onClick = new GUI.Component.Function(delegate () { ShowResults(p); })
-                };
-                components.Add(pageBtn);
+                    onClick = new GUI.Component.Function(delegate () { ShowPlayersResults(pagePtr); })
+                }
+                );
             }
-            // dodanie elementów stacyjnych
-            GUI.Button idText = new GUI.Button(new Vector2f(100f, 50f), new Vector2f(60f, 150f), 40, "Id:", resources.font, hover, hover, hover);
-            GUI.Button nameText = new GUI.Button(new Vector2f(200f, 50f), new Vector2f(250f, 150f), 40, "Name:", resources.font, hover, hover, hover);
-            GUI.Button scoreText = new GUI.Button(new Vector2f(200f, 50f), new Vector2f(500f, 150f), 40, "Score:", resources.font, hover, hover, hover);
-            GUI.Button timeText = new GUI.Button(new Vector2f(400f, 50f), new Vector2f(830f, 150f), 40, "Total time [sec]:", resources.font, hover, hover, hover);
-            GUI.Button pagesText = new GUI.Button(new Vector2f(240f, 50f), new Vector2f(140f, 100f), 40, "Pages:", resources.font, hover, hover, hover);
-            GUI.Button backBtn = new GUI.Button(new Vector2f(200f, 80f), new Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
-            {
-                onClick = new GUI.Component.Function(InitMainMenu)
-            };
 
-            components.Add(idText);
-            components.Add(nameText);
-            components.Add(scoreText);
-            components.Add(timeText);
-            components.Add(pagesText);
-            components.Add(backBtn);
+            // dodanie elementów stacyjnych
+            components.Add(new GUI.Text(new Vector2f(60f, 150f), 40, "Id:", resources.font, hover));
+            components.Add(new GUI.Text(new Vector2f(250f, 150f), 40, "Name:", resources.font, hover));
+            components.Add(new GUI.Text(new Vector2f(500f, 150f), 40, "Score:", resources.font, hover));
+            components.Add(new GUI.Text(new Vector2f(830f, 150f), 40, "Total time [sec]:", resources.font, hover));
+            components.Add(new GUI.Text(new Vector2f(140f, 100f), 40, $"Pages ({page}):", resources.font, hover));
+            components.Add(new GUI.Button(new Vector2f(200f, 80f), new SFML.System.Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
+                {
+                    onClick = new GUI.Component.Function(InitMainMenu)
+                }
+            );
 
             // dodanie elementów graczy
             for (int i = 0; i < itemsPerPage; i++)
             {
                 int id = i + itemsPerPage * (page - 1);
-                components.Add(new GUI.Button(new Vector2f(200f, 50f), new Vector2f(250f, 230f + i * 80f), 40, $"{playerList[id].name}", resources.font, idle, idle, idle));
-                components.Add(new GUI.Button(new Vector2f(200f, 50f), new Vector2f(500f, 230f + i * 80f), 40, $"{playerList[id].score}", resources.font, idle, idle, idle));
-                components.Add(new GUI.Button(new Vector2f(400f, 50f), new Vector2f(830f, 230f + i * 80f), 40, $"{playerList[id].time}", resources.font, idle, idle, idle));
-                components.Add(new GUI.Button(new Vector2f(100f, 50f), new Vector2f(60f, 230f + i * 80f), 40, $"{id + 1}.", resources.font, idle, idle, idle));
+                components.Add(new GUI.Text(new Vector2f(250f, 230f + i * 80f), 40, $"{playerList[id].name}", resources.font, idle));
+                components.Add(new GUI.Text(new Vector2f(500f, 230f + i * 80f), 40, $"{playerList[id].score}", resources.font, idle));
+                components.Add(new GUI.Text(new Vector2f(830f, 230f + i * 80f), 40, $"{playerList[id].time}", resources.font, idle));
+                components.Add(new GUI.Text(new Vector2f(60f, 230f + i * 80f), 40, $"{id + 1}.", resources.font, idle));
             }
-        }
-
-        public void Update(ref RenderWindow window)
-        {
-            try
-            {
-                foreach (var component in components)
-                    component.Update(ref window);
-            }
-            catch(Exception exc) { }
-        }
-
-        public void Render(ref RenderWindow window)
-        {
-            foreach (var component in components)
-                component.Render(ref window);
         }
     }
 }

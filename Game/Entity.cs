@@ -12,7 +12,7 @@ namespace Game
 {
     using DIR = DIRECTION;
 
-    class Entity
+    public class Entity
     {
         public TYPE type;                       // typ elementu
         public DIR dir;                         // kierunek ruchu

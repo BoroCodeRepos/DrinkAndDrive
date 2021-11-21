@@ -11,7 +11,7 @@ using SFML.Window;
 
 namespace Game
 {
-    class MovementComponent
+    public class MovementComponent
     {
         public Vector2f acceleration;   // przyspieszanie
         public Vector2f deceleration;   // hamowanie

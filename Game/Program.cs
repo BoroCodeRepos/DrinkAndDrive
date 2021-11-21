@@ -19,7 +19,8 @@ namespace Game
     {
         static public RenderWindow window;
         static public Resources resources;
-        static private Engine engine;
+        static public Engine engine;
+
         static private Stopwatch stopwatch;
         static private float deltaTime = 0f;
 

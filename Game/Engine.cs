@@ -114,7 +114,8 @@ namespace Game
 
         private void InitPlayerCar()
         {
-            eManager.SetPlayerCarById(2);
+            Random rnd = new Random();
+            eManager.SetPlayerCarById(rnd.Next(5));
         }
 
         //------------------------------------------------------------------------------------
@@ -383,15 +384,26 @@ namespace Game
             alcoLevel = 0f;
             level = 1;
             score = 0;
+            speed = .1f;
             shader.SetUp(210, 1, .005f);
             eManager.ClearAll();
-            eManager.SetPlayerCarById(0);
+            InitPlayerCar();
             alcoTime.ClearTime();
             alcoTime.Stop();
             alcoTimeToStep.ClearTime();
             alcoTimeToStep.Stop();
             gameTime.ClearTime();
             gameTime.Stop();
+        }
+
+        public void OnSelectCar(int id)
+        {
+            pause = false;
+            eManager.ClearAll();
+            eManager.SetPlayerCarById(id);
+            initialization = true;
+            iniTime = 0f;
+            shader.SetUp(210, 1, .005f);
         }
 
         public float CalcOffset()
