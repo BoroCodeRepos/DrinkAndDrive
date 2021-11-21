@@ -26,7 +26,7 @@ namespace Game
         bool gameOver;              // koniec gry <= wyświetlenie wyników
         bool initialization;        // inicjalizacja gry
         float iniTime;              // czas inicjalizacji
-        List<Component> GUI;        // lista przycisków
+        Menu menu;             // menu
 
         //------------------------------------------------------------------------------------
         //                          Variables of alcohol level
@@ -59,7 +59,6 @@ namespace Game
                 InitAlcoVars();
                 InitEntitesManager();
                 InitPlayerCar();
-                InitGUI();
             }
             catch(Exception exception)
             {
@@ -83,6 +82,7 @@ namespace Game
             shader.SetUp(210, 1, .005f);
 
             gameTime = new TimeCounter();
+            menu = new Menu(this, resources);
         }
 
         private void InitAlcoVars()
@@ -117,31 +117,6 @@ namespace Game
             eManager.SetPlayerCarById(2);
         }
 
-        private void InitGUI()
-        {
-            GUI = new List<Component>();
-            
-            Color idle = new Color(0xDCDCDC);
-            Color hover = new Color(0xF5FFFA);
-            Color active = new Color(Color.White);
-            Vector2f size = new Vector2f(1000f, 100f);
-            float posX = resources.options.winWidth / 2f;
-
-            Button ContinueBtn = new Button(size, new Vector2f(posX, 220f), "continue", resources.font, idle, hover, active);
-            Button StartAgainBtn = new Button(size, new Vector2f(posX, 340f), "start again", resources.font, idle, hover, active);
-            Button ResultsBtn = new Button(size, new Vector2f(posX, 460f), "other players results", resources.font, idle, hover, active);
-            Button ExitBtn = new Button(size, new Vector2f(posX, 580f), "exit game", resources.font, idle, hover, active);
-
-            ContinueBtn.onClick = new Component.Function(OnContinue);
-            StartAgainBtn.onClick = new Component.Function(OnStartAgain);
-            ExitBtn.onClick = new Component.Function(OnExit);
-
-            GUI.Add(ContinueBtn);
-            GUI.Add(StartAgainBtn);
-            GUI.Add(ResultsBtn);
-            GUI.Add(ExitBtn);
-        }
-
         //------------------------------------------------------------------------------------
         //                          Update game methods
         //------------------------------------------------------------------------------------
@@ -158,8 +133,7 @@ namespace Game
             }
             else
             {
-                foreach (var component in GUI)
-                    component.Update(ref window);
+                menu.Update(ref window);
             }
             
             // aktualizacja elementów gry
@@ -243,7 +217,7 @@ namespace Game
             RenderInterface(ref window);
             RenderShader(ref window);
             RenderInitCounting(ref window);
-            RenderPauseMenu(ref window);
+            RenderMenu(ref window);
         }
 
         private void RenderBackground(ref RenderWindow window)
@@ -318,17 +292,17 @@ namespace Game
             }
         }
 
-        private void RenderPauseMenu(ref RenderWindow window)
+        private void RenderMenu(ref RenderWindow window)
         {
             if (pause)
             {
-                foreach (var component in GUI)
-                    component.Render(ref window);
+                menu.Render(ref window);
 
                 double time = gameTime.GetCurrentTime();
                 if (time > 0d)
                 {
-                    Text text = new Text(string.Format(" Game Time: {0:0.00} sec", time), resources.font, 25);
+                    string str = string.Format(" Game Time: {0:0.00} sec", time);
+                    Text text = new Text(str, resources.font, 25);
                     window.Draw(text);
                 }
             }
@@ -389,26 +363,33 @@ namespace Game
             window.Close();
         }
 
-        public void OnContinue(Component c)
+        public void OnContinue()
         {
             pause = (!pause);
             shader.SetUp(210, 10, .002f);
             shader.SetState(STATE.CLOSING);
         }
 
-        public void OnExit(Component c)
+        public void OnExit()
         {
             Program.window.Close();
         }
 
-        public void OnStartAgain(Component c)
+        public void OnStartAgain()
         {
             initialization = true;
+            pause = false;
             iniTime = 0f;
+            alcoLevel = 0f;
+            level = 1;
+            score = 0;
+            shader.SetUp(210, 1, .005f);
             eManager.ClearAll();
             eManager.SetPlayerCarById(0);
-            shader.SetUp(210, 1, .005f);
-            pause = false;
+            alcoTime.ClearTime();
+            alcoTime.Stop();
+            alcoTimeToStep.ClearTime();
+            alcoTimeToStep.Stop();
             gameTime.ClearTime();
             gameTime.Stop();
         }

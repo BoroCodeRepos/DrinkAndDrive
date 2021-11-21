@@ -33,7 +33,22 @@
   </game>
 
   <players>
-    <player id="Arek" score="10" time="15"/>
+    <player name="Arek" score="10" time="15"/>
+    <player name="Darek" score="101" time="40"/>
+    <player name="Jarek" score="102" time="401"/>
+    <player name="Karek" score="103" time="402"/>
+    <player name="Tomek" score="124" time="403"/>
+    <player name="Kot" score="105" time="404"/>
+    <player name="Maciej" score="106" time="405"/>
+    <player name="Nic" score="107" time="406"/>
+    <player name="Arek" score="10" time="15"/>
+    <player name="Darek" score="101" time="40"/>
+    <player name="Jarek" score="102" time="401"/>
+    <player name="Karek" score="103" time="402"/>
+    <player name="Tomek" score="124" time="403"/>
+    <player name="Kot" score="105" time="404"/>
+    <player name="Maciej" score="106" time="405"/>
+    <player name="Nic" score="107" time="406"/>
   </players>
 
 </config>
