@@ -180,8 +180,8 @@ namespace Game
 
             foreach (XmlNode keyBindings in keyBindingsList)
             {
-                int key = Convert.ToInt32(keyBindings.Attributes["value"].Value);
-                string value = keyBindings.Attributes["key"].Value;
+                int key = Convert.ToInt32(keyBindings.Attributes["key"].Value);
+                string value = keyBindings.Attributes["value"].Value;
                 keys[(Keyboard.Key)key] = value;
             }
         }

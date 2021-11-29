@@ -233,6 +233,7 @@ namespace Game
 
         public class Input : Component
         {
+            public uint maxLen;
             public Dictionary<Keyboard.Key, string> keys;
             public Dictionary<Keyboard.Key, bool> keyStates;
             public Function onEnter;
@@ -242,9 +243,11 @@ namespace Game
                 uint characterSize, 
                 Font font, 
                 Color textColor, 
-                Dictionary<Keyboard.Key, string> keys
+                Dictionary<Keyboard.Key, string> keys,
+                uint maxLen = 21
             ) : base(characterSize, null, font, textColor, new Color(Color.Transparent))
             {
+                this.maxLen = maxLen;
                 keyStates = new Dictionary<Keyboard.Key, bool>();
                 this.keys = keys;
                 foreach (var key in keys.Keys.ToList())
@@ -262,7 +265,7 @@ namespace Game
 
             public override void Update(ref RenderWindow window)
             {
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Return) && text.DisplayedString.Length != 0)
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Return))
                     onEnter?.Invoke();
 
                 var keyList = keys.Keys.ToList();
@@ -288,10 +291,10 @@ namespace Game
                                 !Keyboard.IsKeyPressed(Keyboard.Key.RShift))
                                 value = value.ToLower();
 
-                            text.DisplayedString = str + value;
+                            if (str.Length < maxLen)
+                                text.DisplayedString = str + value;
                         }
                     }                    
-
                     keyStates[key] = currKeyState;
                 }
             }

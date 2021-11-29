@@ -1,82 +1,87 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
   <window width="1024" height="768" title="DrinkAndDrive" />
-  <game total_time="15">
+  <game total_time="38">
     <animation>
       <coins frame_nr="10" max_frame_time="65" width="87" height="87" />
       <beers frame_nr="18" max_frame_time="50" width="87" height="87" />
       <hearts frame_nr="6" max_frame_time="70" width="84" height="80" />
-      <cars>
-        <car id="0" name="Car" texture_rect="0 0 90 168" damage_rect="0 0 76 168" acceleration="2000 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="1" name="Car" texture_rect="0 202 92 182" damage_rect="0 0 75 182" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="2" name="Car" texture_rect="3 414 84 174" damage_rect="0 0 74 174" acceleration="1000 500" deceleration="300 300" max_velocity="1500 1000" />
-        <car id="3" name="Car" texture_rect="124 420 88 166" damage_rect="0 0 74 166" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="4" name="Car" texture_rect="692 0 86 168" damage_rect="0 0 76 168" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="5" name="Taxi" texture_rect="142 0 82 168" damage_rect="0 0 70 168" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="6" name="Police" texture_rect="128 210 82 170" damage_rect="0 0 70 170" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="7" name="Ambulance" texture_rect="275 0 92 190" damage_rect="0 0 80 190" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="8" name="Medium_Car" texture_rect="554 0 86 216" damage_rect="0 0 80 216" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="9" name="Bus" texture_rect="412 0 94 216" damage_rect="0 0 82 216" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="10" name="Autobus" texture_rect="246 213 136 374" damage_rect="0 0 116 374" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="11" name="Truck" texture_rect="390 242 136 346" damage_rect="0 0 108 346" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="12" name="Truck" texture_rect="672 200 128 386" damage_rect="0 0 108 386" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-        <car id="13" name="Fire_Truck" texture_rect="543 241 112 348" damage_rect="0 0 100 348" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
-      </cars>
     </animation>
+    <cars>
+      <car id="0" name="Car" texture_rect="0 0 90 168" damage_rect="0 0 76 168" acceleration="2000 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="1" name="Car" texture_rect="0 202 92 182" damage_rect="0 0 75 182" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="2" name="Car" texture_rect="3 414 84 174" damage_rect="0 0 74 174" acceleration="1000 500" deceleration="300 300" max_velocity="1500 1000" />
+      <car id="3" name="Car" texture_rect="124 420 88 166" damage_rect="0 0 74 166" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="4" name="Car" texture_rect="692 0 86 168" damage_rect="0 0 76 168" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="5" name="Taxi" texture_rect="142 0 82 168" damage_rect="0 0 70 168" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="6" name="Police" texture_rect="128 210 82 170" damage_rect="0 0 70 170" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="7" name="Ambulance" texture_rect="275 0 92 190" damage_rect="0 0 80 190" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="8" name="Medium_Car" texture_rect="554 0 86 216" damage_rect="0 0 80 216" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="9" name="Bus" texture_rect="412 0 94 216" damage_rect="0 0 82 216" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="10" name="Autobus" texture_rect="246 213 136 374" damage_rect="0 0 116 374" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="11" name="Truck" texture_rect="390 242 136 346" damage_rect="0 0 108 346" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="12" name="Truck" texture_rect="672 200 128 386" damage_rect="0 0 108 386" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+      <car id="13" name="Fire_Truck" texture_rect="543 241 112 348" damage_rect="0 0 100 348" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+    </cars>
     <keyboard>
-      <keybindings key="A" value="0" />
-      <keybindings key="B" value="1" />
-      <keybindings key="C" value="2" />
-      <keybindings key="D" value="3" />
-      <keybindings key="E" value="4" />
-      <keybindings key="F" value="5" />
-      <keybindings key="G" value="6" />
-      <keybindings key="H" value="7" />
-      <keybindings key="I" value="8" />
-      <keybindings key="J" value="9" />
-      <keybindings key="K" value="10" />
-      <keybindings key="L" value="11" />
-      <keybindings key="M" value="12" />
-      <keybindings key="N" value="13" />
-      <keybindings key="O" value="14" />
-      <keybindings key="P" value="15" />
-      <keybindings key="Q" value="16" />
-      <keybindings key="R" value="17" />
-      <keybindings key="S" value="18" />
-      <keybindings key="T" value="19" />
-      <keybindings key="U" value="20" />
-      <keybindings key="V" value="21" />
-      <keybindings key="W" value="22" />
-      <keybindings key="X" value="23" />
-      <keybindings key="Y" value="24" />
-      <keybindings key="Z" value="25" />
-      <keybindings key="0" value="26" />
-      <keybindings key="1" value="27" />
-      <keybindings key="2" value="28" />
-      <keybindings key="3" value="29" />
-      <keybindings key="4" value="30" />
-      <keybindings key="5" value="31" />
-      <keybindings key="6" value="32" />
-      <keybindings key="7" value="33" />
-      <keybindings key="8" value="34" />
-      <keybindings key="9" value="35" />
-      <keybindings key="," value="49" />
-      <keybindings key="." value="50" />
-      <keybindings key="'" value="51" />
-      <keybindings key="/" value="52" />
-      <keybindings key="\" value="53" />
-      <keybindings key="~" value="54" />
-      <keybindings key="=" value="55" />
-      <keybindings key="_" value="56" />
-      <keybindings key=" " value="57" />
-      <keybindings key="+" value="67" />
-      <keybindings key="-" value="68" />
-      <keybindings key="*" value="69" />
-      <keybindings key="BackSpace" value="59" />
+      <keybindings value="A" key="0" />
+      <keybindings value="B" key="1" />
+      <keybindings value="C" key="2" />
+      <keybindings value="D" key="3" />
+      <keybindings value="E" key="4" />
+      <keybindings value="F" key="5" />
+      <keybindings value="G" key="6" />
+      <keybindings value="H" key="7" />
+      <keybindings value="I" key="8" />
+      <keybindings value="J" key="9" />
+      <keybindings value="K" key="10" />
+      <keybindings value="L" key="11" />
+      <keybindings value="M" key="12" />
+      <keybindings value="N" key="13" />
+      <keybindings value="O" key="14" />
+      <keybindings value="P" key="15" />
+      <keybindings value="Q" key="16" />
+      <keybindings value="R" key="17" />
+      <keybindings value="S" key="18" />
+      <keybindings value="T" key="19" />
+      <keybindings value="U" key="20" />
+      <keybindings value="V" key="21" />
+      <keybindings value="W" key="22" />
+      <keybindings value="X" key="23" />
+      <keybindings value="Y" key="24" />
+      <keybindings value="Z" key="25" />
+      <keybindings value="0" key="26" />
+      <keybindings value="1" key="27" />
+      <keybindings value="2" key="28" />
+      <keybindings value="3" key="29" />
+      <keybindings value="4" key="30" />
+      <keybindings value="5" key="31" />
+      <keybindings value="6" key="32" />
+      <keybindings value="7" key="33" />
+      <keybindings value="8" key="34" />
+      <keybindings value="9" key="35" />
+      <keybindings value="," key="49" />
+      <keybindings value="." key="50" />
+      <keybindings value="'" key="51" />
+      <keybindings value="/" key="52" />
+      <keybindings value="\" key="53" />
+      <keybindings value="~" key="54" />
+      <keybindings value="=" key="55" />
+      <keybindings value="_" key="56" />
+      <keybindings value=" " key="57" />
+      <keybindings value="+" key="67" />
+      <keybindings value="-" key="68" />
+      <keybindings value="*" key="69" />
+      <keybindings value="BackSpace" key="59" />
     </keyboard>
   </game>
   <players>
     <player name="Arek" score="10" time="15" />
-    <player name="no i nic nie szkodzi szefe" score="0" time="3" />
+    <player name="aaaaaaaaaaaaaaaaaaaaa" score="0" time="4" />
+    <player name="asdasd" score="0" time="4" />
+    <player name="" score="0" time="9" />
+    <player name="" score="0" time="5" />
+    <player name="asdsad" score="0" time="4" />
+    <player name="a" score="0" time="1" />
   </players>
 </config>

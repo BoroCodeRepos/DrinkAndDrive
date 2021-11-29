@@ -267,7 +267,7 @@ namespace Game
 
         private void LoadPlayersResults(List<Player> list, int page, int itemsPerPage)
         {
-            int maxNameLen = 12;
+            int maxNameLen = 10;
             // dodanie elementów graczy
             for (int i = 0; i < itemsPerPage; i++)
             {
@@ -293,17 +293,26 @@ namespace Game
 
         private void Save(Text text, int score, double time)
         {
-            XmlNode playersNode = resources.document.GetElementsByTagName("players")[0];
-            XmlElement newPlayer = resources.document.CreateElement("player");
+            if (text.DisplayedString.Length > 0)
+            {
+                XmlAttribute totalTimeAttr = resources.document.GetElementsByTagName("game")[0].Attributes["total_time"];
+                int totalTime = Convert.ToInt32(totalTimeAttr.Value);
 
-            newPlayer.SetAttribute("name", text.DisplayedString);
-            newPlayer.SetAttribute("score", score.ToString());
-            newPlayer.SetAttribute("time", ((int)time).ToString());
+                XmlNode playersNode = resources.document.GetElementsByTagName("players")[0];
+                XmlElement newPlayer = resources.document.CreateElement("player");
 
-            playersNode.AppendChild(newPlayer);
-            resources.document.Save("..\\..\\..\\Config.xml");
+                newPlayer.SetAttribute("name", text.DisplayedString);
+                newPlayer.SetAttribute("score", score.ToString());
+                newPlayer.SetAttribute("time", ((int)time).ToString());
 
-            engine.OnStartAgain();
+                totalTime += (int)time;
+                totalTimeAttr.InnerText = totalTime.ToString();
+
+                playersNode.AppendChild(newPlayer);
+                resources.document.Save("..\\..\\..\\Config.xml");
+
+                engine.OnStartAgain();
+            }
         }
     }
 }
