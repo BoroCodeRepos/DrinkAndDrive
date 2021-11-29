@@ -178,10 +178,35 @@ namespace Game
             double gameTime = engine.gameTime.GetCurrentTime();
             double alcoTime = engine.alcoTime.GetCurrentTime();
 
+            
+            CreatePlayerList(out List<Player> playerList);
+            int place = playerList.Count + 1;
+            // szukanie miejsca gracza
+            for (int i = 0; i < playerList.Count; i++)
+            {
+                if (score > playerList[i].score)
+                {
+                    place = i + 1;
+                    break;
+                }
+            }
+
             components.Add(new GUI.Text(new Vector2f(512f, 150f), 90, "YOU LOSE!", resources.font, hover));
             components.Add(new GUI.Text(new Vector2f(200f, 300f), 60, "User name:", resources.font, hover));
-            components.Add(new GUI.Text(new Vector2f(512f, 450f), 50, $"Your score {score}, game time: {(int)gameTime} sec", resources.font, hover));
-            components.Add(new GUI.Text(new Vector2f(512f, 520f), 50, $"drinking time: {(int)alcoTime} sec", resources.font, hover));
+            components.Add(new GUI.Text(new Vector2f(512f, 400f), 50, $"Your place: {place}", resources.font, hover));
+            components.Add(new GUI.Text(new Vector2f(512f, 500f), 50, $"Your score {score}, game time: {(int)gameTime} sec", resources.font, hover));
+            components.Add(new GUI.Text(new Vector2f(512f, 580f), 50, $"drinking time: {(int)alcoTime} sec", resources.font, hover));
+
+            if (place == 1)
+            {
+                components.Add(new GUI.Texture(
+                        "..\\..\\..\\resource\\images\\high_score.png", 
+                        new Vector2f(250f, 160f), 
+                        new Vector2f(860f, 130f), 
+                        0f
+                    )
+                );
+            }
 
             GUI.Input input = new GUI.Input(new Vector2f(370f, 260f), 60, resources.font, idle, resources.keys);
             input.onEnter = new GUI.Component.Function(delegate () { Save(input.text, score, gameTime); });

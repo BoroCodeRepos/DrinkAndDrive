@@ -21,9 +21,9 @@ namespace Game
         Resources resources;        // zasoby gry
         EntitiesManager eManager;   // manager elementów gry
         Shader shader;              // shader object
+        public bool gameOver;       // koniec gry <= wyświetlenie wyników
         bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
         bool pause;                 // true <= pauza
-        bool gameOver;              // koniec gry <= wyświetlenie wyników
         bool initialization;        // inicjalizacja gry
         float iniTime;              // czas inicjalizacji
         Menu menu;                  // menu
@@ -74,6 +74,7 @@ namespace Game
         {
             score = 0;
             level = 1;
+            gameOver = false;
             showDamageBoxes = false;
             pause = false;
             startSpeed = 0.1f;
@@ -121,7 +122,7 @@ namespace Game
             // aktualizacja zasobów
             UpdateInitialization(dt);
 
-            if (!pause)
+            if (!pause && !gameOver)
             {
                 UpdateBackground(dt);
                 gameTime.Update(dt);
@@ -309,12 +310,13 @@ namespace Game
 
         private void RenderMenu(ref RenderWindow window)
         {
-            if (pause)
+            if (pause || gameOver)
             {
                 menu.Render(ref window);
 
                 double time = gameTime.GetCurrentTime();
-                if (time > 0d)
+
+                if (time > 0d && !gameOver)
                 {
                     string str = string.Format(" Game Time: {0:0.00} sec", time);
                     Text text = new Text(str, resources.font, 25);
@@ -334,7 +336,8 @@ namespace Game
                 showDamageBoxes = (!showDamageBoxes);
 
             if (key.Code == Keyboard.Key.P || key.Code == Keyboard.Key.Escape)
-                if (!initialization)
+            {
+                if (!initialization && !gameOver)
                 {
                     pause = (!pause);
                     shader.SetUp(210, 10, .002f);
@@ -348,6 +351,7 @@ namespace Game
                         shader.SetState(STATE.CLOSING);
                     }
                 }
+            }
 
             if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
                 eManager.mainCar.DirectionMove(-1, 0);
@@ -398,6 +402,7 @@ namespace Game
         public void OnStartAgain()
         {
             initialization = true;
+            gameOver = false;
             pause = false;
             iniTime = 0f;
             alcoLevel = 0f;
@@ -475,7 +480,7 @@ namespace Game
             lives--;
             if (lives == 0)
             {
-                pause = true;
+                gameOver = true;
                 shader.SetUp(210, 10, .002f);
                 shader.SetState(STATE.OPENING);
                 menu.InitGameResult();

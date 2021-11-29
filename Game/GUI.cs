@@ -21,6 +21,7 @@ namespace Game
             public Function onMouseOver;
 
             public STATE state;
+            public bool oldButtonState;
             public SFML.Graphics.Text text;
             public RectangleShape shape;
             public Color textColor, shapeColor;
@@ -30,6 +31,7 @@ namespace Game
             public Component(uint characterSize, string text, Font font, Color textColor, Color shapeColor)
             {
                 state = STATE.IDLE;
+                oldButtonState = Mouse.IsButtonPressed(Mouse.Button.Left);
                 this.textColor = textColor;
                 this.shapeColor = shapeColor;
                 this.text = new SFML.Graphics.Text(text, font);
@@ -176,6 +178,7 @@ namespace Game
                 float rotation = 0f
             )
             {
+                oldButtonState = Mouse.IsButtonPressed(Mouse.Button.Left);
                 this.OutlineIdle = OutlineIdle;
                 this.OutlineHover = OutlineHover;
                 this.OutlineActive = OutlineActive;
@@ -204,6 +207,23 @@ namespace Game
                 };
             }
 
+            public Texture(
+                string filename,
+                Vector2f textureSize,
+                Vector2f centrePos,
+                float rotation = 0f
+            )
+            {
+                shape = new RectangleShape();
+                textureShape = new RectangleShape(textureSize)
+                {
+                    Texture = new SFML.Graphics.Texture(filename),
+                    Origin = new Vector2f(textureSize.X / 2f, textureSize.Y / 2f),
+                    Position = new Vector2f(centrePos.X, centrePos.Y),
+                    Rotation = rotation,
+                };
+            }
+
             public override void Update(ref RenderWindow window)
             {
                 Vector2i mousePos = Mouse.GetPosition(window);
@@ -212,11 +232,15 @@ namespace Game
                     shape.OutlineColor = new Color(OutlineHover);
                     onMouseOver?.Invoke();
 
-                    if (Mouse.IsButtonPressed(Mouse.Button.Left))
+                    bool buttonState = Mouse.IsButtonPressed(Mouse.Button.Left);
+
+                    if (buttonState && !oldButtonState)
                     {
                         shape.OutlineColor = new Color(OutlineActive);
                         onClick?.Invoke();
                     }
+
+                    oldButtonState = buttonState;
                 }
                 else
                 {
