@@ -52,7 +52,7 @@ namespace Game
                 foreach (var component in components)
                     component.Update(ref window);
             }
-            catch(Exception exc) { }
+            catch (Exception) { }
         }
 
         public void Render(ref RenderWindow window)
@@ -61,7 +61,7 @@ namespace Game
                 component.Render(ref window);
         }
 
-        private void InitMainMenu()
+        public void InitMainMenu()
         {
             components.Clear();
             Vector2f size = new Vector2f(1000f, 100f);
@@ -99,8 +99,8 @@ namespace Game
                 " > / d - move right \n" +
                 " P / Esc - open / close menu \n" +
                 " B - show / hide hitboxes";
-            GUI.Button ctrl = new GUI.Button(new Vector2f(1000f, 550f), new SFML.System.Vector2f(512f, 384f), 60, control, resources.font, hover, hover, hover);
-            GUI.Button back = new GUI.Button(new Vector2f(200f, 80f), new SFML.System.Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
+            GUI.Button ctrl = new GUI.Button(new Vector2f(1000f, 550f), new Vector2f(512f, 384f), 60, control, resources.font, hover, hover, hover);
+            GUI.Button back = new GUI.Button(new Vector2f(200f, 80f), new Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
             {
                 onClick = new GUI.Component.Function(InitMainMenu)
             };
@@ -111,7 +111,8 @@ namespace Game
 
         private void InitPlayersResults()
         {
-            ShowPlayersResults(1);
+            int page = 1;
+            ShowPlayersResults(page);
         }
 
         private void InitSelectCars()
@@ -157,7 +158,7 @@ namespace Game
                 float rotation = (id == 8) ? 90f : 0f;
                 components.Add(new GUI.Texture(id, resources.carCollection, shapeSizes[id], textureSize[id], pos[id], new Color(Color.Transparent), new Color(Color.Green), new Color(Color.Blue), rotation)
                     {
-                        onClick = new GUI.Component.Function(delegate() { InitMainMenu(); engine.OnSelectCar(carID); })
+                        onClick = new GUI.Component.Function(delegate() { engine.OnSelectCar(carID); })
                     }
                 );
             }
@@ -169,12 +170,49 @@ namespace Game
             );
         }
 
-        private void ShowPlayersResults(int page)
+        public void InitGameResult()
         {
             components.Clear();
-            int itemsPerPage = 6;
 
-            List<Player> playerList = new List<Player>();
+            int score = engine.score;
+            double gameTime = engine.gameTime.GetCurrentTime();
+            double alcoTime = engine.alcoTime.GetCurrentTime();
+
+            components.Add(new GUI.Text(new Vector2f(512f, 150f), 90, "YOU LOSE!", resources.font, hover));
+            components.Add(new GUI.Text(new Vector2f(200f, 300f), 60, "User name:", resources.font, hover));
+            components.Add(new GUI.Text(new Vector2f(512f, 450f), 50, $"Your score {score}, game time: {(int)gameTime} sec", resources.font, hover));
+            components.Add(new GUI.Text(new Vector2f(512f, 520f), 50, $"drinking time: {(int)alcoTime} sec", resources.font, hover));
+
+            GUI.Input input = new GUI.Input(new Vector2f(370f, 260f), 60, resources.font, idle, resources.keys);
+            input.onEnter = new GUI.Component.Function(delegate () { Save(input.text, score, gameTime); });
+            components.Add(input);
+
+            components.Add(new GUI.Button(new Vector2f(700f, 95f), new Vector2f(512f, 720f), 70, "save and start again", resources.font, idle, hover, active)
+                {
+                    onClick = new GUI.Component.Function(delegate() { Save(input.text, score, gameTime); })
+                }
+            );
+        }
+
+        private void ShowPlayersResults(int page)
+        {
+            // ilość graczy na stronie
+            int itemsPerPage = 6;
+            // czyszczenie listy componentów
+            components.Clear();
+            // tworzenie listy z zapisanymi graczami
+            CreatePlayerList(out List<Player> playerList);
+            // paginacja
+            CreatePagination(playerList, itemsPerPage);
+            // dodawanie elementów stacyjnych
+            LoadStationElements(page);
+            // dodanie elementów graczy
+            LoadPlayersResults(playerList, page, itemsPerPage);
+        }
+
+        private void CreatePlayerList(out List<Player> list)
+        {
+            list = new List<Player>();
             XmlNodeList playerNodes = resources.document.GetElementsByTagName("player");
             // utworzenie wewnętrznej listy z graczami
             foreach (XmlNode node in playerNodes)
@@ -182,10 +220,10 @@ namespace Game
                 string name = node.Attributes["name"].Value;
                 int score = Convert.ToInt32(node.Attributes["score"].Value);
                 float time = float.Parse(node.Attributes["time"].Value);
-                playerList.Add(new Player(name, score, time));
+                list.Add(new Player(name, score, time));
             }
             // sortowanie listy
-            playerList.Sort(
+            list.Sort(
                 delegate (Player A, Player B)
                 {
                     if (A.score > B.score) return -1;
@@ -193,9 +231,12 @@ namespace Game
                     return 0;
                 }
             );
-            // paginacja
+        }
+
+        private void CreatePagination(List<Player> list, int itemsPerPage)
+        {
             // obliczenie ilości stron
-            int pages = (int)Math.Ceiling((float)playerList.Count / (float)itemsPerPage);
+            int pages = (int)Math.Ceiling((float)list.Count / (float)itemsPerPage);
             // dodanie elementów stron do listy componentów
             for (int i = 1; i <= pages; i++)
             {
@@ -206,28 +247,63 @@ namespace Game
                 }
                 );
             }
+        }
 
+        private void LoadStationElements(int page)
+        {
             // dodanie elementów stacyjnych
             components.Add(new GUI.Text(new Vector2f(60f, 150f), 40, "Id:", resources.font, hover));
             components.Add(new GUI.Text(new Vector2f(250f, 150f), 40, "Name:", resources.font, hover));
             components.Add(new GUI.Text(new Vector2f(500f, 150f), 40, "Score:", resources.font, hover));
             components.Add(new GUI.Text(new Vector2f(830f, 150f), 40, "Total time [sec]:", resources.font, hover));
             components.Add(new GUI.Text(new Vector2f(140f, 100f), 40, $"Pages ({page}):", resources.font, hover));
-            components.Add(new GUI.Button(new Vector2f(200f, 80f), new SFML.System.Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
-                {
-                    onClick = new GUI.Component.Function(InitMainMenu)
-                }
-            );
 
+            components.Add(new GUI.Button(new Vector2f(200f, 80f), new Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
+            {
+                onClick = new GUI.Component.Function(InitMainMenu)
+            }
+            );
+        }
+
+        private void LoadPlayersResults(List<Player> list, int page, int itemsPerPage)
+        {
+            int maxNameLen = 12;
             // dodanie elementów graczy
             for (int i = 0; i < itemsPerPage; i++)
             {
                 int id = i + itemsPerPage * (page - 1);
-                components.Add(new GUI.Text(new Vector2f(250f, 230f + i * 80f), 40, $"{playerList[id].name}", resources.font, idle));
-                components.Add(new GUI.Text(new Vector2f(500f, 230f + i * 80f), 40, $"{playerList[id].score}", resources.font, idle));
-                components.Add(new GUI.Text(new Vector2f(830f, 230f + i * 80f), 40, $"{playerList[id].time}", resources.font, idle));
+
+                string name = list[id].name.Trim();
+
+                if (name.Length > maxNameLen)
+                {
+                    string newName = "";
+                    for (int j = 0; j < maxNameLen - 3; j++)
+                        newName += name[j];
+                    
+                    name = newName.Trim() + "...";
+                }
+
+                components.Add(new GUI.Text(new Vector2f(250f, 230f + i * 80f), 40, $"{name}", resources.font, idle));
+                components.Add(new GUI.Text(new Vector2f(500f, 230f + i * 80f), 40, $"{list[id].score}", resources.font, idle));
+                components.Add(new GUI.Text(new Vector2f(830f, 230f + i * 80f), 40, $"{list[id].time}", resources.font, idle));
                 components.Add(new GUI.Text(new Vector2f(60f, 230f + i * 80f), 40, $"{id + 1}.", resources.font, idle));
             }
+        }
+
+        private void Save(Text text, int score, double time)
+        {
+            XmlNode playersNode = resources.document.GetElementsByTagName("players")[0];
+            XmlElement newPlayer = resources.document.CreateElement("player");
+
+            newPlayer.SetAttribute("name", text.DisplayedString);
+            newPlayer.SetAttribute("score", score.ToString());
+            newPlayer.SetAttribute("time", ((int)time).ToString());
+
+            playersNode.AppendChild(newPlayer);
+            resources.document.Save("..\\..\\..\\Config.xml");
+
+            engine.OnStartAgain();
         }
     }
 }

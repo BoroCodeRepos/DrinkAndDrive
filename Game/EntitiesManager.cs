@@ -34,10 +34,9 @@ namespace Game
         public OnCollision onMapCollision;
 
         public double heartPercent = 1e-2d;
-        public double coinPercent = 8e-2d;
-        public double beerPercent = 6e-2d;
-        public double carPercent = 5e-2d;
-        public float offset = 0f;
+        public double coinPercent = 1d;
+        public double beerPercent = .1d;
+        public double carPercent = .2d;
 
         //------------------------------------------------------------------------------------
         //                          Constructor
@@ -60,9 +59,9 @@ namespace Game
 
             timers = new Timers
             {
-                [TYPE.COIN] = new TimeCounter(200d),
-                [TYPE.BEER] = new TimeCounter(200d),
-                [TYPE.CAR] = new TimeCounter(400d)
+                [TYPE.COIN] = new TimeCounter(.2d),
+                [TYPE.BEER] = new TimeCounter(.2d),
+                [TYPE.CAR] = new TimeCounter(.2d)
             };
         }
 
@@ -254,20 +253,21 @@ namespace Game
             lanes[2] = new FloatRect(627f + offset, -1f, 158f, 10f);
             lanes[3] = new FloatRect(792f + offset, -1f, 144f, 10f);
 
-            for (int i = 0; i < lanes.Length; i++)
-                if (BusyCheck(lanes[i]))
-                {
-                    Random rand = new Random();
-                    double percent = rand.NextDouble();
-                    TYPE type = (TYPE)rand.Next((int)TYPE.COUNT);
-                    DIRECTION dir = (i < 2) ? DIRECTION.DOWN : DIRECTION.UP;
-                    lanes[i].Left -= (offset + resources.background.Origin.X);
-                    Vector2f position = new Vector2f(lanes[i].Left + lanes[i].Width / 2f, 0f);
-                    CheckPercentageChances(type, dir, percent, position);
-                }
+            Random rnd = new Random();
+            int lane = rnd.Next(4);
+            double percent = rnd.NextDouble();
+
+            if (CheckBusyLane(lanes[lane]))
+            {
+                TYPE type = (TYPE)rnd.Next((int)TYPE.COUNT);
+                DIRECTION dir = (lane < 2) ? DIRECTION.DOWN : DIRECTION.UP;
+                lanes[lane].Left -= (offset + resources.background.Origin.X);
+                Vector2f position = new Vector2f(lanes[lane].Left + lanes[lane].Width / 2f, 0f);
+                CheckPercentageChances(type, dir, percent, position);
+            }
         }
 
-        private bool BusyCheck(FloatRect lane)
+        private bool CheckBusyLane(FloatRect lane)
         {
             foreach (var item in entities)
                 if (lane.Intersects(item.damageBox.GetGlobalBounds()))

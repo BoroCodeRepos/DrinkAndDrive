@@ -231,6 +231,77 @@ namespace Game
             }
         }
 
+        public class Input : Component
+        {
+            public Dictionary<Keyboard.Key, string> keys;
+            public Dictionary<Keyboard.Key, bool> keyStates;
+            public Function onEnter;
+
+            public Input(
+                Vector2f position,
+                uint characterSize, 
+                Font font, 
+                Color textColor, 
+                Dictionary<Keyboard.Key, string> keys
+            ) : base(characterSize, null, font, textColor, new Color(Color.Transparent))
+            {
+                keyStates = new Dictionary<Keyboard.Key, bool>();
+                this.keys = keys;
+                foreach (var key in keys.Keys.ToList())
+                    keyStates[key] = true;
+
+                text = new SFML.Graphics.Text(null, font)
+                {
+                    CharacterSize = characterSize,
+                    Position = new Vector2f(position.X, position.Y),
+                    FillColor = new Color(textColor),
+                    OutlineColor = new Color(Color.Black),
+                    OutlineThickness = 1f,
+                };
+            }
+
+            public override void Update(ref RenderWindow window)
+            {
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Return) && text.DisplayedString.Length != 0)
+                    onEnter?.Invoke();
+
+                var keyList = keys.Keys.ToList();
+
+                foreach (var key in keyList)
+                {
+                    string value = keys[key];
+
+                    bool currKeyState = Keyboard.IsKeyPressed(key);
+                    bool oldKeyState = keyStates[key];
+
+                    if (currKeyState && !oldKeyState)
+                    {
+                        string str = text.DisplayedString;
+
+                        if (value == "BackSpace")
+                        {
+                            text.DisplayedString = str.Remove(str.Length - 1); ;
+                        }
+                        else
+                        {
+                            if (!Keyboard.IsKeyPressed(Keyboard.Key.LShift) &&
+                                !Keyboard.IsKeyPressed(Keyboard.Key.RShift))
+                                value = value.ToLower();
+
+                            text.DisplayedString = str + value;
+                        }
+                    }                    
+
+                    keyStates[key] = currKeyState;
+                }
+            }
+
+            public override void Render(ref RenderWindow window)
+            {
+                window.Draw(text);
+            }
+        }
+
         public class List : Component
         {
             List<ListItems> items;

@@ -26,23 +26,24 @@ namespace Game
         bool gameOver;              // koniec gry <= wyświetlenie wyników
         bool initialization;        // inicjalizacja gry
         float iniTime;              // czas inicjalizacji
-        Menu menu;             // menu
+        Menu menu;                  // menu
 
         //------------------------------------------------------------------------------------
         //                          Variables of alcohol level
         //------------------------------------------------------------------------------------
-        TimeCounter alcoTime;       // czas jazdy po alkoholu
+        public TimeCounter alcoTime;// czas jazdy po alkoholu
         TimeCounter alcoTimeToStep; // czas do obniżenia alkoholu we krwi
         float alcoLevel;            // aktualny poziom alkoholu we krwi
 
         //------------------------------------------------------------------------------------
         //                          Variables of game result
         //------------------------------------------------------------------------------------
-        TimeCounter gameTime;       // czas gry
+        public TimeCounter gameTime;// czas gry
+        public int score;           // aktualny wynik gracza
         int lives;                  // ilość żyć
         int level;                  // aktualny poziom gry
-        int score;                  // aktualny wynik gracza
         float speed;                // szybkość przesuwania się drogi po ekranie
+        float startSpeed;           // prędkość początkowa
         
         //------------------------------------------------------------------------------------
         //                          Constructor
@@ -75,7 +76,8 @@ namespace Game
             level = 1;
             showDamageBoxes = false;
             pause = false;
-            speed = .1f;
+            startSpeed = 0.1f;
+            speed = startSpeed;
             lives = 3;
 
             shader = new Shader(resources.options.winWidth, resources.options.winHeight, 210, true);
@@ -87,16 +89,9 @@ namespace Game
 
         private void InitAlcoVars()
         {
-            XmlElement root = resources.document.DocumentElement;
-            XmlElement soberingUpElement = root["game"]["sobering_up"];
-            //alcoLevelStep = float.Parse(
-            //    soberingUpElement.Attributes["step_alkohol_level"].Value
-            //);
             alcoTime = new TimeCounter();
-            alcoTimeToStep = new TimeCounter(1d);
-            alcoTimeToStep.SetEventTime(
-                float.Parse(soberingUpElement.Attributes["step_time"].Value)
-            );
+            alcoTimeToStep = new TimeCounter();
+            alcoTimeToStep.SetEventTime(5d);
             alcoLevel = 0f;
         }
 
@@ -247,8 +242,7 @@ namespace Game
             // score
             window.Draw(resources.coins);
             string scoreStr = score.ToString();
-            int N = scoreStr.Length;
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < scoreStr.Length; i++)
             {
                 char c = scoreStr[i];
                 int result = Convert.ToInt16(c.ToString());
@@ -269,6 +263,26 @@ namespace Game
                     10f + i * 80f
                 );
                 window.Draw(heart);
+            }
+
+            // alcohol level
+            Sprite bottleCap = new Sprite(resources.GetTexture(TYPE.BEER), eManager.animation[TYPE.BEER].currentFrame)
+            {
+                Position = new Vector2f(10f, 585f),
+            };
+            window.Draw(bottleCap);
+            List<float> posX = new List<float> { 10f, 50f, 100f, 170f };
+            float dispLevel = (alcoLevel > 10f) ? 9.99f : alcoLevel ;
+            string strLevel = string.Format("{0:0.00}", dispLevel);
+            for (int i = 0; i < strLevel.Length; i++)
+            {
+                char c = strLevel[i];
+                int result = (c == '.') ? 10 : Convert.ToInt16(c.ToString());
+                Sprite num = new Sprite(resources.numbers[result])
+                {
+                    Position = new Vector2f(posX[i], 680f)
+                };
+                window.Draw(num);
             }
         }
 
@@ -325,9 +339,14 @@ namespace Game
                     pause = (!pause);
                     shader.SetUp(210, 10, .002f);
                     if (pause)
+                    {
                         shader.SetState(STATE.OPENING);
+                        menu.InitMainMenu();
+                    }
                     else
+                    {
                         shader.SetState(STATE.CLOSING);
+                    }
                 }
 
             if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
@@ -384,7 +403,7 @@ namespace Game
             alcoLevel = 0f;
             level = 1;
             score = 0;
-            speed = .1f;
+            speed = startSpeed;
             shader.SetUp(210, 1, .005f);
             eManager.ClearAll();
             InitPlayerCar();
@@ -408,7 +427,7 @@ namespace Game
 
         public float CalcOffset()
         {
-            double time = alcoTime.GetCurrentTime() / 1000d;
+            double time = alcoTime.GetCurrentTime();
             float amp = 10 * (alcoLevel + level / 1000f) % resources.background.Origin.X;
             float sin_func = (float)Math.Sin((alcoLevel * time) % (2d * Math.PI));
             return amp * sin_func;
@@ -427,7 +446,7 @@ namespace Game
         private bool OnCoinCollision()
         {
             score++;
-            speed += score * 0.0001f;
+            speed = startSpeed + score * 1E-10f;
             return true;
         }
 
@@ -436,8 +455,6 @@ namespace Game
             alcoLevel += 0.4f + score / 1000f;
             alcoTime.Start();
             alcoTimeToStep.Start();
-            alcoTimeToStep.ClearTime();
-            
             return true;
         }
 
@@ -449,16 +466,19 @@ namespace Game
 
         private bool OnMapCollision()
         {
-            LoseLive();
+            LoseLife();
             return false;
         }
 
-        private void LoseLive()
+        private void LoseLife()
         {
             lives--;
             if (lives == 0)
             {
-                lives++;
+                pause = true;
+                shader.SetUp(210, 10, .002f);
+                shader.SetState(STATE.OPENING);
+                menu.InitGameResult();
             }
             else
             {

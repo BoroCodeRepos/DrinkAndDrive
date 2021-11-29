@@ -18,8 +18,9 @@ namespace Game
     using Numbers  = Dictionary<int, Sprite>;
     using Textures = Dictionary<TYPE, Texture>;
     using Entities = List<Entity>;
+    using KeyBindings = Dictionary<Keyboard.Key, string>;
 
-    class Resources
+    public class Resources
     {
         public class Options
         {
@@ -32,7 +33,6 @@ namespace Game
         public Sprite background;           // tło gry
         public RectangleShape dmgBoxL;      // lewe pobocze
         public RectangleShape dmgBoxR;      // prawe pobocze
-        public RectangleShape shader;       // ściemnianie ekranu
         public RectangleShape coins;        // kształt stosu monet
         public Texture Tnumbers;            // textura z numerami
         public Texture Texplosion;          // textura eksplozji
@@ -40,7 +40,8 @@ namespace Game
         public Options options;             // ustawienia okna
         public Textures textures;           // utworzone tekstury monet, serc, butelek i samochodów
         public Numbers numbers;             // słownik liczb
-        public Font font;
+        public Font font;                   // fonty
+        public KeyBindings keys;            // powiązanie klawiszy
 
         public Resources()
         {
@@ -49,12 +50,12 @@ namespace Game
                 InitXMLdoc();
                 InitOptions();
                 InitBackground();
-                InitShader();
                 InitCoinsShape();
                 InitTextures();
                 InitCarsCollection();
                 InitNumbers();
                 InitFont();
+                InitKeyBindings();
             }
             catch (Exception exception)
             {
@@ -103,19 +104,6 @@ namespace Game
             };
         }
 
-        private void InitShader()
-        {
-            shader = new RectangleShape
-            {
-                Position = new Vector2f(0f, 0f),
-                FillColor = new Color(0, 0, 0, 0),
-                Size = new Vector2f(
-                    (float)options.winWidth,
-                    (float)options.winHeight
-                )
-            };
-        }
-
         private void InitCoinsShape()
         {
             coins = new RectangleShape
@@ -132,7 +120,7 @@ namespace Game
             {
                 [TYPE.HEART] = new Texture("..\\..\\..\\resource\\images\\heart_animated.png") { Smooth = true },
                 [TYPE.COIN] = new Texture("..\\..\\..\\resource\\images\\coin_animated.png") { Smooth = true },
-                [TYPE.BEER] = new Texture("..\\..\\..\\resource\\images\\beer_animated.png") { Smooth = true },
+                [TYPE.BEER] = new Texture("..\\..\\..\\resource\\images\\bottle_cap_animated.png") { Smooth = true },
                 [TYPE.CAR] = new Texture("..\\..\\..\\resource\\images\\cars.png") { Smooth = true }
             };
             Tnumbers = new Texture("..\\..\\..\\resource\\images\\numbers.png")
@@ -176,13 +164,26 @@ namespace Game
         private void InitNumbers()
         {
             numbers = new Numbers();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 11; i++)
                 numbers.Add(i, new Sprite(Tnumbers, new IntRect(i*64, 0, 64, 82)));
         }
 
         private void InitFont()
         {
             font = new Font("..\\..\\..\\resource\\fonts\\MPLUSCodeLatin-Bold.ttf");
+        }
+
+        private void InitKeyBindings()
+        {
+            keys = new KeyBindings();
+            XmlNodeList keyBindingsList = document.GetElementsByTagName("keybindings");
+
+            foreach (XmlNode keyBindings in keyBindingsList)
+            {
+                int key = Convert.ToInt32(keyBindings.Attributes["value"].Value);
+                string value = keyBindings.Attributes["key"].Value;
+                keys[(Keyboard.Key)key] = value;
+            }
         }
 
         private IntRect ParseAttributeRect(XmlAttribute attribute)

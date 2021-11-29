@@ -1,54 +1,82 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
-
-  <window width="1024" height="768" title="DrinkAndDrive"/>
-
+  <window width="1024" height="768" title="DrinkAndDrive" />
   <game total_time="15">
-    <best_score id="Arek" score="10" time="15"/>
-
     <animation>
-      <coins  frame_nr="10" max_frame_time="65" width="87" height="87"/>
-      <beers  frame_nr="10" max_frame_time="10" width="87" height="87"/>
-      <hearts frame_nr="6"  max_frame_time="70" width="84"  height="80"/>
+      <coins frame_nr="10" max_frame_time="65" width="87" height="87" />
+      <beers frame_nr="18" max_frame_time="50" width="87" height="87" />
+      <hearts frame_nr="6" max_frame_time="70" width="84" height="80" />
       <cars>
-        <car id="0"  name="Car"        texture_rect="0 0 90 168"      damage_rect="0 0 76 168"  acceleration="2000 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="1"  name="Car"        texture_rect="0 202 92 182"    damage_rect="0 0 75 182"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="2"  name="Car"        texture_rect="3 414 84 174"    damage_rect="0 0 74 174"  acceleration="1000 500" deceleration="300 300" max_velocity="1500 1000"/>
-        <car id="3"  name="Car"        texture_rect="124 420 88 166"  damage_rect="0 0 74 166"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="4"  name="Car"        texture_rect="692 0 86 168"    damage_rect="0 0 76 168"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="5"  name="Taxi"       texture_rect="142 0 82 168"    damage_rect="0 0 70 168"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="6"  name="Police"     texture_rect="128 210 82 170"  damage_rect="0 0 70 170"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="7"  name="Ambulance"  texture_rect="275 0 92 190"    damage_rect="0 0 80 190"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="8"  name="Medium_Car" texture_rect="554 0 86 216"    damage_rect="0 0 80 216"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="9"  name="Bus"        texture_rect="412 0 94 216"    damage_rect="0 0 82 216"  acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="10" name="Autobus"    texture_rect="246 213 136 374" damage_rect="0 0 116 374" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="11" name="Truck"      texture_rect="390 242 136 346" damage_rect="0 0 108 346" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="12" name="Truck"      texture_rect="672 200 128 386" damage_rect="0 0 108 386" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
-        <car id="13" name="Fire_Truck" texture_rect="543 241 112 348" damage_rect="0 0 100 348" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000"/>
+        <car id="0" name="Car" texture_rect="0 0 90 168" damage_rect="0 0 76 168" acceleration="2000 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="1" name="Car" texture_rect="0 202 92 182" damage_rect="0 0 75 182" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="2" name="Car" texture_rect="3 414 84 174" damage_rect="0 0 74 174" acceleration="1000 500" deceleration="300 300" max_velocity="1500 1000" />
+        <car id="3" name="Car" texture_rect="124 420 88 166" damage_rect="0 0 74 166" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="4" name="Car" texture_rect="692 0 86 168" damage_rect="0 0 76 168" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="5" name="Taxi" texture_rect="142 0 82 168" damage_rect="0 0 70 168" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="6" name="Police" texture_rect="128 210 82 170" damage_rect="0 0 70 170" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="7" name="Ambulance" texture_rect="275 0 92 190" damage_rect="0 0 80 190" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="8" name="Medium_Car" texture_rect="554 0 86 216" damage_rect="0 0 80 216" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="9" name="Bus" texture_rect="412 0 94 216" damage_rect="0 0 82 216" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="10" name="Autobus" texture_rect="246 213 136 374" damage_rect="0 0 116 374" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="11" name="Truck" texture_rect="390 242 136 346" damage_rect="0 0 108 346" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="12" name="Truck" texture_rect="672 200 128 386" damage_rect="0 0 108 386" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
+        <car id="13" name="Fire_Truck" texture_rect="543 241 112 348" damage_rect="0 0 100 348" acceleration="400 400" deceleration="100 100" max_velocity="1000 1000" />
       </cars>
     </animation>
-    
-    <sobering_up step_time="5000" step_alkohol_level="0.1"/>
+    <keyboard>
+      <keybindings key="A" value="0" />
+      <keybindings key="B" value="1" />
+      <keybindings key="C" value="2" />
+      <keybindings key="D" value="3" />
+      <keybindings key="E" value="4" />
+      <keybindings key="F" value="5" />
+      <keybindings key="G" value="6" />
+      <keybindings key="H" value="7" />
+      <keybindings key="I" value="8" />
+      <keybindings key="J" value="9" />
+      <keybindings key="K" value="10" />
+      <keybindings key="L" value="11" />
+      <keybindings key="M" value="12" />
+      <keybindings key="N" value="13" />
+      <keybindings key="O" value="14" />
+      <keybindings key="P" value="15" />
+      <keybindings key="Q" value="16" />
+      <keybindings key="R" value="17" />
+      <keybindings key="S" value="18" />
+      <keybindings key="T" value="19" />
+      <keybindings key="U" value="20" />
+      <keybindings key="V" value="21" />
+      <keybindings key="W" value="22" />
+      <keybindings key="X" value="23" />
+      <keybindings key="Y" value="24" />
+      <keybindings key="Z" value="25" />
+      <keybindings key="0" value="26" />
+      <keybindings key="1" value="27" />
+      <keybindings key="2" value="28" />
+      <keybindings key="3" value="29" />
+      <keybindings key="4" value="30" />
+      <keybindings key="5" value="31" />
+      <keybindings key="6" value="32" />
+      <keybindings key="7" value="33" />
+      <keybindings key="8" value="34" />
+      <keybindings key="9" value="35" />
+      <keybindings key="," value="49" />
+      <keybindings key="." value="50" />
+      <keybindings key="'" value="51" />
+      <keybindings key="/" value="52" />
+      <keybindings key="\" value="53" />
+      <keybindings key="~" value="54" />
+      <keybindings key="=" value="55" />
+      <keybindings key="_" value="56" />
+      <keybindings key=" " value="57" />
+      <keybindings key="+" value="67" />
+      <keybindings key="-" value="68" />
+      <keybindings key="*" value="69" />
+      <keybindings key="BackSpace" value="59" />
+    </keyboard>
   </game>
-
   <players>
-    <player name="Arek" score="10" time="15"/>
-    <player name="Darek" score="101" time="40"/>
-    <player name="Jarek" score="102" time="401"/>
-    <player name="Karek" score="103" time="402"/>
-    <player name="Tomek" score="124" time="403"/>
-    <player name="Kot" score="105" time="404"/>
-    <player name="Maciej" score="106" time="405"/>
-    <player name="Nic" score="107" time="406"/>
-    <player name="Arek" score="10" time="15"/>
-    <player name="Darek" score="101" time="40"/>
-    <player name="Jarek" score="102" time="401"/>
-    <player name="Karek" score="103" time="402"/>
-    <player name="Tomek" score="124" time="403"/>
-    <player name="Kot" score="105" time="404"/>
-    <player name="Maciej" score="106" time="405"/>
-    <player name="Nic" score="107" time="406"/>
+    <player name="Arek" score="10" time="15" />
+    <player name="no i nic nie szkodzi szefe" score="0" time="3" />
   </players>
-
 </config>
