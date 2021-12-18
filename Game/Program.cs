@@ -47,7 +47,7 @@ namespace Game
 
             window = new RenderWindow(mode, title);
             window.SetVerticalSyncEnabled(true);
-            
+
             window.Closed += engine.OnClose;
             window.KeyPressed += engine.OnKeyPressed;
             window.KeyReleased += engine.OnKeyReleased;
@@ -74,7 +74,7 @@ namespace Game
             InitResources();
             InitEngine();
             InitWindow();
-            
+
             while (window.IsOpen)
             {
                 window.DispatchEvents();
@@ -86,8 +86,8 @@ namespace Game
                 engine.Render(ref window);
 
                 window.Display();
-            } 
-        } 
-    } 
+            }
+        }
+    }
 }
 

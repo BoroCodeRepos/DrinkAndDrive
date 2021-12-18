@@ -21,6 +21,7 @@ namespace Game
         Resources resources;        // zasoby gry
         EntitiesManager eManager;   // manager elementów gry
         Shader shader;              // shader object
+        Filter filter;              // filter object
         public bool gameOver;       // koniec gry <= wyświetlenie wyników
         bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
         bool pause;                 // true <= pauza
@@ -84,6 +85,8 @@ namespace Game
             shader = new Shader(resources.options.winWidth, resources.options.winHeight, 210, true);
             shader.SetUp(210, 1, .005f);
 
+            filter = new Filter(resources.Tfilter, resources.options.winWidth, resources.options.winHeight);
+
             gameTime = new TimeCounter();
             menu = new Menu(this, resources);
         }
@@ -126,7 +129,6 @@ namespace Game
             {
                 UpdateBackground(dt);
                 gameTime.Update(dt);
-                alcoTime.Update(dt);
             }
             else
             {
@@ -138,6 +140,7 @@ namespace Game
             if (!initialization && !pause && !gameOver)
                 eManager.Update(dt, speed, CalcOffset());
             shader.Update(dt);
+            filter.Update(eManager.mainCar.GetPosition(), eManager.mainCar.GetSize());
 
             // aktualizacja liczników
             UpdateAlcoTime(dt);
@@ -175,11 +178,6 @@ namespace Game
             );
         }
 
-        private void UpdateGameTime(float dt)
-        {
-            gameTime.Update(dt);
-        }
-
         private void UpdateAlcoTime(float dt)
         {
             alcoTime.Update(dt);
@@ -194,7 +192,9 @@ namespace Game
                     alcoTime.Stop();
                     alcoTimeToStep.Stop();
                     alcoTimeToStep.ClearTime();
+                    filter.SetVisible(false);
                 }
+                filter.CalcScale(alcoLevel);
             }
         }
 
@@ -211,6 +211,7 @@ namespace Game
             eManager.RenderDamageBoxes(ref window, showDamageBoxes);
 
             // wyświetlenie interfejsu
+            RenderFilter(ref window);
             RenderInterface(ref window);
             RenderShader(ref window);
             RenderInitCounting(ref window);
@@ -236,6 +237,11 @@ namespace Game
             );
             window.Draw(resources.background);
             resources.background.Position = curr_pos;
+        }
+
+        private void RenderFilter(ref RenderWindow window)
+        {
+            filter.Render(ref window);
         }
 
         private void RenderInterface(ref RenderWindow window)
@@ -278,7 +284,7 @@ namespace Game
             for (int i = 0; i < strLevel.Length; i++)
             {
                 char c = strLevel[i];
-                int result = (c == '.') ? 10 : Convert.ToInt16(c.ToString());
+                int result = (c == ',') ? 10 : Convert.ToInt32(c.ToString());
                 Sprite num = new Sprite(resources.numbers[result])
                 {
                     Position = new Vector2f(posX[i], 680f)
@@ -418,6 +424,7 @@ namespace Game
             alcoTimeToStep.Stop();
             gameTime.ClearTime();
             gameTime.Stop();
+            filter.SetVisible(false);
         }
 
         public void OnSelectCar(int id)
@@ -460,6 +467,15 @@ namespace Game
             alcoLevel += 0.4f + score / 1000f;
             alcoTime.Start();
             alcoTimeToStep.Start();
+            if (!filter.GetVisible())
+            {
+                filter.SetVisible(true);
+            }
+            else
+            {
+                filter.CalcScale(alcoLevel);
+            }
+            
             return true;
         }
 
@@ -494,6 +510,7 @@ namespace Game
                 );
                 eManager.mainCar.movement.velocity = new Vector2f(0f, 0f);
                 eManager.mainCar.SetRotation(0f);
+                filter.Update(eManager.mainCar.GetPosition(), eManager.mainCar.GetSize());
             }
         }
     }

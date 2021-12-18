@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,14 +12,13 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-
-
 namespace Game
 {
     using Numbers  = Dictionary<int, Sprite>;
     using Textures = Dictionary<TYPE, Texture>;
     using Entities = List<Entity>;
     using KeyBindings = Dictionary<Keyboard.Key, string>;
+    using Sounds = Dictionary<string, Sound>;
 
     public class Resources
     {
@@ -36,12 +36,15 @@ namespace Game
         public RectangleShape coins;        // kształt stosu monet
         public Texture Tnumbers;            // textura z numerami
         public Texture Texplosion;          // textura eksplozji
+        public Texture Tfilter;             // vignette filter texture
         public Entities carCollection;      // kolekcja wszystkich dostępnych samochodów
         public Options options;             // ustawienia okna
         public Textures textures;           // utworzone tekstury monet, serc, butelek i samochodów
         public Numbers numbers;             // słownik liczb
         public Font font;                   // fonty
         public KeyBindings keys;            // powiązanie klawiszy
+
+        public Sounds sounds;               // sounds
 
         public Resources()
         {
@@ -55,7 +58,9 @@ namespace Game
                 InitCarsCollection();
                 InitNumbers();
                 InitFont();
+                InitFilter();
                 InitKeyBindings();
+                InitSounds();
             }
             catch (Exception exception)
             {
@@ -63,10 +68,27 @@ namespace Game
             }
         }
 
+        private void InitSounds()
+        {
+            sounds = new Sounds();
+
+            string[] fileNames = Directory.GetFiles("..\\..\\resource\\sounds", "*.*");
+            foreach (var file in fileNames)
+            {
+                var splitedPath = file.Split('\\');
+                var filename = splitedPath[splitedPath.Length - 1];
+                var key = filename.Split('.')[0];
+                sounds[key] = new Sound
+                {
+                    SoundBuffer = new SoundBuffer(file)
+                };
+            }
+        }
+
         private void InitXMLdoc()
         {
             document = new XmlDocument();
-            document.Load("..\\..\\..\\Config.xml");
+            document.Load("..\\..\\Config.xml");
         }
 
         private void InitOptions()
@@ -80,7 +102,7 @@ namespace Game
 
         private void InitBackground()
         {
-            background = new Sprite(new Texture("..\\..\\..\\resource\\images\\background.png"));
+            background = new Sprite(new Texture("..\\..\\resource\\images\\background.png"));
             background.Origin = new Vector2f(
                 (float)(background.Texture.Size.X - options.winWidth) / 2f,
                 0f
@@ -110,7 +132,7 @@ namespace Game
             {
                 Position = new Vector2f(10f, 10f),
                 Size = new Vector2f(120f, 120f),
-                Texture = new Texture("..\\..\\..\\resource\\images\\coins.png")
+                Texture = new Texture("..\\..\\resource\\images\\coins.png")
             };
         }
 
@@ -118,17 +140,17 @@ namespace Game
         {
             textures = new Dictionary<TYPE, Texture>
             {
-                [TYPE.HEART] = new Texture("..\\..\\..\\resource\\images\\heart_animated.png") { Smooth = true },
-                [TYPE.COIN] = new Texture("..\\..\\..\\resource\\images\\coin_animated.png") { Smooth = true },
-                [TYPE.BEER] = new Texture("..\\..\\..\\resource\\images\\bottle_cap_animated.png") { Smooth = true },
-                [TYPE.CAR] = new Texture("..\\..\\..\\resource\\images\\cars.png") { Smooth = true }
+                [TYPE.HEART] = new Texture("..\\..\\resource\\images\\heart_animated.png") { Smooth = true },
+                [TYPE.COIN] = new Texture("..\\..\\resource\\images\\coin_animated.png") { Smooth = true },
+                [TYPE.BEER] = new Texture("..\\..\\resource\\images\\bottle_cap_animated.png") { Smooth = true },
+                [TYPE.CAR] = new Texture("..\\..\\resource\\images\\cars.png") { Smooth = true }
             };
-            Tnumbers = new Texture("..\\..\\..\\resource\\images\\numbers.png")
+            Tnumbers = new Texture("..\\..\\resource\\images\\numbers.png")
             {
                 Smooth = true
             };
 
-            Texplosion = new Texture("..\\..\\..\\resource\\images\\explosion_animated.png")
+            Texplosion = new Texture("..\\..\\resource\\images\\explosion_animated.png")
             {
                 Smooth = true
             };
@@ -170,7 +192,12 @@ namespace Game
 
         private void InitFont()
         {
-            font = new Font("..\\..\\..\\resource\\fonts\\MPLUSCodeLatin-Bold.ttf");
+            font = new Font("..\\..\\resource\\fonts\\MPLUSCodeLatin-Bold.ttf");
+        }
+
+        private void InitFilter()
+        {
+            Tfilter = new Texture("..\\..\\resource\\images\\vignette_filter.png");
         }
 
         private void InitKeyBindings()

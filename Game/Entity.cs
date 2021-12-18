@@ -110,6 +110,16 @@ namespace Game
             damageBox.Position = new Vector2f(X, Y);
         }
 
+        public Vector2f GetPosition()
+        {
+            return damageBox.Position;
+        }
+
+        public Vector2f GetSize()
+        {
+            return damageBox.Size;
+        }
+
         public void SetRotation(float angle)
         {
             sprite.Rotation = angle / 50f;
