@@ -200,7 +200,7 @@ namespace Game
             if (place == 1)
             {
                 components.Add(new GUI.Texture(
-                        "..\\..\\..\\resource\\images\\high_score.png", 
+                        "..\\..\\resource\\images\\high_score.png", 
                         new Vector2f(250f, 160f), 
                         new Vector2f(860f, 130f), 
                         0f
@@ -334,7 +334,7 @@ namespace Game
                 totalTimeAttr.InnerText = totalTime.ToString();
 
                 playersNode.AppendChild(newPlayer);
-                resources.document.Save("..\\..\\..\\Config.xml");
+                resources.document.Save("..\\..\\Config.xml");
 
                 engine.OnStartAgain();
             }

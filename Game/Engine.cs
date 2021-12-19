@@ -51,9 +51,12 @@ namespace Game
         //------------------------------------------------------------------------------------
         public Engine(Resources resources)
         {
+            resources.sounds["start"].Play();
+            resources.sounds["engine_sound"].Loop = true;
+            resources.sounds["engine_sound"].Play();
             initialization = true;
             gameOver = false;
-            iniTime = -0.7f;
+            iniTime = 0f;
             this.resources = resources;
             try
             {
@@ -157,6 +160,8 @@ namespace Game
 
                 if (iniTime >= 4f)
                 {
+                    resources.sounds["traffic_noise"].Loop = true;
+                    resources.sounds["traffic_noise"].Play();
                     initialization = false;
                     gameTime.Start();
                 }
@@ -349,11 +354,13 @@ namespace Game
                     shader.SetUp(210, 10, .002f);
                     if (pause)
                     {
+                        resources.sounds["menu_open"].Play();
                         shader.SetState(STATE.OPENING);
                         menu.InitMainMenu();
                     }
                     else
                     {
+                        resources.sounds["menu_close"].Play();
                         shader.SetState(STATE.CLOSING);
                     }
                 }
@@ -435,6 +442,7 @@ namespace Game
             initialization = true;
             iniTime = 0f;
             shader.SetUp(210, 1, .005f);
+            resources.sounds["start"].Play();
         }
 
         public float CalcOffset()
@@ -449,6 +457,7 @@ namespace Game
         {
             if (lives < 3)
             {
+                resources.sounds["picked_heart"].Play();
                 lives++;
                 return true;
             }
@@ -457,6 +466,7 @@ namespace Game
 
         private bool OnCoinCollision()
         {
+            resources.sounds["picked_coin"].Play();
             score++;
             speed = startSpeed + score * 1E-10f;
             return true;
@@ -464,6 +474,7 @@ namespace Game
 
         private bool OnBeerCollision()
         {
+            resources.sounds["picked_cap"].Play();
             alcoLevel += 0.4f + score / 1000f;
             alcoTime.Start();
             alcoTimeToStep.Start();
@@ -482,12 +493,14 @@ namespace Game
         private bool OnCarCollision()
         {
             //LoseLive();
+            //resources.sounds["car_crush2"].Play();
             return true;
         }
 
         private bool OnMapCollision()
         {
             LoseLife();
+            //resources.sounds["car_crush"].Play();
             return false;
         }
 

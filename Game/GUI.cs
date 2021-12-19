@@ -43,6 +43,7 @@ namespace Game
 
         public class Button : Component
         {
+            bool gainSound;
             public Color
                 textIdleColor,
                 textHoverColor,
@@ -59,6 +60,7 @@ namespace Game
                 Color active
             ) : base(characterSize, text, font, idle, new Color(Color.Transparent))
             {
+                gainSound = false;
                 textIdleColor = idle;
                 textHoverColor = hover;
                 textActiveColor = active;
@@ -93,9 +95,15 @@ namespace Game
                 {
                     text.FillColor = new Color(textHoverColor);
                     onMouseOver?.Invoke();
+                    if (!gainSound)
+                    {
+                        Program.resources.sounds["btn_hover"].Play();
+                        gainSound = true;
+                    }
 
                     if (Mouse.IsButtonPressed(Mouse.Button.Left))
                     {
+                        Program.resources.sounds["btn_click"].Play();
                         text.FillColor = new Color(textActiveColor);
                         onClick?.Invoke();
                     }
@@ -103,6 +111,7 @@ namespace Game
                 else
                 {
                     text.FillColor = new Color(textIdleColor);
+                    gainSound = false;
                 }
             }
 
@@ -163,6 +172,7 @@ namespace Game
 
         public class Texture : Component
         {
+            bool gainSound;
             RectangleShape textureShape;
             Color OutlineIdle, OutlineHover, OutlineActive;
 
@@ -178,6 +188,7 @@ namespace Game
                 float rotation = 0f
             )
             {
+                gainSound = false;
                 oldButtonState = Mouse.IsButtonPressed(Mouse.Button.Left);
                 this.OutlineIdle = OutlineIdle;
                 this.OutlineHover = OutlineHover;
@@ -214,6 +225,7 @@ namespace Game
                 float rotation = 0f
             )
             {
+                gainSound = false;
                 shape = new RectangleShape();
                 textureShape = new RectangleShape(textureSize)
                 {
@@ -232,10 +244,17 @@ namespace Game
                     shape.OutlineColor = new Color(OutlineHover);
                     onMouseOver?.Invoke();
 
+                    if (!gainSound)
+                    {
+                        Program.resources.sounds["btn_hover"].Play();
+                        gainSound = true;
+                    }
+
                     bool buttonState = Mouse.IsButtonPressed(Mouse.Button.Left);
 
                     if (buttonState && !oldButtonState)
                     {
+                        Program.resources.sounds["btn_click"].Play();
                         shape.OutlineColor = new Color(OutlineActive);
                         onClick?.Invoke();
                     }
@@ -245,6 +264,7 @@ namespace Game
                 else
                 {
                     shape.OutlineColor = new Color(OutlineIdle);
+                    gainSound = false;
                 }
             }
 

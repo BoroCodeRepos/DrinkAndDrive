@@ -1,10 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Threading;
 using System.Xml;
 
 using SFML.Audio;
@@ -46,29 +43,53 @@ namespace Game
 
         public Sounds sounds;               // sounds
 
-        public Resources()
+        Thread tTextures;
+        Thread tOthers;
+        Thread tSounds;
+
+        public void Init()
+        {
+            InitXMLdoc();
+            InitFont();
+            tTextures = new Thread(() => SafeExecute(LoadTextures, Program.ShowError));
+            tSounds = new Thread(() => SafeExecute(LoadSounds, Program.ShowError));
+            tOthers = new Thread(() => SafeExecute(LoadOthers, Program.ShowError));
+
+            tTextures.Start();
+            tSounds.Start();
+            tOthers.Start();
+        }
+
+        // Thread methods
+        private void SafeExecute(Action action, Action<Exception> handler)
         {
             try
             {
-                InitXMLdoc();
-                InitOptions();
-                InitBackground();
-                InitCoinsShape();
-                InitTextures();
-                InitCarsCollection();
-                InitNumbers();
-                InitFont();
-                InitFilter();
-                InitKeyBindings();
-                InitSounds();
+                action.Invoke();
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                Program.ShowError(exception);
+                handler(ex);
             }
         }
 
-        private void InitSounds()
+        private void LoadTextures()
+        {
+            InitOptions();
+            InitBackground();
+            InitCoinsShape();
+            InitTextures();
+            InitNumbers();
+            InitFilter();
+            InitCarsCollection();
+        }
+
+        private void LoadOthers()
+        {
+            InitKeyBindings();
+        }
+
+        private void LoadSounds()
         {
             sounds = new Sounds();
 
@@ -85,6 +106,23 @@ namespace Game
             }
         }
 
+        public List<string> LoadingStatus()
+        {
+            List<string> threadList = new List<string>();
+
+            if (tTextures.IsAlive)
+                threadList.Add("Textures");
+
+            if (tSounds.IsAlive)
+                threadList.Add("Sounds");
+
+            if (tOthers.IsAlive)
+                threadList.Add("Others");
+
+            return threadList;
+        }
+
+        // initialization methods
         private void InitXMLdoc()
         {
             document = new XmlDocument();
