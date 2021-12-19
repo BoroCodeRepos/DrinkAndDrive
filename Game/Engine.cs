@@ -35,6 +35,8 @@ namespace Game
         public TimeCounter alcoTime;// czas jazdy po alkoholu
         TimeCounter alcoTimeToStep; // czas do obniżenia alkoholu we krwi
         float alcoLevel;            // aktualny poziom alkoholu we krwi
+        float lastLevel;            // poprzedni stan poziomu alkoholu
+        float alcLevelStep;         // krok alco
 
         //------------------------------------------------------------------------------------
         //                          Variables of game result
@@ -52,6 +54,9 @@ namespace Game
         public Engine(Resources resources)
         {
             resources.sounds["start"].Play();
+            resources.sounds["menu_music"].Loop = true;
+            resources.sounds["bg_sound"].Loop = true;
+            resources.sounds["traffic_noise"].Loop = true;
             resources.sounds["engine_sound"].Loop = true;
             resources.sounds["engine_sound"].Play();
             initialization = true;
@@ -100,6 +105,8 @@ namespace Game
             alcoTimeToStep = new TimeCounter();
             alcoTimeToStep.SetEventTime(5d);
             alcoLevel = 0f;
+            lastLevel = 0f;
+            alcLevelStep = 0.001f;
         }
 
         private void InitEntitesManager()
@@ -160,8 +167,8 @@ namespace Game
 
                 if (iniTime >= 4f)
                 {
-                    resources.sounds["traffic_noise"].Loop = true;
                     resources.sounds["traffic_noise"].Play();
+                    resources.sounds["bg_sound"].Play();
                     initialization = false;
                     gameTime.Start();
                 }
@@ -185,6 +192,19 @@ namespace Game
 
         private void UpdateAlcoTime(float dt)
         {
+            if (lastLevel > alcoLevel)
+            {
+                lastLevel -= alcLevelStep;
+                if (lastLevel < alcoLevel)
+                    lastLevel = alcoLevel;
+            }
+            else if (lastLevel < alcoLevel)
+            {
+                lastLevel += alcLevelStep;
+                if (lastLevel > alcoLevel)
+                    lastLevel = alcoLevel;
+            }
+
             alcoTime.Update(dt);
             alcoTimeToStep.Update(dt);
             if (alcoTimeToStep.GetEventStatus())
@@ -284,12 +304,13 @@ namespace Game
             };
             window.Draw(bottleCap);
             List<float> posX = new List<float> { 10f, 50f, 100f, 170f };
-            float dispLevel = (alcoLevel > 10f) ? 9.99f : alcoLevel ;
+            //float dispLevel = (alcoLevel > 10f) ? 9.99f : alcoLevel ;
+            float dispLevel = (lastLevel > 10f) ? 9.99f : lastLevel;
             string strLevel = string.Format("{0:0.00}", dispLevel);
-            for (int i = 0; i < strLevel.Length; i++)
+            for (int i = 0; i < 4; i++)
             {
                 char c = strLevel[i];
-                int result = (c == ',') ? 10 : Convert.ToInt32(c.ToString());
+                int result = (c == ',' || c == '.') ? 10 : Convert.ToInt32(c.ToString());
                 Sprite num = new Sprite(resources.numbers[result])
                 {
                     Position = new Vector2f(posX[i], 680f)
@@ -354,13 +375,19 @@ namespace Game
                     shader.SetUp(210, 10, .002f);
                     if (pause)
                     {
+                        resources.sounds["traffic_noise"].Stop();
+                        resources.sounds["bg_sound"].Stop();
+                        resources.sounds["menu_music"].Play();
                         resources.sounds["menu_open"].Play();
                         shader.SetState(STATE.OPENING);
                         menu.InitMainMenu();
                     }
                     else
                     {
+                        resources.sounds["menu_music"].Stop();
                         resources.sounds["menu_close"].Play();
+                        resources.sounds["traffic_noise"].Play();
+                        resources.sounds["bg_sound"].Play();
                         shader.SetState(STATE.CLOSING);
                     }
                 }
@@ -403,6 +430,9 @@ namespace Game
         public void OnContinue()
         {
             pause = (!pause);
+            resources.sounds["menu_music"].Stop();
+            resources.sounds["traffic_noise"].Play();
+            resources.sounds["bg_sound"].Play();
             shader.SetUp(210, 10, .002f);
             shader.SetState(STATE.CLOSING);
         }
@@ -432,6 +462,8 @@ namespace Game
             gameTime.ClearTime();
             gameTime.Stop();
             filter.SetVisible(false);
+            resources.sounds["start"].Play();
+            resources.sounds["menu_music"].Stop();
         }
 
         public void OnSelectCar(int id)
@@ -443,13 +475,14 @@ namespace Game
             iniTime = 0f;
             shader.SetUp(210, 1, .005f);
             resources.sounds["start"].Play();
+            resources.sounds["menu_music"].Stop();
         }
 
         public float CalcOffset()
         {
             double time = alcoTime.GetCurrentTime();
-            float amp = 10 * (alcoLevel + level / 1000f) % resources.background.Origin.X;
-            float sin_func = (float)Math.Sin((alcoLevel * time) % (2d * Math.PI));
+            float amp = 10 * (lastLevel + level / 1000f) % resources.background.Origin.X;
+            float sin_func = (float)Math.Sin(lastLevel * time);//% (2d * Math.PI)
             return amp * sin_func;
         }
 
@@ -493,14 +526,14 @@ namespace Game
         private bool OnCarCollision()
         {
             //LoseLive();
-            //resources.sounds["car_crush2"].Play();
+            resources.sounds["car_crash2"].Play();
             return true;
         }
 
         private bool OnMapCollision()
         {
             LoseLife();
-            //resources.sounds["car_crush"].Play();
+            resources.sounds["car_crash"].Play();
             return false;
         }
 

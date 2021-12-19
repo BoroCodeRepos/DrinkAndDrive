@@ -173,6 +173,10 @@ namespace Game
         public void InitGameResult()
         {
             components.Clear();
+            resources.sounds["menu_music"].Play();
+            resources.sounds["traffic_noise"].Stop();
+            resources.sounds["bg_sound"].Stop();
+
 
             int score = engine.score;
             double gameTime = engine.gameTime.GetCurrentTime();
