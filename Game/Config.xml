@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
   <window width="1024" height="768" title="DrinkAndDrive" />
-  <game total_time="65">
+  <game total_time="87">
     <animation>
       <coins frame_nr="10" max_frame_time="65" width="87" height="87" />
       <beers frame_nr="18" max_frame_time="50" width="87" height="87" />
@@ -79,5 +79,6 @@
     <player name="Arek2" score="1" time="15" />
     <player name="Arek1" score="1" time="20" />
     <player name="Arek3" score="1" time="7" />
+    <player name="asdasdas" score="24" time="22" />
   </players>
 </config>
