@@ -1,18 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-
-using SFML.Audio;
-using SFML.Graphics;
+﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
+using System;
+using System.Collections.Generic;
+
 namespace Game
 {
+    /// <summary>
+    /// Klasa sterująca całą logiką gry.
+    /// </summary>
     class Engine
     {
         //------------------------------------------------------------------------------------
@@ -22,19 +19,21 @@ namespace Game
         EntitiesManager eManager;   // manager elementów gry
         Shader shader;              // shader object
         Filter filter;              // filter object
+        Menu menu;                  // menu
         public bool gameOver;       // koniec gry <= wyświetlenie wyników
         bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
         bool pause;                 // true <= pauza
+        bool wait;                  // oczekiwanie na koniec animacji
         bool initialization;        // inicjalizacja gry
         float iniTime;              // czas inicjalizacji
-        Menu menu;                  // menu
-
+        float waitTime;             // czas opóźnienia
+        
         //------------------------------------------------------------------------------------
         //                          Variables of alcohol level
         //------------------------------------------------------------------------------------
         public TimeCounter alcoTime;// czas jazdy po alkoholu
         TimeCounter alcoTimeToStep; // czas do obniżenia alkoholu we krwi
-        float alcoLevel;            // aktualny poziom alkoholu we krwi
+        float alcoLevel;            // zadany poziom alkoholu we krwi
         float lastLevel;            // poprzedni stan poziomu alkoholu
         float alcLevelStep;         // krok alco
 
@@ -89,6 +88,11 @@ namespace Game
             startSpeed = 0.1f;
             speed = startSpeed;
             lives = 3;
+            Animation.states = new List<AnimationState>();
+            Animation.texture = resources.Texplosion;
+            Animation.tSize = 96;
+            wait = false;
+            waitTime = 0f;
 
             shader = new Shader(resources.options.winWidth, resources.options.winHeight, 210, true);
             shader.SetUp(210, 1, .005f);
@@ -135,7 +139,7 @@ namespace Game
             // aktualizacja zasobów
             UpdateInitialization(dt);
 
-            if (!pause && !gameOver)
+            if (!pause && !gameOver && !wait)
             {
                 UpdateBackground(dt);
                 gameTime.Update(dt);
@@ -144,16 +148,21 @@ namespace Game
             {
                 menu.Update(ref window);
             }
-            
+
             // aktualizacja elementów gry
+            Animation.Update(dt, CalcOffset());
             eManager.UpdateAnimation(dt);
-            if (!initialization && !pause && !gameOver)
+            if (!initialization && !pause && !gameOver && !wait)
+            {
+                eManager.UpdateMainCarMovement(dt, speed);
                 eManager.Update(dt, speed, CalcOffset());
+            }
             shader.Update(dt);
             filter.Update(eManager.mainCar.GetPosition(), eManager.mainCar.GetSize());
 
             // aktualizacja liczników
             UpdateAlcoTime(dt);
+            UpdateLosingLife(dt);
         }
 
         private void UpdateInitialization(float dt)
@@ -223,6 +232,31 @@ namespace Game
             }
         }
 
+        private void UpdateLosingLife(float dt)
+        {
+            if (wait)
+            {
+                waitTime += dt;
+                if (waitTime >= Animation.states[0].maxFrameTime * Animation.states[0].framesNr)
+                {
+                    wait = false;
+                    Animation.states.Clear();
+                    eManager.ClearAll();
+                    eManager.mainCar.SetPosition(
+                        resources.background.Texture.Size.X / 2f - resources.background.Origin.X,
+                        resources.background.Texture.Size.Y / 2f
+                    );
+                    eManager.mainCar.movement.velocity = new Vector2f(0f, 0f);
+                    eManager.mainCar.SetRotation(0f);
+                    filter.Update(eManager.mainCar.GetPosition(), eManager.mainCar.GetSize());
+                }
+            }
+            else
+            {
+                waitTime = 0f;
+            }
+        }
+
         //------------------------------------------------------------------------------------
         //                          Render elements on screen
         //------------------------------------------------------------------------------------
@@ -234,6 +268,7 @@ namespace Game
             // wyświetlenie elementów gry
             eManager.RenderEntities(ref window);
             eManager.RenderDamageBoxes(ref window, showDamageBoxes);
+            Animation.Render(ref window);
 
             // wyświetlenie interfejsu
             RenderFilter(ref window);
@@ -486,26 +521,25 @@ namespace Game
             return amp * sin_func;
         }
 
-        private bool OnHeartCollision()
+        private void OnHeartCollision(Entity e)
         {
             if (lives < 3)
             {
                 resources.sounds["picked_heart"].Play();
                 lives++;
-                return true;
+                e.SetEffect();
             }
-            return false;
         }
 
-        private bool OnCoinCollision()
+        private void OnCoinCollision(Entity e)
         {
             resources.sounds["picked_coin"].Play();
             score++;
             speed = startSpeed + score * 1E-10f;
-            return true;
+            e.SetEffect();
         }
 
-        private bool OnBeerCollision()
+        private void OnBeerCollision(Entity e)
         {
             resources.sounds["picked_cap"].Play();
             alcoLevel += 0.4f + score / 1000f;
@@ -519,22 +553,35 @@ namespace Game
             {
                 filter.CalcScale(alcoLevel);
             }
-            
-            return true;
+            e.SetEffect();
         }
 
-        private bool OnCarCollision()
+        private void OnCarCollision(Entity e)
         {
-            //LoseLive();
             resources.sounds["car_crash2"].Play();
-            return true;
+
+            var offset = ((e.dir == DIRECTION.DOWN) ? 0f : e.GetSize().Y);
+            Vector2f posA = e.GetPosition();
+            Vector2f posB = eManager.mainCar.GetPosition();
+            Vector2f posResult = new Vector2f(
+                (posA.X + posB.X) / 2f, 
+                (posA.Y + offset - posB.Y) / 2f + posB.Y
+            );
+            Animation.Create(posResult);
+            e.SetEffect();
+            LoseLife();
         }
 
-        private bool OnMapCollision()
+        private void OnMapCollision(Entity e)
         {
             LoseLife();
+            Vector2f pos = eManager.mainCar.GetPosition();
+            Vector2f size = eManager.mainCar.GetSize();
+            if (pos.X < resources.options.winWidth / 2f)
+                size.X *= (-1f);
+            Vector2f res = new Vector2f(pos.X + size.X / 2f, pos.Y);
+            Animation.Create(res);
             resources.sounds["car_crash"].Play();
-            return false;
         }
 
         private void LoseLife()
@@ -549,14 +596,7 @@ namespace Game
             }
             else
             {
-                eManager.ClearAll();
-                eManager.mainCar.SetPosition(
-                    resources.background.Texture.Size.X / 2f - resources.background.Origin.X,
-                    resources.background.Texture.Size.Y / 2f   
-                );
-                eManager.mainCar.movement.velocity = new Vector2f(0f, 0f);
-                eManager.mainCar.SetRotation(0f);
-                filter.Update(eManager.mainCar.GetPosition(), eManager.mainCar.GetSize());
+                wait = true;
             }
         }
     }

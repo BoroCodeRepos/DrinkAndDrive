@@ -13,7 +13,7 @@ using SFML.Window;
 namespace Game
 {
     using Entities = List<Entity>;
-    using EntitiesAnimation = Dictionary<TYPE, EntityAnimation>;
+    using EntitiesAnimation = Dictionary<TYPE, AnimationState>;
     using Timers = Dictionary<TYPE, TimeCounter>;
 
     class EntitiesManager
@@ -25,7 +25,7 @@ namespace Game
             animation;                 // animacja serc, monet i butelek
         public Timers timers;          // licznik czas do utworzenia następnego elementu               
 
-        public delegate bool OnCollision();
+        public delegate void OnCollision(Entity e);
 
         public OnCollision onHeartCollision;
         public OnCollision onCoinCollision;
@@ -36,7 +36,7 @@ namespace Game
         public double heartPercent = 1e-2d;
         public double coinPercent = 1d;
         public double beerPercent = .1d;
-        public double carPercent = .2d;
+        public double carPercent = .1d;
 
         //------------------------------------------------------------------------------------
         //                          Constructor
@@ -48,9 +48,9 @@ namespace Game
             entities = new Entities();
             animation = new EntitiesAnimation
             {
-                [TYPE.COIN]  = new EntityAnimation(),
-                [TYPE.BEER]  = new EntityAnimation(),
-                [TYPE.HEART] = new EntityAnimation()
+                [TYPE.COIN]  = new AnimationState(),
+                [TYPE.BEER]  = new AnimationState(),
+                [TYPE.HEART] = new AnimationState()
             };
 
             InitAnimation("coins",  animation, TYPE.COIN);
@@ -70,7 +70,7 @@ namespace Game
         //------------------------------------------------------------------------------------
         private void InitAnimation(string attrName, EntitiesAnimation Tanimation, TYPE type)
         {
-            EntityAnimation animation = Tanimation[type];
+            AnimationState animation = Tanimation[type];
             XmlElement root = resources.document.DocumentElement;
             XmlElement element = root["game"]["animation"][attrName];
             animation.framesNr = Convert.ToInt16(element.Attributes["frame_nr"].Value);
@@ -91,11 +91,15 @@ namespace Game
             UpdateTimers(dt);                                   // aktualizacja timerów
             TryCreateEntities();                                // próba utworzenia nowych elementów gry
             DeleteEntities();                                   // usunięcie elementów poza mapą
-            mainCar.UpdateMove(dt, speed, 0f);                  // aktualizacja ruchu głównego pojazdu
             UpdateEntitiesMove(dt, speed, offset);              // aktualizacja ruchu elementów gry
             UpdateMapBounds();                                  // aktualizacja położenia na mapie głownego samochodu
             UpdateMapCollision();                               // sprawdzenie wyjazdu gracza poza jezdnię
             UpdateCollisions();                                 // aktualizacja kolizji obiektów
+        }
+
+        public void UpdateMainCarMovement(float dt, float speed)
+        {
+            mainCar.UpdateMove(dt, speed, 0f);                  // aktualizacja ruchu głównego pojazdu
         }
 
         public  void UpdateAnimation(float dt)
@@ -130,10 +134,18 @@ namespace Game
 
         private void UpdateEntitiesMove(float dt, float speed, float offset)
         {
+            List<Entity> entitiesToDelete = new List<Entity>();
             foreach (var item in entities)
             {
                 item.UpdateMove(dt, speed, offset);
+
+                if (item.toDelete)
+                    entitiesToDelete.Add(item);
             }
+
+            if (entitiesToDelete.Count > 0)
+                foreach (var item in entitiesToDelete)
+                    entities.Remove(item);
         }
 
         private void UpdateMapBounds()
@@ -162,31 +174,23 @@ namespace Game
 
         private void UpdateCollisions()
         {
-            Entities toDelete = new Entities();
-            foreach (Entity entity in entities)
+            foreach (var entity in entities)
             {
-                if (CollisionsCheck(mainCar, entity))
+                if (CollisionsCheck(mainCar, entity) && !entity.effect)
                 {
                     if (entity.type == TYPE.HEART)
-                        if (onHeartCollision())
-                            toDelete.Add(entity);
+                        onHeartCollision(entity);
 
                     if (entity.type == TYPE.COIN)
-                        if (onCoinCollision())
-                            toDelete.Add(entity);
-                    
+                        onCoinCollision(entity);
+
                     if (entity.type == TYPE.BEER)
-                        if (onBeerCollision())
-                            toDelete.Add(entity);
+                        onBeerCollision(entity);
 
                     if (entity.type == TYPE.CAR)
-                        if (onCarCollision())
-                            toDelete.Add(entity);
+                        onCarCollision(entity);
                 }
             }
-            // usunięcie żądanych elementów
-            foreach (Entity entity in toDelete)
-                entities.Remove(entity);
         }
 
         private void UpdateMapCollision()
@@ -195,7 +199,7 @@ namespace Game
             FloatRect bgRectL = resources.dmgBoxL.GetGlobalBounds();
             FloatRect bgRectR = resources.dmgBoxR.GetGlobalBounds();
             if (carRect.Intersects(bgRectL) || carRect.Intersects(bgRectR))
-                onMapCollision();
+                onMapCollision(null);
         }
 
         //------------------------------------------------------------------------------------
@@ -384,16 +388,5 @@ namespace Game
 
             return false;
         }
-    }
-
-    struct EntityAnimation
-    {
-        public int currentFrameId;
-        public float currentFrameTime;
-
-        public int framesNr;
-        public float maxFrameTime;
-
-        public IntRect currentFrame;
     }
 }

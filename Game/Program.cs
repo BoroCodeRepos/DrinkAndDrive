@@ -16,16 +16,36 @@ namespace Game
     public enum TYPE { HEART, COIN, BEER, CAR, COUNT };
     public enum STATE { OPENING, OPEN, CLOSING, CLOSED };
 
+    /// <summary>
+    /// Główna klasa gry z metodą Main().
+    /// </summary>
     static class Program
     {
-        static public bool loadResorces = false;
+        /// <summary>
+        /// Obiekt z oknem głównym gry.
+        /// </summary>
         static public RenderWindow window;
+        /// <summary>
+        /// Obiekt ze wszystkimi zasobami gry.
+        /// </summary>
         static public Resources resources;
+        /// <summary>
+        /// Obiekt z logiką gry.
+        /// </summary>
         static public Engine engine;
 
+        /// <summary>
+        /// Obiekt liczący czas do ponownego wywołania.
+        /// </summary>
         static private Stopwatch stopwatch;
+        /// <summary>
+        /// Zmienna przechowująca czas (tick time).
+        /// </summary>
         static private float deltaTime = 0f;
 
+        /// <summary>
+        /// Metoda inicjalizująca wszystkie obiekty gry
+        /// </summary>
         static private void GlobalInitialization()
         {
             RenderWindow initWin = new RenderWindow(new VideoMode(800, 600), "", Styles.None);

@@ -10,35 +10,44 @@ using SFML.System;
 
 namespace Game
 {
-    class Animation
+    static public class Animation
     {
-        Texture texture;
-        Sprite  sprite;
-        IntRect rect;
-        float primaryTime;
-        uint frameId, framesNr;
-        bool loop;
+        static public Texture texture;
+        static public float primaryTime;
+        static public int tSize;
 
-        public Animation(
-            Texture texture, 
-            Sprite  sprite,
-            IntRect firstRect,
-            float primaryTime,
-            uint framesNr,
-            bool loop
-        )
+        static public List<AnimationState> states;
+
+        static public void Create(Vector2f position)
         {
-            frameId = 0;
-            this.texture = texture;
-            this.sprite = sprite;
-            this.primaryTime = primaryTime;
-            this.framesNr = framesNr;
-            this.loop = loop;
+            states.Add(new AnimationState(12, 65f, position));
         }
 
-        public void Update(float dt)
+        static public void Update(float dt, float offsetX)
         {
+            foreach (var state in states)
+            {
+                state.currentFrameTime += dt;
+                if (state.currentFrameTime > state.maxFrameTime)
+                {
+                    state.currentFrameTime -= state.maxFrameTime;
+                    state.currentFrameId = (state.currentFrameId + 1) % state.framesNr;
+                    state.currentFrame = new IntRect(tSize * state.currentFrameId, 0, tSize, tSize);
+                    state.currPosition.X = state.primPosition.X + offsetX;
+                }
+            }
+        }
 
+        static public void Render(ref RenderWindow window)
+        {
+            Sprite s = new Sprite(texture);
+            foreach (var state in states)
+            {
+                s.Position = new Vector2f(state.currPosition.X, state.currPosition.Y);
+                s.TextureRect = state.currentFrame;
+                s.Origin = new Vector2f(tSize / 2f, tSize / 2f);
+                window.Draw(s);
+            }
         }
     }
 }

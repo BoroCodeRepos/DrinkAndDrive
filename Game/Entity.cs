@@ -20,6 +20,8 @@ namespace Game
         public RectangleShape damageBox;        // model uszkodzeń
         public MovementComponent movement;      // zapis aktualnych wartości określających ruch
         public float primaryPosX;               // pozycja inicjalizacyjna
+        public bool effect;                     // użycie efektu skalowania
+        public bool toDelete;                   // określa czy element jest do usunięcia
 
         public Entity(Texture texture, IntRect textureRect, IntRect damageRect, TYPE type, DIR dir = DIR.UP)
         {
@@ -46,6 +48,8 @@ namespace Game
             };
             SetColor();
             SetDirection();
+            effect = false;
+            toDelete = false;
         }
 
         public Entity(int carNr, List<Entity> carCollection, bool createMovementComponent = true, DIR dir = DIR.UP)
@@ -56,6 +60,8 @@ namespace Game
                 sprite = new Sprite(car.sprite);
                 damageBox = new RectangleShape(car.damageBox);
                 type = TYPE.CAR;
+                effect = false;
+                toDelete = false;
                 this.dir = dir;
                 SetRotation((dir == DIR.DOWN) ? 9000f : 0f);
 
@@ -81,13 +87,31 @@ namespace Game
         {
             if (movement != null)
             {
-                dt = dt / 1000f;
+                dt /= 1000f;
                 Vector2f velocity = movement.Update(dt);
                 Move(velocity.X * dt, velocity.Y * dt);
                 SetRotation(velocity.X);
             }
             else
             {
+                if (effect && type != TYPE.CAR)
+                {
+                    Vector2f scale = sprite.Scale;
+                    scale.X -= 0.08f;
+                    scale.Y -= 0.08f;
+                    if (scale.X < 0f || scale.Y < 0f)
+                    {
+                        toDelete = true;
+                    }
+                    else
+                    {
+                        sprite.Scale = scale;
+                        damageBox.Scale = scale;
+                    }
+                }
+                else if (effect && type == TYPE.CAR)
+                    return;
+
                 Vector2f position = damageBox.Position;
                 speed = ((dir == DIR.UP) ? 0.6f : 1.5f) * Math.Abs(speed) * dt;
                 position.X = primaryPosX + offset;
@@ -165,6 +189,11 @@ namespace Game
                 sprite.Origin = new Vector2f(origin.X, origin.Y);
                 damageBox.Origin = new Vector2f(origin.X, origin.Y);
             }
+        }
+
+        public void SetEffect()
+        {
+            effect = true;
         }
     }
 }
