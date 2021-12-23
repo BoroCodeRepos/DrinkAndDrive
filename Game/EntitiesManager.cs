@@ -1,14 +1,10 @@
-﻿using System;
+﻿using SFML.Graphics;
+using SFML.System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
-
-using SFML.Audio;
-using SFML.Graphics;
-using SFML.System;
-using SFML.Window;
 
 namespace Game
 {
@@ -78,8 +74,6 @@ namespace Game
             int width = Convert.ToInt16(element.Attributes["width"].Value);
             int height = Convert.ToInt16(element.Attributes["height"].Value);
             animation.currentFrame = new IntRect(0, 0, width, height);
-            animation.currentFrameId = 0;
-            animation.currentFrameTime = 0f;
             Tanimation[type] = animation;
         }
 
@@ -91,15 +85,11 @@ namespace Game
             UpdateTimers(dt);                                   // aktualizacja timerów
             TryCreateEntities();                                // próba utworzenia nowych elementów gry
             DeleteEntities();                                   // usunięcie elementów poza mapą
+            mainCar.UpdateMove(dt, speed, 0f);                  // aktualizacja ruchu głównego pojazdu
             UpdateEntitiesMove(dt, speed, offset);              // aktualizacja ruchu elementów gry
             UpdateMapBounds();                                  // aktualizacja położenia na mapie głownego samochodu
             UpdateMapCollision();                               // sprawdzenie wyjazdu gracza poza jezdnię
             UpdateCollisions();                                 // aktualizacja kolizji obiektów
-        }
-
-        public void UpdateMainCarMovement(float dt, float speed)
-        {
-            mainCar.UpdateMove(dt, speed, 0f);                  // aktualizacja ruchu głównego pojazdu
         }
 
         public  void UpdateAnimation(float dt)

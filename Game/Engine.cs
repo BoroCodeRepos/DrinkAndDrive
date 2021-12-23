@@ -20,7 +20,7 @@ namespace Game
         Shader shader;              // shader object
         Filter filter;              // filter object
         Menu menu;                  // menu
-        public bool gameOver;       // koniec gry <= wyświetlenie wyników
+        bool gameOver;              // koniec gry <= wyświetlenie wyników
         bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
         bool pause;                 // true <= pauza
         bool wait;                  // oczekiwanie na koniec animacji
@@ -88,11 +88,11 @@ namespace Game
             startSpeed = 0.1f;
             speed = startSpeed;
             lives = 3;
+            wait = false;
+            waitTime = 0f;
             Animation.states = new List<AnimationState>();
             Animation.texture = resources.Texplosion;
             Animation.tSize = 96;
-            wait = false;
-            waitTime = 0f;
 
             shader = new Shader(resources.options.winWidth, resources.options.winHeight, 210, true);
             shader.SetUp(210, 1, .005f);
@@ -138,25 +138,21 @@ namespace Game
         {
             // aktualizacja zasobów
             UpdateInitialization(dt);
+            UpdateHeartChances();
 
             if (!pause && !gameOver && !wait)
             {
                 UpdateBackground(dt);
                 gameTime.Update(dt);
             }
-            else
-            {
-                menu.Update(ref window);
-            }
-
+            else menu.Update(ref window);
+            
             // aktualizacja elementów gry
-            Animation.Update(dt, CalcOffset());
+            Animation.Update(dt);
             eManager.UpdateAnimation(dt);
             if (!initialization && !pause && !gameOver && !wait)
-            {
-                eManager.UpdateMainCarMovement(dt, speed);
                 eManager.Update(dt, speed, CalcOffset());
-            }
+            
             shader.Update(dt);
             filter.Update(eManager.mainCar.GetPosition(), eManager.mainCar.GetSize());
 
@@ -255,6 +251,14 @@ namespace Game
             {
                 waitTime = 0f;
             }
+        }
+
+        private void UpdateHeartChances()
+        {
+            if (lives < 3)
+                eManager.heartPercent = 1e-2d;
+            else
+                eManager.heartPercent = 0f;
         }
 
         //------------------------------------------------------------------------------------
@@ -397,8 +401,6 @@ namespace Game
         //------------------------------------------------------------------------------------
         public  void OnKeyPressed(object sender, KeyEventArgs key)
         {
-            RenderWindow window = (RenderWindow)sender;
-
             if (key.Code == Keyboard.Key.B)
                 showDamageBoxes = (!showDamageBoxes);
 

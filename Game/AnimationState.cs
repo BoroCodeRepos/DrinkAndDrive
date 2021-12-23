@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using SFML.Audio;
-using SFML.Graphics;
+﻿using SFML.Graphics;
 using SFML.System;
-using SFML.Window;
 
 namespace Game
 {
@@ -21,26 +13,23 @@ namespace Game
 
         public IntRect currentFrame;
 
-        public Vector2f currPosition;
-        public Vector2f primPosition;
+        public Vector2f position;
 
-        public AnimationState() { }
+        public AnimationState() 
+        {
+            currentFrameId = 0;
+            currentFrameTime = 0f;
+        }
 
-        public AnimationState(
-            int framesNr,
-            float maxFrameTime,
-            Vector2f position
-        )
+        public AnimationState(int framesNr, float maxFrameTime, Vector2f position)
         {
             this.framesNr = framesNr;
             this.maxFrameTime = maxFrameTime;
+            this.position = position;
 
             currentFrameId = 0;
             currentFrameTime = 0f;
             currentFrame = new IntRect(0, 0, Animation.tSize, Animation.tSize);
-
-            currPosition = position;
-            primPosition = position;
         }
     }
 }

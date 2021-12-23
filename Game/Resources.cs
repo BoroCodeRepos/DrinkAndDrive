@@ -1,21 +1,21 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Threading;
-using System.Xml;
-
-using SFML.Audio;
+﻿using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Xml;
+
 namespace Game
 {
-    using Numbers  = Dictionary<int, Sprite>;
-    using Textures = Dictionary<TYPE, Texture>;
     using Entities = List<Entity>;
     using KeyBindings = Dictionary<Keyboard.Key, string>;
+    using Numbers = Dictionary<int, Sprite>;
     using Sounds = Dictionary<string, Sound>;
+    using Textures = Dictionary<TYPE, Texture>;
 
     public class Resources
     {
