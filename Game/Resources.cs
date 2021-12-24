@@ -17,40 +17,71 @@ namespace Game
     using Sounds = Dictionary<string, Sound>;
     using Textures = Dictionary<TYPE, Texture>;
 
+    /// <summary>
+    /// Klasa inicjalizująca i przechowująca zasoby gry.
+    /// </summary>
     public class Resources
     {
+        /// <summary>
+        /// Klasa pomocnicza, przechowująca parametry okna.
+        /// </summary>
         public class Options
         {
+            /// <summary>Zmienna przechowująca szerokość okna.</summary>
             public uint winWidth;
+            /// <summary>Zmienna przechowująca wysokość okna.</summary>
             public uint winHeight;
+            /// <summary>Zmienna przechowująca tytuł okna.</summary>
             public string winTitle;
         }
 
-        public XmlDocument document;        // dokument XML
-        public Sprite background;           // tło gry
-        public RectangleShape dmgBoxL;      // lewe pobocze
-        public RectangleShape dmgBoxR;      // prawe pobocze
-        public RectangleShape coins;        // kształt stosu monet
-        public Texture Tnumbers;            // textura z numerami
-        public Texture Texplosion;          // textura eksplozji
-        public Texture Tfilter;             // vignette filter texture
-        public Entities carCollection;      // kolekcja wszystkich dostępnych samochodów
-        public Options options;             // ustawienia okna
-        public Textures textures;           // utworzone tekstury monet, serc, butelek i samochodów
-        public Numbers numbers;             // słownik liczb
-        public Font font;                   // fonty
-        public KeyBindings keys;            // powiązanie klawiszy
-
-        public Sounds sounds;               // sounds
-
+        /// <summary>Obiekt dokumentu XML.</summary>
+        public XmlDocument document;        
+        /// <summary>Wyświetlany obiekt tła gry.</summary>
+        public Sprite background;           
+        /// <summary>Obiekt lewego pobocza jezdni - obszar niedozwolony.</summary>
+        public RectangleShape dmgBoxL;
+        /// <summary>Obiekt prawego pobocza jezdni - obszar niedozwolony.</summary>
+        public RectangleShape dmgBoxR;     
+        /// <summary>Obiekt z symbolem monet.</summary>
+        public RectangleShape coins;       
+        /// <summary>Tekstura cyfr (do odliczania, wyświetlania wyniku i poziomu alkoholu).</summary>
+        public Texture Tnumbers;            
+        /// <summary>Tekstura eksplozji.</summary>
+        public Texture Texplosion;         
+        /// <summary>Tekstura filtru zmiany percepcji.</summary>
+        public Texture Tfilter;            
+        /// <summary>Kolekcja wszystkich pojazdów.</summary>
+        public Entities carCollection;     
+        /// <summary>Obiekt opcji okna.</summary>
+        public Options options;             
+        /// <summary>Kolekcja tekstur: monety, serca, kapsle i samochody.</summary>
+        public Textures textures;         
+        /// <summary>Słownik z dostępnymi cyframi.</summary>
+        public Numbers numbers;            
+        /// <summary>Obiekt dostępnego fontu.</summary>
+        public Font font;                   
+        /// <summary>Słownik z obsługiwanymi klawiszami.</summary>
+        public KeyBindings keys;            
+        /// <summary>Słownik z dostępnymi dźwiękami.</summary>
+        public Sounds sounds;               
+        /// <summary>Wątek do inicjalizacji tekstur.</summary>
         Thread tTextures;
+        /// <summary>Wątek do inicjalizacji pozostałych zasobów.</summary>
         Thread tOthers;
+        /// <summary>Wątek do inicjalizacji dźwięków.</summary>
         Thread tSounds;
+        /// <summary>Mutex dostępu do dokumentu XML.</summary>
+        Mutex xmlAccess;
 
+        /// <summary>
+        /// Metoda inicjalizująca zasoby i wątki.
+        /// </summary>
         public void Init()
         {
             InitXMLdoc();
             InitFont();
+            xmlAccess = new Mutex();
             tTextures = new Thread(() => SafeExecute(LoadTextures, Program.ShowError));
             tSounds = new Thread(() => SafeExecute(LoadSounds, Program.ShowError));
             tOthers = new Thread(() => SafeExecute(LoadOthers, Program.ShowError));
@@ -60,7 +91,14 @@ namespace Game
             tOthers.Start();
         }
 
-        // Thread methods
+        // ------------------------------------------------------------------------------
+        //                     Metody wykorzystane w wątkach
+        // ------------------------------------------------------------------------------
+        /// <summary>
+        /// Metoda obsługująca bezpieczne wykonanie wątku z ew. komunikacją o błędzie.
+        /// </summary>
+        /// <param name="action">Funkcja wykonania wątku.</param>
+        /// <param name="handler">Uchwyt do funkcji ew. komunikacji błędu.</param>
         private void SafeExecute(Action action, Action<Exception> handler)
         {
             try
@@ -73,6 +111,9 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda ładująca wszystkie tekstury do pamięci (wykonanie w wątku).
+        /// </summary>
         private void LoadTextures()
         {
             InitOptions();
@@ -84,11 +125,17 @@ namespace Game
             InitCarsCollection();
         }
 
+        /// <summary>
+        /// Metoda ładująca pozostałe elementy gry do pamięci (wykonanie w wątku).
+        /// </summary>
         private void LoadOthers()
         {
             InitKeyBindings();
         }
 
+        /// <summary>
+        /// Metoda ładująca dostępne dźwięki gry do pamięci (wykonanie w wątku).
+        /// </summary>
         private void LoadSounds()
         {
             sounds = new Sounds();
@@ -106,6 +153,10 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda sprawdzająca status wykonania wątków łądujących zasoby do pamięci.
+        /// </summary>
+        /// <returns>Zwraca listę z wykonującymi się wątkami.</returns>
         public List<string> LoadingStatus()
         {
             List<string> threadList = new List<string>();
@@ -122,22 +173,35 @@ namespace Game
             return threadList;
         }
 
-        // initialization methods
+        // ------------------------------------------------------------------------------
+        //                     Metody inicjalizujące zasoby
+        // ------------------------------------------------------------------------------
+        /// <summary>
+        /// Metoda inicjalizująca dokument XML.
+        /// </summary>
         private void InitXMLdoc()
         {
             document = new XmlDocument();
             document.Load("..\\..\\Config.xml");
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca parametry głównego okna gry.
+        /// </summary>
         private void InitOptions()
         {
             options = new Options();
+            xmlAccess.WaitOne();
             XmlElement root = document.DocumentElement;
+            xmlAccess.ReleaseMutex();
             options.winWidth = Convert.ToUInt16(root["window"].Attributes["width"].Value);
             options.winHeight = Convert.ToUInt16(root["window"].Attributes["height"].Value);
             options.winTitle = root["window"].Attributes["title"].Value;
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca obiekt tła gry (jezdni).
+        /// </summary>
         private void InitBackground()
         {
             background = new Sprite(new Texture("..\\..\\resource\\images\\background.png"));
@@ -164,6 +228,9 @@ namespace Game
             };
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca obiekt kształtu monet.
+        /// </summary>
         private void InitCoinsShape()
         {
             coins = new RectangleShape
@@ -174,6 +241,9 @@ namespace Game
             };
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca wszystkie obiekty tekstur.
+        /// </summary>
         private void InitTextures()
         {
             textures = new Dictionary<TYPE, Texture>
@@ -194,12 +264,17 @@ namespace Game
             };
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca kolekcję dostępnych pojazdów.
+        /// </summary>
         private void InitCarsCollection()
         {
             try
             {
                 carCollection = new Entities();
+                xmlAccess.WaitOne();
                 XmlNodeList carsList = document.GetElementsByTagName("car");
+                xmlAccess.ReleaseMutex();
                 IntRect textureRect, damageRect;
                 foreach (XmlNode car in carsList)
                 {
@@ -221,6 +296,9 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca słownik z cyframi.
+        /// </summary>
         private void InitNumbers()
         {
             numbers = new Numbers();
@@ -228,21 +306,31 @@ namespace Game
                 numbers.Add(i, new Sprite(Tnumbers, new IntRect(i*64, 0, 64, 82)));
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca obiekt fontu.
+        /// </summary>
         private void InitFont()
         {
             font = new Font("..\\..\\resource\\fonts\\MPLUSCodeLatin-Bold.ttf");
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca teksturę filtru zmiany percepcji.
+        /// </summary>
         private void InitFilter()
         {
             Tfilter = new Texture("..\\..\\resource\\images\\vignette_filter.png");
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca słownik z dostępnymi klawiszami.
+        /// </summary>
         private void InitKeyBindings()
         {
             keys = new KeyBindings();
+            xmlAccess.WaitOne();
             XmlNodeList keyBindingsList = document.GetElementsByTagName("keybindings");
-
+            xmlAccess.ReleaseMutex();
             foreach (XmlNode keyBindings in keyBindingsList)
             {
                 int key = Convert.ToInt32(keyBindings.Attributes["key"].Value);
@@ -251,6 +339,11 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda analizująca parametry prostokąta ze wskazanego atrybutu xml.
+        /// </summary>
+        /// <param name="attribute">Atrybut dokumentu XML, na którym ma zajść analiza.</param>
+        /// <returns>Zwraca przeanalizowany parametr.</returns>
         private IntRect ParseAttributeRect(XmlAttribute attribute)
         {
             string[] values = attribute.Value.Split(' ');
@@ -262,6 +355,11 @@ namespace Game
             return rect;
         }
 
+        /// <summary>
+        /// Metoda analizująca parametry wektora ze wskazanego atrybutu xml.
+        /// </summary>
+        /// <param name="attribute">Atrybut dokumentu XML, na którym ma zajść analiza.</param>
+        /// <returns>Zwraca przeanalizowany wektor.</returns>
         private Vector2f ParseAttributeMoving(XmlAttribute attribute)
         {
             string[] values = attribute.Value.Split(' ');
@@ -271,6 +369,11 @@ namespace Game
             return vector;
         }
 
+        /// <summary>
+        /// Metoda zwracająca teksturę w zależności od typu.
+        /// </summary>
+        /// <param name="type">Typ tekstury elementu.</param>
+        /// <returns>Zwraca żądaną teksturę.</returns>
         public Texture GetTexture(TYPE type)
         {
             return textures[type];

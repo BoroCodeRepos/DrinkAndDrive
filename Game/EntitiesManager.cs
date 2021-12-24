@@ -12,31 +12,53 @@ namespace Game
     using EntitiesAnimation = Dictionary<TYPE, AnimationState>;
     using Timers = Dictionary<TYPE, TimeCounter>;
 
+    /// <summary>
+    /// Klasa zarządzająca elementami gry (pojazdy, serca, monety i kapsle).
+    /// </summary>
     class EntitiesManager
     {
-        public Resources resources;    // zasoby gry
-        public Entities entities;      // elementy gry (serca, monety, butelki i samochody)
-        public Entity mainCar;         // samochód główny - gracza
-        public EntitiesAnimation 
-            animation;                 // animacja serc, monet i butelek
-        public Timers timers;          // licznik czas do utworzenia następnego elementu               
+        /// <summary>Referencja do obiektu zasobów gry.</summary>
+        public Resources resources;
+        /// <summary>Lista wszystkich elementów gry.</summary>
+        public Entities entities;
+        /// <summary>Obiekt głównego pojazdu gracza.</summary>
+        public Entity mainCar;
+        /// <summary>Słownik animacji obiektów gry.</summary>
+        public EntitiesAnimation animation;
+        /// <summary>Czasy blokad tworzenia elementów gry.</summary>
+        public Timers timers;                        
 
+        /// <summary>Delegata do funkcji wywołujących kolizje.</summary>
+        /// <param name="e">Wskazanie elementu, z którym zaszła kolizja</param>
         public delegate void OnCollision(Entity e);
 
+        /// <summary>Delegata do kolizji z elementem serca.</summary>
         public OnCollision onHeartCollision;
+        /// <summary>Delegata do kolizji z monetą.</summary>
         public OnCollision onCoinCollision;
+        /// <summary>Delegata do kolizji z kapslem.</summary>
         public OnCollision onBeerCollision;
+        /// <summary>Delegata do kolizji z pojazdem.</summary>
         public OnCollision onCarCollision;
+        /// <summary>Delegata do kolizji z niedozwolonym obszarem mapy.</summary>
         public OnCollision onMapCollision;
 
-        public double heartPercent = 1e-2d;
+        /// <summary>Zmienna procentowej szansy na utworzenie elementu serca.</summary>
+        public double heartPercent = 0d;
+        /// <summary>Zmienna procentowej szansy na utworzenie elementu monety.</summary>
         public double coinPercent = 1d;
+        /// <summary>Zmienna procentowej szansy na utworzenie elementu kapsla.</summary>
         public double beerPercent = .1d;
+        /// <summary>Zmienna procentowej szansy na utworzenie elementu pojazdu.</summary>
         public double carPercent = .1d;
 
         //------------------------------------------------------------------------------------
         //                          Constructor
         //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Konstruktor managera elementów - inicjalizacja obiektów.
+        /// </summary>
+        /// <param name="resources">Referencja do obiektu zasobów gry.</param>
         public EntitiesManager(Resources resources)
         {
             this.resources = resources;
@@ -64,6 +86,12 @@ namespace Game
         //------------------------------------------------------------------------------------
         //                          Initialization methods
         //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Metoda inicjalizująca animacje.
+        /// </summary>
+        /// <param name="attrName">Nazwa atrybutu animacji w dok. XML.</param>
+        /// <param name="Tanimation">Lista animowanych elementów.</param>
+        /// <param name="type">Typ inicjalizowanej animacji.</param>
         private void InitAnimation(string attrName, EntitiesAnimation Tanimation, TYPE type)
         {
             AnimationState animation = Tanimation[type];
@@ -80,7 +108,13 @@ namespace Game
         //------------------------------------------------------------------------------------
         //                          Update game methods
         //------------------------------------------------------------------------------------
-        public  void Update(float dt, float speed, float offset)
+        /// <summary>
+        /// Główna metoda aktualizująca elementy gry.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
+        /// <param name="speed">Szybkość poruszania się jezdni.</param>
+        /// <param name="offset">Przesunięcie ze względu na poziom alkoholu.</param>
+        public void Update(float dt, float speed, float offset)
         {
             UpdateTimers(dt);                                   // aktualizacja timerów
             TryCreateEntities();                                // próba utworzenia nowych elementów gry
@@ -92,7 +126,11 @@ namespace Game
             UpdateCollisions();                                 // aktualizacja kolizji obiektów
         }
 
-        public  void UpdateAnimation(float dt)
+        /// <summary>
+        /// Metoda aktualizująca animacje elementów gry.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
+        public void UpdateAnimation(float dt)
         {
             List<TYPE> types = new List<TYPE>
             {
@@ -122,6 +160,12 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda aktualizująca ruch elementów gry.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
+        /// <param name="speed">Szybkość poruszania się jezdni.</param>
+        /// <param name="offset">Przesunięcie ze względu na poziom alkoholu.</param>
         private void UpdateEntitiesMove(float dt, float speed, float offset)
         {
             List<Entity> entitiesToDelete = new List<Entity>();
@@ -138,6 +182,9 @@ namespace Game
                     entities.Remove(item);
         }
 
+        /// <summary>
+        /// Metoda aktualizująca położenie głównego pojazdu w obszarze wyświetlanej mapy.
+        /// </summary>
         private void UpdateMapBounds()
         {
             Vector2f pos = mainCar.damageBox.Position;
@@ -155,6 +202,10 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda aktualizująca liczniki czasu blokad tworzenia elementów gry.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
         private void UpdateTimers(float dt)
         {
             timers[TYPE.COIN].Update(dt);
@@ -162,6 +213,9 @@ namespace Game
             timers[TYPE.CAR].Update(dt);
         }
 
+        /// <summary>
+        /// Metoda sprawdzająca kolizje głównego pojazdu z elementami gry.
+        /// </summary>
         private void UpdateCollisions()
         {
             foreach (var entity in entities)
@@ -183,6 +237,9 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda sprawdzająca kolizje głównego pojazdu z niedozwolonym obszarem jezdni.
+        /// </summary>
         private void UpdateMapCollision()
         {
             FloatRect carRect = mainCar.damageBox.GetGlobalBounds();
@@ -195,7 +252,11 @@ namespace Game
         //------------------------------------------------------------------------------------
         //                          Render elements on screen
         //------------------------------------------------------------------------------------
-        public  void RenderEntities(ref RenderWindow window)
+        /// <summary>
+        /// Metoda renderująca elementy gry we wskazanym oknie.
+        /// </summary>
+        /// <param name="window">Referencja do głównego okna gry.</param>
+        public void RenderEntities(ref RenderWindow window)
         {
             // wyświetlenie monet, butelek, serc i  samochodów
             foreach (var entity in entities)
@@ -204,7 +265,12 @@ namespace Game
             window.Draw(mainCar.sprite);
         }
 
-        public  void RenderDamageBoxes(ref RenderWindow window, bool showDamageBoxes)
+        /// <summary>
+        /// Metoda renderująca modele uszkodzeń.
+        /// </summary>
+        /// <param name="window">Referencja do głównego okna gry.</param>
+        /// <param name="showDamageBoxes">Wskaźnik wyświetlenia modelu uszkodzeń.</param>
+        public void RenderDamageBoxes(ref RenderWindow window, bool showDamageBoxes)
         {
             if (showDamageBoxes)
             {
@@ -220,11 +286,18 @@ namespace Game
         //------------------------------------------------------------------------------------
         //                          Supporting methods
         //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Metoda usuwająca wszystkie elementy gry.
+        /// </summary>
         public  void ClearAll()
         {
             entities.Clear();
         }
 
+        /// <summary>
+        /// Metoda tworząca odpowiedni pojazd gracza.
+        /// </summary>
+        /// <param name="id">Identyfikator tworzonego pojazdu.</param>
         public  void SetPlayerCarById(int id)
         {
             id = id % 14;
@@ -236,6 +309,9 @@ namespace Game
             );
         }
 
+        /// <summary>
+        /// Metoda przeprowadzająca próbę utworzenia nowego elementu gry.
+        /// </summary>
         private void TryCreateEntities()
         {
             float offset = resources.background.Position.X;
@@ -261,6 +337,11 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda sprawdzająca zajętość pasa ruchu na jezdni.
+        /// </summary>
+        /// <param name="lane">Obiekt pasa ruchu.</param>
+        /// <returns>Pas zajęty => false, pas wolny => true.</returns>
         private bool CheckBusyLane(FloatRect lane)
         {
             foreach (var item in entities)
@@ -270,6 +351,13 @@ namespace Game
             return true;
         }
 
+        /// <summary>
+        /// Metoda sprawdzająca procentowe szanse na utworzenie elementu gry.
+        /// </summary>
+        /// <param name="type">Typ elementu gry.</param>
+        /// <param name="dir">Kierunek jazdy / poruszania się elementu.</param>
+        /// <param name="percent">Wyznaczone procentowe szanse na utworzenie.</param>
+        /// <param name="position">Pozycja inicjalizacyjna w przypadku utworzenia.</param>
         private void CheckPercentageChances(TYPE type, DIRECTION dir, double percent, Vector2f position)
         {
             // utworzenie obiektu danego typu jeśli zostanie poprawnie określony procentowo
@@ -310,6 +398,12 @@ namespace Game
                 CreateElement(position, type, dir);
         }
 
+        /// <summary>
+        /// Metoda tworząca odpowiedni (wskazany typem) element gry.
+        /// </summary>
+        /// <param name="position">Pozycja inicjalizacyjna tworzonego elementu.</param>
+        /// <param name="type">Typ tworzonego elementu gry.</param>
+        /// <param name="dir">Kierunek poruszania się elementu gry.</param>
         private void CreateElement(Vector2f position, TYPE type, DIRECTION dir)
         {
             if (type == TYPE.CAR)
@@ -342,6 +436,9 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda usuwająca elementy gry, które opuściły obszar mapy.
+        /// </summary>
         private void DeleteEntities()
         {
             Vector2f position;
@@ -368,6 +465,12 @@ namespace Game
                 entities.Remove(entity);      
         }
 
+        /// <summary>
+        /// Metoda sprawdzająca kolizje pomiędzy dwoma elementami gry.
+        /// </summary>
+        /// <param name="A">Pierwszy element gry.</param>
+        /// <param name="B">Drugi element gry.</param>
+        /// <returns>Doszło do kolizji => true, nie doszło do kolizji => false.</returns>
         private bool CollisionsCheck(Entity A, Entity B)
         {
             FloatRect rectA = A.damageBox.GetGlobalBounds();

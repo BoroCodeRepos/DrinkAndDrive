@@ -8,17 +8,39 @@ namespace Game
 {
     using DIR = DIRECTION;
 
+    /// <summary>
+    /// Klasa podstawowego elementu gry (monety, serca, kapsle, pojazdy).
+    /// </summary>
     public class Entity
     {
-        public TYPE type;                       // typ elementu
-        public DIR dir;                         // kierunek ruchu
-        public Sprite sprite;                   // element wyświetlany na ekranie
-        public RectangleShape damageBox;        // model uszkodzeń
-        public MovementComponent movement;      // zapis aktualnych wartości określających ruch
-        public float primaryPosX;               // pozycja inicjalizacyjna
-        public bool effect;                     // użycie efektu skalowania
-        public bool toDelete;                   // określa czy element jest do usunięcia
+        /// <summary>Typ elementu.</summary>
+        public TYPE type;                    
+        /// <summary>Kierunek poruszania się elementu.</summary>
+        public DIR dir;                        
+        /// <summary>Element wyświetlany w oknie gry.</summary>
+        public Sprite sprite;                   
+        /// <summary>Model kolizji elementu.</summary>
+        public RectangleShape damageBox;        
+        /// <summary>Komponent zaawansowanego ruchu.</summary>
+        public MovementComponent movement;      
+        /// <summary>Pozycja inicjalizacyjna w osi X - pozycja na pasie jezdni.</summary>
+        public float primaryPosX;               
+        /// <summary>Zmienna stanu efektu skalowania elementu.</summary>
+        public bool effect;                     
+        /// <summary>Zmienna stanu informująca o końcu efektu skalowania.</summary>
+        public bool toDelete;
 
+        //------------------------------------------------------------------------------------
+        //                          Constructors
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Konstruktor - inicjalizacja podstawowych parametrów (serca, monety i kapsle).
+        /// </summary>
+        /// <param name="texture">Tekstura elementu gry.</param>
+        /// <param name="textureRect">Aktualna ramka animacji.</param>
+        /// <param name="damageRect">Model kolizji elementu.</param>
+        /// <param name="type">Typ elementu.</param>
+        /// <param name="dir">Kierunek poruszania się elementu.</param>
         public Entity(Texture texture, IntRect textureRect, IntRect damageRect, TYPE type, DIR dir = DIR.UP)
         {
             this.type = type;
@@ -48,6 +70,13 @@ namespace Game
             toDelete = false;
         }
 
+        /// <summary>
+        /// Konstruktor - inicjalizacja podstawowych parametrów (pojazdów).
+        /// </summary>
+        /// <param name="carNr">Identyfikator tworzonego pojazdu.</param>
+        /// <param name="carCollection">Kolekcja wszystkich pojazdów.</param>
+        /// <param name="createMovementComponent">Zezwolenie na tworzenie zaawansowanego modelu ruchu.</param>
+        /// <param name="dir">Kierunek poruszania się elementu.</param>
         public Entity(int carNr, List<Entity> carCollection, bool createMovementComponent = true, DIR dir = DIR.UP)
         {
             try
@@ -70,6 +99,15 @@ namespace Game
             }
         }
 
+        //------------------------------------------------------------------------------------
+        //                          Supporting methods
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Metoda tworząca komponent zaawansowanego ruchu pojazdu.
+        /// </summary>
+        /// <param name="acceleration">Parametr przyśpieszania.</param>
+        /// <param name="deceleration">Parametr hamowania.</param>
+        /// <param name="maxVelocity">Maksymalna prędkość pojazdu.</param>
         public void CreateMovementCompontent(Vector2f acceleration, Vector2f deceleration, Vector2f maxVelocity)
         {
             movement = new MovementComponent(
@@ -79,6 +117,12 @@ namespace Game
             );
         }
 
+        /// <summary>
+        /// Metoda aktualizująca ruch elementu.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
+        /// <param name="speed">Szybkość poruszania się jezdni.</param>
+        /// <param name="offset">Przesunięcie związane z poziomem alkoholu.</param>
         public void UpdateMove(float dt, float speed, float offset)
         {
             if (movement != null)
@@ -116,6 +160,11 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda poruszająca elementem gry o zadaną wielkość.
+        /// </summary>
+        /// <param name="dx">Przesunięcie po osi X.</param>
+        /// <param name="dy">Przesunięcie po osi Y.</param>
         public void Move(float dx, float dy)
         {
             Vector2f position = damageBox.Position;
@@ -124,28 +173,50 @@ namespace Game
             SetPosition(position.X, position.Y);
         }
 
+        /// <summary>
+        /// Metoda ustawiająca pozycję elementu.
+        /// </summary>
+        /// <param name="X">Pozycja w osi X.</param>
+        /// <param name="Y">Pozycja w osi Y.</param>
         public void SetPosition(float X, float Y)
         {
             sprite.Position = new Vector2f(X, Y);
             damageBox.Position = new Vector2f(X, Y);
         }
 
+        /// <summary>
+        /// Metoda zwracająca aktualną pozycję elementu.
+        /// </summary>
+        /// <returns>Aktualna pozycja elementu.</returns>
         public Vector2f GetPosition()
         {
             return damageBox.Position;
         }
 
+        /// <summary>
+        /// Metoda zwracająca wielkość modelu kolizji elementu.
+        /// </summary>
+        /// <returns>Rozmiar modelu kolizji.</returns>
         public Vector2f GetSize()
         {
             return damageBox.Size;
         }
 
+        /// <summary>
+        /// Metoda ustawiająca rotacje elementu o zadany kąt.
+        /// </summary>
+        /// <param name="angle">Kąt obrotu elementu.</param>
         public void SetRotation(float angle)
         {
             sprite.Rotation = angle / 50f;
             damageBox.Rotation = angle / 50f;
         }
 
+        /// <summary>
+        /// Metoda ustawiająca kierunek zaawansowanego ruchu pojazdu.
+        /// </summary>
+        /// <param name="X">Kierunek w osi X.</param>
+        /// <param name="Y">Kierunek w osi Y.</param>
         public void DirectionMove(float X, float Y)
         {
             if (movement != null)
@@ -160,6 +231,7 @@ namespace Game
             }
         }
 
+        /// <summary>Metoda ustawiająca kolor modelu kolizji.</summary>
         private void SetColor()
         {
             if (type == TYPE.HEART)
@@ -172,13 +244,14 @@ namespace Game
                 damageBox.FillColor = new Color(255, 128, 64, 128);
         }
 
+        /// <summary>Metoda ustawiająca parametry ze względu na kierunek poruszania sie elementu.</summary>
         private void SetDirection()
         {
             if (type == TYPE.CAR)
             {
-                SetRotation((dir == DIRECTION.DOWN) ? 9000f : 0f);
+                SetRotation((dir == DIR.DOWN) ? 9000f : 0f);
             }
-            else if (dir == DIRECTION.DOWN)
+            else if (dir == DIR.DOWN)
             {
                 Vector2f origin = sprite.Origin;
                 origin.Y += damageBox.Size.Y;
@@ -187,6 +260,7 @@ namespace Game
             }
         }
 
+        /// <summary>Metoda ustawiająca zezwolenie na użycie efektu skalowania.</summary>
         public void SetEffect()
         {
             effect = true;

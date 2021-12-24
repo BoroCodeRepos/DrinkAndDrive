@@ -7,14 +7,29 @@ using System.Xml;
 
 namespace Game
 {
+    /// <summary>
+    /// Klasa tworząca obraz menu.
+    /// </summary>
     class Menu
     {
+        /// <summary>
+        /// Sktruktura pomocnicza do wyświetlania wyników graczy.
+        /// </summary>
         private struct Player
         {
+            /// <summary>Zmienna przechowująca nazwę gracza.</summary>
             public string name;
+            /// <summary>Zmienna przechowująca wynik gracza.</summary>
             public int score;
+            /// <summary>Zmienna przechowująca czas gry gracza.</summary>
             public float time;
 
+            /// <summary>
+            /// Konstruktor - inicjalizacja zmiennych.
+            /// </summary>
+            /// <param name="name">Nazwa gracza.</param>
+            /// <param name="score">Wynik gracza.</param>
+            /// <param name="time">Całkowity czas gry.</param>
             public Player(string name, int score, float time)
             {
                 this.name = name;
@@ -23,15 +38,26 @@ namespace Game
             }
         }
 
+        /// <summary>Referencja do obiektu zasobów gry.</summary>
         Resources resources;
+        /// <summary>Referencja do silnika gry.</summary>
         Engine engine;
 
+        /// <summary>Zmienna określająca kolor tekstu buttona w stanie bezczynności.</summary>
         Color idle = new Color(0xE0, 0xFF, 0xFF);
+        /// <summary>Zmienna określająca kolor tekstu buttona w stanie najechania kursorem.</summary>
         Color hover = new Color(0xF5FFFA);
+        /// <summary>Zmienna określająca kolor tekstu buttona w stanie aktywnym.</summary>
         Color active = new Color(0xFF, 0xFF, 0xFF);
 
+        /// <summary>Zmienna przechowująca wyświetlane komponenty GUI na ekranie.</summary>
         List<GUI.Component> components;
 
+        /// <summary>
+        /// Konstruktor - inicjalizacja zmiennych referencyjnych.
+        /// </summary>
+        /// <param name="engine">Referencja do obiektu silnika gry.</param>
+        /// <param name="resources">Referencja do obiektu zasobów gry.</param>
         public Menu(Engine engine, Resources resources)
         {
             this.engine = engine;
@@ -40,6 +66,10 @@ namespace Game
             InitMainMenu();
         }
 
+        /// <summary>
+        /// Główna metoda aktualizująca wyświetlane obiekty w stanie pauzy.
+        /// </summary>
+        /// <param name="window">Referencja do obiektu głównego okna aplikacji.</param>
         public void Update(ref RenderWindow window)
         {
             try
@@ -50,12 +80,19 @@ namespace Game
             catch (Exception) { }
         }
 
+        /// <summary>
+        /// Główna metoda renderująca obiekty GUI na wskazanym oknie.
+        /// </summary>
+        /// <param name="window">Referencja do obiektu głównego okna aplikacji.</param>
         public void Render(ref RenderWindow window)
         {
             foreach (var component in components)
                 component.Render(ref window);
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca komponenty GUI podczas wyświetlania głównego menu.
+        /// </summary>
         public void InitMainMenu()
         {
             components.Clear();
@@ -84,6 +121,9 @@ namespace Game
             components.Add(ExitBtn);
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca komponenty GUI podczas wyświeltania obsługiwanych klawiszy.
+        /// </summary>
         private void InitControl()
         {
             components.Clear();
@@ -94,7 +134,7 @@ namespace Game
                 " > / d - move right \n" +
                 " P / Esc - open / close menu \n" +
                 " B - show / hide hitboxes";
-            GUI.Button ctrl = new GUI.Button(new Vector2f(1000f, 550f), new Vector2f(512f, 384f), 60, control, resources.font, hover, hover, hover);
+            GUI.Text ctrl = new GUI.Text(new Vector2f(512f, 384f), 60, control, resources.font, hover); 
             GUI.Button back = new GUI.Button(new Vector2f(200f, 80f), new Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
             {
                 onClick = new GUI.Component.Function(InitMainMenu)
@@ -104,12 +144,18 @@ namespace Game
             components.Add(back);
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca komponenty GUI podczas wyświetlania wyników graczy.
+        /// </summary>
         private void InitPlayersResults()
         {
             int page = 1;
             ShowPlayersResults(page);
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca komponenty GUI podczas wyświetlania opcji wyboru pojazdu.
+        /// </summary>
         private void InitSelectCars()
         {
             components.Clear();
@@ -165,6 +211,9 @@ namespace Game
             );
         }
 
+        /// <summary>
+        /// Metoda inicjalizująca komponenty GUI podczas wyświetlania końca gry.
+        /// </summary>
         public void InitGameResult()
         {
             components.Clear();
@@ -218,6 +267,10 @@ namespace Game
             );
         }
 
+        /// <summary>
+        /// Metoda pokazująca wyniki graczy na ekranie względem wskazanej strony.
+        /// </summary>
+        /// <param name="page">Strona wyświetlanych wyników graczy.</param>
         private void ShowPlayersResults(int page)
         {
             // ilość graczy na stronie
@@ -227,13 +280,17 @@ namespace Game
             // tworzenie listy z zapisanymi graczami
             CreatePlayerList(out List<Player> playerList);
             // paginacja
-            CreatePagination(playerList, itemsPerPage);
+            CreatePagination(playerList, itemsPerPage, page);
             // dodawanie elementów stacyjnych
             LoadStationElements(page);
             // dodanie elementów graczy
             LoadPlayersResults(playerList, page, itemsPerPage);
         }
 
+        /// <summary>
+        /// Metoda tworząca pełną listę wyników wszystkich graczy.
+        /// </summary>
+        /// <param name="list">Lista wyników graczy.</param>
         private void CreatePlayerList(out List<Player> list)
         {
             list = new List<Player>();
@@ -257,22 +314,33 @@ namespace Game
             );
         }
 
-        private void CreatePagination(List<Player> list, int itemsPerPage)
+        /// <summary>
+        /// Metoda wyznaczająca ilość stron oraz tworzenie ich komponentów.
+        /// </summary>
+        /// <param name="list">Lista wyników wszystkich graczy.</param>
+        /// <param name="itemsPerPage">Ilość obiektów na stronie.</param>
+        /// <param name="page">Ilość obiektów na stronie.</param>
+        private void CreatePagination(List<Player> list, int itemsPerPage, int page)
         {
             // obliczenie ilości stron
-            int pages = (int)Math.Ceiling((float)list.Count / (float)itemsPerPage);
-            // dodanie elementów stron do listy componentów
+            int pages = (int)Math.Ceiling((double)list.Count / (double)itemsPerPage);
+            // dodanie elementów stron do listy komponentów
             for (int i = 1; i <= pages; i++)
             {
                 int pagePtr = i;
-                components.Add(new GUI.Button(new Vector2f(80f, 50f), new Vector2f(200f + i * 80f, 100f), 40, $"{i}", resources.font, idle, hover, active)
-                {
-                    onClick = new GUI.Component.Function(delegate () { ShowPlayersResults(pagePtr); })
-                }
-                );
+                GUI.Button button = new GUI.Button(new Vector2f(80f, 50f), new Vector2f(200f + i * 80f, 100f), 40, $"{i}", resources.font, idle, hover, active);
+                if (page != pagePtr)
+                    button.onClick = new GUI.Component.Function(delegate () { ShowPlayersResults(pagePtr); });
+                
+                
+                components.Add(button);
             }
         }
 
+        /// <summary>
+        /// Metoda ładująca komponenty stacyjne (napisy i przycisk powrotu do menu głównego) względem aktualnej strony.
+        /// </summary>
+        /// <param name="page">Strona wyświetlanych wyników graczy.</param>
         private void LoadStationElements(int page)
         {
             // dodanie elementów stacyjnych
@@ -283,12 +351,18 @@ namespace Game
             components.Add(new GUI.Text(new Vector2f(140f, 100f), 40, $"Pages ({page}):", resources.font, hover));
 
             components.Add(new GUI.Button(new Vector2f(200f, 80f), new Vector2f(900f, 720f), 70, "back", resources.font, idle, hover, active)
-            {
-                onClick = new GUI.Component.Function(InitMainMenu)
-            }
+                {
+                    onClick = new GUI.Component.Function(InitMainMenu)
+                }
             );
         }
 
+        /// <summary>
+        /// Metoda ładująca komponenty GUI wyników graczy względem wskazanej strony.
+        /// </summary>
+        /// <param name="list">Lista wyników wszystkich graczy.</param>
+        /// <param name="page">Strona wyświetlanych wyników graczy.</param>
+        /// <param name="itemsPerPage">Ilość obiektów na stronie.</param>
         private void LoadPlayersResults(List<Player> list, int page, int itemsPerPage)
         {
             int maxNameLen = 10;
@@ -315,6 +389,12 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda zapisująca wynik gracza w dokumencie XML.
+        /// </summary>
+        /// <param name="text">Wskazana nazwa gracza.</param>
+        /// <param name="score">Wynik gracza.</param>
+        /// <param name="time">Całkowity czas gry.</param>
         private void Save(Text text, int score, double time)
         {
             if (text.DisplayedString.Length > 0)

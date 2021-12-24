@@ -15,55 +15,83 @@ namespace Game
         //------------------------------------------------------------------------------------
         //                          Variables of game
         //------------------------------------------------------------------------------------
-        Resources resources;        // zasoby gry
-        EntitiesManager eManager;   // manager elementów gry
-        Shader shader;              // shader object
-        Filter filter;              // filter object
-        Menu menu;                  // menu
-        bool gameOver;              // koniec gry <= wyświetlenie wyników
-        bool showDamageBoxes;       // true <= pokazuje modele uszkodzeń samochodów i jezdni
-        bool pause;                 // true <= pauza
-        bool wait;                  // oczekiwanie na koniec animacji
-        bool initialization;        // inicjalizacja gry
-        float iniTime;              // czas inicjalizacji
-        float waitTime;             // czas opóźnienia
-        
+        /// <summary>Obiekt zasobów gry.</summary>
+        Resources resources;        
+        /// <summary>Obiekt zarządzający elementami gry.</summary>
+        EntitiesManager eManager;   
+        /// <summary>Obiekt filtru ściemniającego pole do wyświetlenia menu.</summary>
+        Shader shader;             
+        /// <summary>Obiekt filtru do zmiany percepcji gracza.</summary>
+        Filter filter;              
+        /// <summary>Obiekt zarządzający menu gry.</summary>
+        Menu menu;                  
+        /// <summary>Zmienna wskazująca koniec gry.</summary>
+        bool gameOver;              
+        /// <summary>Zmienna wskazująca wyświetlenie modelu uszkodzeń.</summary>
+        bool showDamageBoxes;       
+        /// <summary>Zmienna stanu określająca przerwę w grze.</summary>
+        bool pause;                 
+        /// <summary>
+        /// Zmienna stanu wstrzymania gry na czas wyświetlenia animacji wybuchu.
+        /// </summary>
+        bool wait;
+        /// <summary>Zmienna trwania czasu animacji wybuchu.</summary>
+        float waitTime;
+        /// <summary>Zmienna wskazująca inicjalizację gry - początkowe odliczanie.</summary>
+        bool initialization;       
+        /// <summary>Zmienna trwania czasu inicjalizacji - poczatkowe odliczanie.</summary>
+        float iniTime;                     
+
         //------------------------------------------------------------------------------------
         //                          Variables of alcohol level
         //------------------------------------------------------------------------------------
-        public TimeCounter alcoTime;// czas jazdy po alkoholu
-        TimeCounter alcoTimeToStep; // czas do obniżenia alkoholu we krwi
-        float alcoLevel;            // zadany poziom alkoholu we krwi
-        float lastLevel;            // poprzedni stan poziomu alkoholu
-        float alcLevelStep;         // krok alco
+        /// <summary>Obiekt zliczający czas jazdy po alkoholu.</summary>
+        public TimeCounter alcoTime;
+        /// <summary>Obiekt zliczający czas do obliżenia stanu alkoholu.</summary>
+        TimeCounter alcoTimeToStep;
+        /// <summary>Zadany poziom alkoholu.</summary>
+        float alcoLevel;            
+        /// <summary>Aktualny stan alkoholu we krwi.</summary>
+        float currLevel;           
+        /// <summary>Zmienna określająca krok poziomu alkoholu.</summary>
+        float alcLevelStep;      
 
         //------------------------------------------------------------------------------------
         //                          Variables of game result
         //------------------------------------------------------------------------------------
-        public TimeCounter gameTime;// czas gry
-        public int score;           // aktualny wynik gracza
-        int lives;                  // ilość żyć
-        int level;                  // aktualny poziom gry
-        float speed;                // szybkość przesuwania się drogi po ekranie
-        float startSpeed;           // prędkość początkowa
+        /// <summary>Obiekt zliczający czas gry.</summary>
+        public TimeCounter gameTime;
+        /// <summary>Aktualny wynik gracza.</summary>
+        public int score;           
+        /// <summary>Aktualna ilość żyć gracza.</summary>
+        int lives;                              
+        /// <summary>Aktualna prędkość gracza.</summary>
+        float speed;                
+        /// <summary>Zmienna prędkości inicjalizacyjnej gracza.</summary>
+        float startSpeed;           
         
         //------------------------------------------------------------------------------------
         //                          Constructor
         //------------------------------------------------------------------------------------
+        /// <summary>Konstruktor silnika gry - inicjalizacja obiektów.</summary>
+        /// <param name="resources">Referencja do obiektu zasobów gry.</param>
         public Engine(Resources resources)
         {
+            // określenie odtwarzanej muzyki.
             resources.sounds["start"].Play();
             resources.sounds["menu_music"].Loop = true;
             resources.sounds["bg_sound"].Loop = true;
             resources.sounds["traffic_noise"].Loop = true;
             resources.sounds["engine_sound"].Loop = true;
             resources.sounds["engine_sound"].Play();
+            // inicjalizacja podstawowych parametrów
             initialization = true;
             gameOver = false;
             iniTime = 0f;
             this.resources = resources;
             try
             {
+                // próba utworzenia elementów gry
                 InitGameResources();
                 InitAlcoVars();
                 InitEntitesManager();
@@ -71,6 +99,7 @@ namespace Game
             }
             catch(Exception exception)
             {
+                // komunikacja o niepowodzeniu
                 Program.ShowError(exception);
             }
         }
@@ -78,10 +107,10 @@ namespace Game
         //------------------------------------------------------------------------------------
         //                          Initialization methods
         //------------------------------------------------------------------------------------
+        /// <summary>Metoda inicjalizująca wewnętrzne zasoby gry.</summary>
         private void InitGameResources()
         {
             score = 0;
-            level = 1;
             gameOver = false;
             showDamageBoxes = false;
             pause = false;
@@ -97,22 +126,24 @@ namespace Game
             shader = new Shader(resources.options.winWidth, resources.options.winHeight, 210, true);
             shader.SetUp(210, 1, .005f);
 
-            filter = new Filter(resources.Tfilter, resources.options.winWidth, resources.options.winHeight);
+            filter = new Filter(resources.Tfilter);
 
             gameTime = new TimeCounter();
             menu = new Menu(this, resources);
         }
 
+        /// <summary>Metoda inicjalizująca zmienne dotyczące poziomu alkoholu.</summary>
         private void InitAlcoVars()
         {
             alcoTime = new TimeCounter();
             alcoTimeToStep = new TimeCounter();
             alcoTimeToStep.SetEventTime(5d);
             alcoLevel = 0f;
-            lastLevel = 0f;
+            currLevel = 0f;
             alcLevelStep = 0.001f;
         }
 
+        /// <summary>Metoda inicjalizująca managera elementów gry.</summary>
         private void InitEntitesManager()
         {
             eManager = new EntitiesManager(resources)
@@ -125,6 +156,7 @@ namespace Game
             };
         }
 
+        /// <summary>Metoda inicjalizująca pojazd gracza.</summary>
         private void InitPlayerCar()
         {
             Random rnd = new Random();
@@ -134,7 +166,12 @@ namespace Game
         //------------------------------------------------------------------------------------
         //                          Update game methods
         //------------------------------------------------------------------------------------
-        public  void Update(float dt, ref RenderWindow window)
+        /// <summary>
+        /// Głowna metoda aktualizująca stan gry.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
+        /// <param name="window">Referencja do obiektu głównego okna gry.</param>
+        public void Update(float dt, ref RenderWindow window)
         {
             // aktualizacja zasobów
             UpdateInitialization(dt);
@@ -161,6 +198,10 @@ namespace Game
             UpdateLosingLife(dt);
         }
 
+        /// <summary>
+        /// Metoda aktualizująca odliczanie po starcie gry.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
         private void UpdateInitialization(float dt)
         {
             if (initialization)
@@ -180,6 +221,10 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda aktualizująca tło (jezdnię) - ruch w osi X i Y.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
         private void UpdateBackground(float dt)
         {
             Vector2f curr_pos = resources.background.Position;
@@ -195,19 +240,23 @@ namespace Game
             );
         }
 
+        /// <summary>
+        /// Metoda aktualizująca czas jazdy pod wpływem alkoholu.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
         private void UpdateAlcoTime(float dt)
         {
-            if (lastLevel > alcoLevel)
+            if (currLevel > alcoLevel)
             {
-                lastLevel -= alcLevelStep;
-                if (lastLevel < alcoLevel)
-                    lastLevel = alcoLevel;
+                currLevel -= alcLevelStep;
+                if (currLevel < alcoLevel)
+                    currLevel = alcoLevel;
             }
-            else if (lastLevel < alcoLevel)
+            else if (currLevel < alcoLevel)
             {
-                lastLevel += alcLevelStep;
-                if (lastLevel > alcoLevel)
-                    lastLevel = alcoLevel;
+                currLevel += alcLevelStep;
+                if (currLevel > alcoLevel)
+                    currLevel = alcoLevel;
             }
 
             alcoTime.Update(dt);
@@ -224,10 +273,14 @@ namespace Game
                     alcoTimeToStep.ClearTime();
                     filter.SetVisible(false);
                 }
-                filter.CalcScale(alcoLevel);
+                filter.CalcScale(currLevel);
             }
         }
 
+        /// <summary>
+        /// Metoda aktualizująca czas wstrzymania elementów gry - animacja wybuchu.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
         private void UpdateLosingLife(float dt)
         {
             if (wait)
@@ -253,6 +306,7 @@ namespace Game
             }
         }
 
+        /// <summary>Metoda aktualizująca szanse na utworzenie elementu serca.</summary>
         private void UpdateHeartChances()
         {
             if (lives < 3)
@@ -264,6 +318,10 @@ namespace Game
         //------------------------------------------------------------------------------------
         //                          Render elements on screen
         //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Główna metoda renderująca wszystkie obiekty na wskazanym oknie.
+        /// </summary>
+        /// <param name="window">Referencja do głównego okna gry.</param>
         public  void Render(ref RenderWindow window)
         {
             // wyswietlenie tła
@@ -282,6 +340,10 @@ namespace Game
             RenderMenu(ref window);
         }
 
+        /// <summary>
+        /// Metoda renderująca tło gry - jezdnię.
+        /// </summary>
+        /// <param name="window">Referencja do głównego okna gry.</param>
         private void RenderBackground(ref RenderWindow window)
         {
             Vector2f curr_pos = resources.background.Position;
@@ -303,11 +365,19 @@ namespace Game
             resources.background.Position = curr_pos;
         }
 
+        /// <summary>
+        /// Metoda renderująca filtr zmiany percepcji.
+        /// </summary>
+        /// <param name="window">Referencja do głównego okna gry.</param>
         private void RenderFilter(ref RenderWindow window)
         {
             filter.Render(ref window);
         }
 
+        /// <summary>
+        /// Metoda renderująca interfejs gry (wynik, ilość żyć i poziom alkoholu).
+        /// </summary>
+        /// <param name="window">Referencja do głównego okna gry.</param>
         private void RenderInterface(ref RenderWindow window)
         {
             // score
@@ -344,7 +414,7 @@ namespace Game
             window.Draw(bottleCap);
             List<float> posX = new List<float> { 10f, 50f, 100f, 170f };
             //float dispLevel = (alcoLevel > 10f) ? 9.99f : alcoLevel ;
-            float dispLevel = (lastLevel > 10f) ? 9.99f : lastLevel;
+            float dispLevel = (currLevel > 10f) ? 9.99f : currLevel;
             string strLevel = string.Format("{0:0.00}", dispLevel);
             for (int i = 0; i < 4; i++)
             {
@@ -358,11 +428,19 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda renderująca filtr przyciemnienia ekranu.
+        /// </summary>
+        /// <param name="window">Referencja do głównego okna gry.</param>
         private void RenderShader(ref RenderWindow window)
         {
             window.Draw(shader.GetShape());
         }
 
+        /// <summary>
+        /// Metoda renderująca odliczanie po starcie gry.
+        /// </summary>
+        /// <param name="window">Referencja do głównego okna gry.</param>
         private void RenderInitCounting(ref RenderWindow window)
         {
             if (initialization)
@@ -379,6 +457,10 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda renderująca menu.
+        /// </summary>
+        /// <param name="window">Referencja do głównego okna gry.</param>
         private void RenderMenu(ref RenderWindow window)
         {
             if (pause || gameOver)
@@ -399,7 +481,12 @@ namespace Game
         //------------------------------------------------------------------------------------
         //                          Supporting methods
         //------------------------------------------------------------------------------------
-        public  void OnKeyPressed(object sender, KeyEventArgs key)
+        /// <summary>
+        /// Metoda obsługująca zdarzenie naciśnięcia przycisku na klawiaturze.
+        /// </summary>
+        /// <param name="sender">Obiekt, na którym wystąpiło zdarzenie.</param>
+        /// <param name="key">Argument zdarzenia.</param>
+        public void OnKeyPressed(object sender, KeyEventArgs key)
         {
             if (key.Code == Keyboard.Key.B)
                 showDamageBoxes = (!showDamageBoxes);
@@ -443,7 +530,12 @@ namespace Game
                 eManager.mainCar.DirectionMove(0, 1);
         }
 
-        public  void OnKeyReleased(object sender, KeyEventArgs key)
+        /// <summary>
+        /// Metoda obsługująca zdarzenie zwoleniani przycisku z klawiatury.
+        /// </summary>
+        /// <param name="sender">Obiekt, na którym wystąpiło zdarzenie.</param>
+        /// <param name="key">Argument zdarzenia.</param>
+        public void OnKeyReleased(object sender, KeyEventArgs key)
         {
             if (key.Code == Keyboard.Key.A || key.Code == Keyboard.Key.Left)
                 eManager.mainCar.DirectionMove(1, 0);
@@ -458,12 +550,18 @@ namespace Game
                 eManager.mainCar.DirectionMove(0, -1);
         }
 
-        public  void OnClose(object sender, EventArgs e)
+        /// <summary>
+        /// Metoda obsługująca zdarzenie zamknięcia głównego okna gry.
+        /// </summary>
+        /// <param name="sender">Obiekt, na którym wystąpiło zdarzenie.</param>
+        /// <param name="e">Argument zdarzenia.</param>
+        public void OnClose(object sender, EventArgs e)
         {
             RenderWindow window = (RenderWindow)sender;
             window.Close();
         }
 
+        /// <summary>Metoda obsługująca kontynuację gry.</summary>
         public void OnContinue()
         {
             pause = (!pause);
@@ -474,11 +572,13 @@ namespace Game
             shader.SetState(STATE.CLOSING);
         }
 
+        /// <summary>Metoda obsługująca zamknięcie gry.</summary>
         public void OnExit()
         {
             Program.window.Close();
         }
 
+        /// <summary>Metoda obsługująca ponowny start gry.</summary>
         public void OnStartAgain()
         {
             initialization = true;
@@ -486,7 +586,6 @@ namespace Game
             pause = false;
             iniTime = 0f;
             alcoLevel = 0f;
-            level = 1;
             score = 0;
             speed = startSpeed;
             shader.SetUp(210, 1, .005f);
@@ -503,6 +602,10 @@ namespace Game
             resources.sounds["menu_music"].Stop();
         }
 
+        /// <summary>
+        /// Metoda obsługująca wybór pojazdu.
+        /// </summary>
+        /// <param name="id">Identyfikator wybranego pojazdu.</param>
         public void OnSelectCar(int id)
         {
             pause = false;
@@ -515,14 +618,21 @@ namespace Game
             resources.sounds["menu_music"].Stop();
         }
 
+        /// <summary>
+        /// Metoda wyznaczająca przesunięcie elementów gry ze względu na poziom alkoholu.
+        /// </summary>
         public float CalcOffset()
         {
             double time = alcoTime.GetCurrentTime();
-            float amp = 10 * (lastLevel + level / 1000f) % resources.background.Origin.X;
-            float sin_func = (float)Math.Sin(lastLevel * time);//% (2d * Math.PI)
+            float amp = 10 * (currLevel + score / 1000f) % resources.background.Origin.X;
+            float sin_func = (float)Math.Sin(currLevel * time);//% (2d * Math.PI)
             return amp * sin_func;
         }
 
+        /// <summary>
+        /// Metoda obsługująca zdarzenie kolizji pojazdu gracza z elementem serca.
+        /// </summary>
+        /// <param name="e">Wskazanie elementu, z którym zaszła kolizja.</param>
         private void OnHeartCollision(Entity e)
         {
             if (lives < 3)
@@ -533,6 +643,10 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Metoda obsługująca zdarzenie kolizji pojazdu gracza z elementem monety.
+        /// </summary>
+        /// <param name="e">Wskazanie elementu, z którym zaszła kolizja.</param>
         private void OnCoinCollision(Entity e)
         {
             resources.sounds["picked_coin"].Play();
@@ -541,6 +655,10 @@ namespace Game
             e.SetEffect();
         }
 
+        /// <summary>
+        /// Metoda obsługująca zdarzenie kolizji pojazdu gracza z elementem kapsla.
+        /// </summary>
+        /// <param name="e">Wskazanie elementu, z którym zaszła kolizja.</param>
         private void OnBeerCollision(Entity e)
         {
             resources.sounds["picked_cap"].Play();
@@ -553,11 +671,15 @@ namespace Game
             }
             else
             {
-                filter.CalcScale(alcoLevel);
+                filter.CalcScale(currLevel);
             }
             e.SetEffect();
         }
 
+        /// <summary>
+        /// Metoda obsługująca zdarzenie kolizji pojazdu gracza z elementem innego pojazdu.
+        /// </summary>
+        /// <param name="e">Wskazanie elementu, z którym zaszła kolizja.</param>
         private void OnCarCollision(Entity e)
         {
             resources.sounds["car_crash2"].Play();
@@ -574,6 +696,10 @@ namespace Game
             LoseLife();
         }
 
+        /// <summary>
+        /// Metoda obsługująca zdarzenie kolizji pojazdu gracza z niedozwolonym obszarem mapy.
+        /// </summary>
+        /// <param name="e">Wskazanie elementu, z którym zaszła kolizja.</param>
         private void OnMapCollision(Entity e)
         {
             LoseLife();
@@ -586,6 +712,7 @@ namespace Game
             resources.sounds["car_crash"].Play();
         }
 
+        /// <summary>Metoda wywołująca utratę życia.</summary>
         private void LoseLife()
         {
             lives--;

@@ -82,5 +82,11 @@
     <player name="asdasdas" score="24" time="22" />
     <player name="asdasd" score="0" time="4" />
     <player name="d" score="41" time="36" />
+    <player name="Arek2" score="1" time="15" />
+    <player name="Arek1" score="1" time="20" />
+    <player name="Arek3" score="1" time="7" />
+    <player name="asdasdas" score="24" time="22" />
+    <player name="asdasd" score="0" time="4" />
+    <player name="d" score="41" time="36" />
   </players>
 </config>

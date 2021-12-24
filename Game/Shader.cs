@@ -3,16 +3,33 @@ using SFML.System;
 
 namespace Game
 {
+    /// <summary>
+    /// Klasa filtru przyciemniającego ekran (do wyświetlenia menu).
+    /// </summary>
     class Shader
     {
-        private RectangleShape shader;
-        private STATE state;
-        private byte  alpha;
-        private byte  alphaStep;
-        private byte  alphaTarget;
-        private float timeToAlphaStep;
-        private float time;
+        /// <summary>Obiekt filtru wyświetlany na ekranie.</summary>
+        RectangleShape shader;
+        /// <summary>Zmienna określająca aktualny stan filtru.</summary>
+        STATE state;
+        /// <summary>Zmienna określająca przezroczystość filtru.</summary>
+        byte  alpha;
+        /// <summary>Zmienna określająca krok przezroczystości filtru.</summary>
+        byte  alphaStep;
+        /// <summary>Zmienna określająca zadaną przezroczystość filtru.</summary>
+        byte  alphaTarget;
+        /// <summary>Zmienna określająca czas do wykonania kroku przezroczystości.</summary>
+        float timeToAlphaStep;
+        /// <summary>Zmienna określająca czas trwania danego stopnia przezroczystości.</summary>
+        float time;
 
+        /// <summary>
+        /// Konstruktor - inicjalizacja parametrów licznika.
+        /// </summary>
+        /// <param name="width">Szerokość filtru.</param>
+        /// <param name="height">Wysokość filtru.</param>
+        /// <param name="alphaTarget">Zadana przezroczystość.</param>
+        /// <param name="state">Stan początkowy filtru.</param>
         public Shader(uint width, uint height, byte alphaTarget, bool state = false)
         {
             shader = new RectangleShape(new Vector2f(width, height));
@@ -32,11 +49,21 @@ namespace Game
             shader.FillColor = new Color(0, 0, 0, alpha);
         }
 
+        /// <summary>
+        /// Metoda wywołująca stan filtru.
+        /// </summary>
+        /// <param name="state">Wywoływany stan filtru.</param>
         public void SetState(STATE state)
         {
             this.state = state;
         }
 
+        /// <summary>
+        /// Metoda ustawiająca parametry filtru.
+        /// </summary>
+        /// <param name="alphaTarget">Zadana przezroczystość.</param>
+        /// <param name="alphaStep">Krok przezroczystości filtru.</param>
+        /// <param name="timeToAlphaStep">Czas wykonania kroku przezroczystości.</param>
         public void SetUp(byte alphaTarget, byte alphaStep, float timeToAlphaStep)
         {
             this.alphaTarget = alphaTarget;
@@ -44,16 +71,19 @@ namespace Game
             this.timeToAlphaStep = timeToAlphaStep;
         }
 
-        public STATE GetState()
-        {
-            return state;
-        }
-
+        /// <summary>
+        /// Metoda zwracająca wyświetlany obiekt filtru w oknie.
+        /// </summary>
+        /// <returns>Obiekt filtru.</returns>
         public Shape GetShape()
         {
             return shader;
         }
 
+        /// <summary>
+        /// Metoda aktualizująca stan filtru.
+        /// </summary>
+        /// <param name="dt">Czas od poprzedniego wywołania.</param>
         public void Update(float dt)
         {
             if (state == STATE.OPENING || state == STATE.CLOSING)
@@ -98,6 +128,5 @@ namespace Game
                 }
             }
         }
-
     }
 }

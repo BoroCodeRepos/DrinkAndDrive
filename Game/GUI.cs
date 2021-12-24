@@ -7,44 +7,102 @@ using System.Linq;
 
 namespace Game
 {
+    /// <summary>
+    /// Klasa - kontener na obiekty GUI.
+    /// </summary>
     public class GUI
     {
+        /// <summary>
+        /// Główna klasa komponentu.
+        /// </summary>
         public class Component
         {
+            /// <summary>Typ wyliczeniowy stany komponentu.</summary>
             public enum STATE { IDLE, HOVER, ACTIVE };
+            /// <summary>Definicja delegaty funkcji.</summary>
             public delegate void Function();
+            /// <summary>Delegata do wystąpienia zdarzenia kliknięcia.</summary>
             public Function onClick;
+            /// <summary>Delegata do wystąpienia zdarzenia najechania myszką.</summary>
             public Function onMouseOver;
 
+            /// <summary>Zmienna przechowująca aktualny stan komponentu.</summary>
             public STATE state;
+            /// <summary>Zmienna przechowująca poprzedni odczyt klawisza myszy.</summary>
             public bool oldButtonState;
+            /// <summary>Wyświetlany tekst komponentu.</summary>
             public SFML.Graphics.Text text;
+            /// <summary>Obiekt - kształt komponentu.</summary>
             public RectangleShape shape;
-            public Color textColor, shapeColor;
+            /// <summary>Zmienna przechowująca aktualny kolor tekstu.</summary>
+            public Color textColor;
+            /// <summary>Zmienna przechowująca aktualny kolor tła komponentu.</summary>
+            public Color shapeColor;
 
-            public Component() { }
+            /// <summary>
+            /// Konstruktor - inicjalizacja podstawowych parametrów.
+            /// </summary>
+            public Component()
+            {
+                oldButtonState = Mouse.IsButtonPressed(Mouse.Button.Left);
+                state = STATE.IDLE;
+            }
 
+            /// <summary>
+            /// Konstruktor - sparametryzowana inicjalizacja komponentu.
+            /// </summary>
+            /// <param name="characterSize">Rozmiar wyświetlanego tekstu.</param>
+            /// <param name="text">Treść wyświetlanego tekstu.</param>
+            /// <param name="font">Referencja do obiektu fontu.</param>
+            /// <param name="textColor">Kolor wyświetlanego tekstu.</param>
+            /// <param name="shapeColor">Kolor tła komponentu.</param>
             public Component(uint characterSize, string text, Font font, Color textColor, Color shapeColor)
             {
                 state = STATE.IDLE;
                 oldButtonState = Mouse.IsButtonPressed(Mouse.Button.Left);
                 this.textColor = textColor;
                 this.shapeColor = shapeColor;
-                this.text = new SFML.Graphics.Text(text, font);
+                this.text = new SFML.Graphics.Text(text, font, characterSize);
             }
 
+            /// <summary>
+            /// Metoda wirtualna - aktualizacja stanu komponentu, implementacja w rozszerzeniach.
+            /// </summary>
+            /// <param name="window">Referencja do głównego okna gry.</param>
             public virtual void Update(ref RenderWindow window) { }
+            /// <summary>
+            /// Metoda wirtualna - rendering komponentu, implementacja w rozszerzeniach.
+            /// </summary>
+            /// <param name="window">Referencja do głównego okna gry</param>
             public virtual void Render(ref RenderWindow window) { }
         }
 
+        /// <summary>
+        /// Klasa przycisku, rozszerzenie możliwości komponentu.
+        /// </summary>
         public class Button : Component
         {
+            /// <summary>Zmienna stanu odtwarzanego dźwięku przy najechaniu na komponent.</summary>
             bool gainSound;
+            /// <summary>
+            /// Zmienne kolorów tekstu w zależności od stanu komponentu.
+            /// </summary>
             public Color
                 textIdleColor,
                 textHoverColor,
                 textActiveColor;
 
+            /// <summary>
+            /// Konstruktor - sparametryzowana inicjalizacja komponentu. 
+            /// </summary>
+            /// <param name="shapeSize">Wielkość kształtu komponentu.</param>
+            /// <param name="centrePos">Pozycja środkowa komponentu.</param>
+            /// <param name="characterSize">Rozmiar wyświetlanego tekstu.</param>
+            /// <param name="text">Treść wyświetlanego tekstu.</param>
+            /// <param name="font">Referencja do obiektu fontu.</param>
+            /// <param name="idle">Kolor tekstu w stanie bezczynności.</param>
+            /// <param name="hover">Kolor tekstu w stanie najechania myszką.</param>
+            /// <param name="active">Kolor tekstu w stanie aktywnym.</param>
             public Button(
                 Vector2f shapeSize,
                 Vector2f centrePos,
@@ -84,6 +142,10 @@ namespace Game
                 this.text.Origin = new Vector2f(origin.X, origin.Y);
             }
 
+            /// <summary>
+            /// Metoda aktualizująca stan przycisku - implementacja metody z klasy bazowej.
+            /// </summary>
+            /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Update(ref RenderWindow window)
             {
                 Vector2i mousePos = Mouse.GetPosition(window);
@@ -99,7 +161,8 @@ namespace Game
 
                     if (Mouse.IsButtonPressed(Mouse.Button.Left))
                     {
-                        Program.resources.sounds["btn_click"].Play();
+                        if (onClick != null)
+                            Program.resources.sounds["btn_click"].Play();
                         text.FillColor = new Color(textActiveColor);
                         onClick?.Invoke();
                     }
@@ -110,17 +173,30 @@ namespace Game
                     gainSound = false;
                 }
             }
-
+            /// <summary>
+            /// Metoda renderująca elementy przycisku - implementacja metody z klasy bazowej.
+            /// </summary>
+            /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Render(ref RenderWindow window)
             {
-                //shape.FillColor = new Color(Color.Red);
                 window.Draw(shape);
                 window.Draw(text);
             }
         }
 
+        /// <summary>
+        /// Klasa tekstu, rozszerzenie możliwości komponentu.
+        /// </summary>
         public class Text : Component
         {
+            /// <summary>
+            /// Konstruktor - sprametryzowana inicjalizacja komponentu.
+            /// </summary>
+            /// <param name="centrePos">Wskazanie centralnej pozycji tekstu.</param>
+            /// <param name="characterSize">Rozmiar wyświetlanego tekstu.</param>
+            /// <param name="text">Treść wyświetlanego tekstu.</param>
+            /// <param name="font">Referencja do obiektu fontu.</param>
+            /// <param name="color">Kolor wyświetlanego tekstu.</param>
             public Text(
                 Vector2f centrePos,
                 uint characterSize,
@@ -155,23 +231,51 @@ namespace Game
                 );
             }
 
-
-            public override void Update(ref RenderWindow window) { }
-
+            /// <summary>
+            /// Metoda aktualizująca stan tekstu - wymagana implementacja metody z klasy bazowej.
+            /// </summary>
+            /// <param name="window">Referencja do głównego okna gry.</param>
+            public override void Update(ref RenderWindow window) 
+            {
+                return;
+            }
+            /// <summary>
+            /// Metoda renderująca elementy komponentu - implementacja metody z klasy bazowej.
+            /// </summary>
+            /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Render(ref RenderWindow window)
             {
-                //shape.FillColor = new Color(Color.Red);
                 window.Draw(shape);
                 window.Draw(text);
             }
         }
 
+        /// <summary>
+        /// Klasa komponentu tekstury, rozszerzenie możliwości komponentu.
+        /// </summary>
         public class Texture : Component
         {
+            /// <summary>Zmienna stanu odtwarzanego dźwięku przy najechaniu na komponent.</summary>
             bool gainSound;
+            /// <summary>Zmienna referencyjna do obiektu tekstury.</summary>
             RectangleShape textureShape;
+            /// <summary>
+            /// Zmienne kolorów ramki w zależności od stanu komponentu.
+            /// </summary>
             Color OutlineIdle, OutlineHover, OutlineActive;
 
+            /// <summary>
+            /// Konstruktor - sparametryzowana inicjalizacja komponentu (wyświetlanie pojazdów w menu).
+            /// </summary>
+            /// <param name="id">Identyfikator wyświetlanego pojazdu.</param>
+            /// <param name="carCollection">Kolekcja wszystkich pojazdów.</param>
+            /// <param name="shapeSize">Wielkość komponentu.</param>
+            /// <param name="textureSize">Wielkość tekstury.</param>
+            /// <param name="centrePos">Centralna pozycja komponentu na ekranie.</param>
+            /// <param name="OutlineIdle">Kolor ramki w stanie bezczynności.</param>
+            /// <param name="OutlineHover">Kolor ramki w stanie najechania myszką.</param>
+            /// <param name="OutlineActive">Kolor ramki w stanie aktywnym.</param>
+            /// <param name="rotation">Rotacja komponentu.</param>
             public Texture(
                 int id,
                 List<Entity> carCollection,
@@ -185,7 +289,6 @@ namespace Game
             )
             {
                 gainSound = false;
-                oldButtonState = Mouse.IsButtonPressed(Mouse.Button.Left);
                 this.OutlineIdle = OutlineIdle;
                 this.OutlineHover = OutlineHover;
                 this.OutlineActive = OutlineActive;
@@ -214,6 +317,13 @@ namespace Game
                 };
             }
 
+            /// <summary>
+            /// Konstruktor - sparametryzowana inicjalizacja komponentu (wyświetlanie napisu NEW HIGH SCORE).
+            /// </summary>
+            /// <param name="filename">Ścieżka do tekstury.</param>
+            /// <param name="textureSize">Wielkość wyświetlanej tekstury.</param>
+            /// <param name="centrePos">Pozycja centralna komponentu.</param>
+            /// <param name="rotation">Rotacja komponentu.</param>
             public Texture(
                 string filename,
                 Vector2f textureSize,
@@ -232,6 +342,10 @@ namespace Game
                 };
             }
 
+            /// <summary>
+            /// Metoda aktualizująca stan komponentu - implementacja metody z klasy bazowej.
+            /// </summary>
+            /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Update(ref RenderWindow window)
             {
                 Vector2i mousePos = Mouse.GetPosition(window);
@@ -263,7 +377,10 @@ namespace Game
                     gainSound = false;
                 }
             }
-
+            /// <summary>
+            /// Metoda renderująca elementy komponentu - implementacja metody z klasy bazowej.
+            /// </summary>
+            /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Render(ref RenderWindow window)
             {
                 window.Draw(shape);
@@ -271,13 +388,29 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Klasa komponentu wpisywania tekstu, rozszerzenie możliwości komponentu.
+        /// </summary>
         public class Input : Component
         {
+            /// <summary>Zmienna przechowująca maksymalną długość wprowadzonego tekstu.</summary>
             public uint maxLen;
+            /// <summary>Słownik z obsługiwanymi klawiszami.</summary>
             public Dictionary<Keyboard.Key, string> keys;
+            /// <summary>Słownik ze stanami klawiszy.</summary>
             public Dictionary<Keyboard.Key, bool> keyStates;
+            /// <summary>Delegata do wystąpienia zdarzenia potwierdzenia wpisania tekstu.</summary>
             public Function onEnter;
 
+            /// <summary>
+            /// Konstruktor - sparametryzowana inicjalizacja komponentu.
+            /// </summary>
+            /// <param name="position">Pozycja górnego lewego boku.</param>
+            /// <param name="characterSize">Rozmiar wyświetlanego tekstu.</param>
+            /// <param name="font">Referencja do obiektu fontu.</param>
+            /// <param name="textColor">Kolor wyświetlanego tekstu.</param>
+            /// <param name="keys">Referencja do słownika obsługiwanych klawiszy.</param>
+            /// <param name="maxLen">Maksymalna długość wprowadzanego tekstu.</param>
             public Input(
                 Vector2f position,
                 uint characterSize, 
@@ -303,6 +436,10 @@ namespace Game
                 };
             }
 
+            /// <summary>
+            /// Metoda aktualizująca stan komponentu - implementacja metody z klasy bazowej.
+            /// </summary>
+            /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Update(ref RenderWindow window)
             {
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Return))
@@ -338,69 +475,13 @@ namespace Game
                     keyStates[key] = currKeyState;
                 }
             }
-
+            /// <summary>
+            /// Metoda renderująca elementy komponentu - implementacja metody z klasy bazowej.
+            /// </summary>
+            /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Render(ref RenderWindow window)
             {
                 window.Draw(text);
-            }
-        }
-
-        public class List : Component
-        {
-            List<ListItems> items;
-
-            public List()
-            {
-                items = new List<ListItems>();
-            }
-
-            public void Add(ListItems item)
-            {
-                items.Add(item);
-            }
-
-            public override void Update(ref RenderWindow window)
-            {
-                foreach (var item in items)
-                    item.Update(ref window);
-            }
-
-            public override void Render(ref RenderWindow window)
-            {
-                foreach (var item in items)
-                    item.Render(ref window);
-            }
-        }
-
-        public class ListItems : Component
-        {
-            List<Component> components;
-
-            public ListItems()
-            {
-                components = new List<Component>();
-            }
-
-            public void Add(Component c)
-            {
-                components.Add(c);
-            }
-
-            public void Clear()
-            {
-                components.Clear();
-            }
-
-            public override void Update(ref RenderWindow window)
-            {
-                foreach (var item in components)
-                    item.Update(ref window);
-            }
-
-            public override void Render(ref RenderWindow window)
-            {
-                foreach (var item in components)
-                    item.Render(ref window);
             }
         }
     }
