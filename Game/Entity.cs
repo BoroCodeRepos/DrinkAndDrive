@@ -43,15 +43,17 @@ namespace Game
         /// <param name="dir">Kierunek poruszania się elementu.</param>
         public Entity(Texture texture, IntRect textureRect, IntRect damageRect, TYPE type, DIR dir = DIR.UP)
         {
+            // przypisanie typu i kierunku poruszania się elementu
             this.type = type;
             this.dir = dir;
+            // utworzenie sprita jako elementu z teksturą samochodu
             sprite = new Sprite()
             {
                 Texture = texture,
                 TextureRect = textureRect,
                 Origin = new Vector2f((float)(textureRect.Width) / 2f, 0f)
             };
-
+            // utworzenie hitboxa elementu
             damageBox = new RectangleShape()
             {
                 Size = new Vector2f(
@@ -64,6 +66,7 @@ namespace Game
                 OutlineThickness = 1f,
                 OutlineColor = Color.Black
             };
+            // utworzenie koloru, rotacji i wartości początkowych efektu
             SetColor();
             SetDirection();
             effect = false;
@@ -81,6 +84,7 @@ namespace Game
         {
             try
             {
+                // próba utworzenia elementu z istniejącej kolekcji
                 Entity car = carCollection[carNr];
                 sprite = new Sprite(car.sprite);
                 damageBox = new RectangleShape(car.damageBox);
@@ -89,12 +93,13 @@ namespace Game
                 toDelete = false;
                 this.dir = dir;
                 SetRotation((dir == DIR.DOWN) ? 9000f : 0f);
-
+                // utworzenie komponentu zaawansowanego ruchu
                 if (car.movement != null && createMovementComponent)
                     movement = new MovementComponent(car.movement);
             }
             catch(Exception exception)
             {
+                // ewentualna komunikacja błędu
                 Program.ShowError(exception);
             }
         }
@@ -110,6 +115,7 @@ namespace Game
         /// <param name="maxVelocity">Maksymalna prędkość pojazdu.</param>
         public void CreateMovementCompontent(Vector2f acceleration, Vector2f deceleration, Vector2f maxVelocity)
         {
+            // utworzenie modelu zaawansowanego ruchu
             movement = new MovementComponent(
                 acceleration,
                 deceleration,
@@ -127,18 +133,26 @@ namespace Game
         {
             if (movement != null)
             {
+                // opis modelu zaawansowanego ruchu
                 dt /= 1000f;
-                Vector2f velocity = movement.Update(dt);
+                // pobranie aktualnej prędkości
+                var velocity = movement.Update(dt);
+                // ustawienie rotacji i przesunięcia
                 Move(velocity.X * dt, velocity.Y * dt);
                 SetRotation(velocity.X);
             }
             else
             {
+                // brak obsługi zaawansowanego ruchu
+                // sprawdzenie czy jest używany efekt
+                // efekt skalowania nie występuje dla samochodów 
                 if (effect && type != TYPE.CAR)
                 {
+                    // gdy efekt występuje - zmiana skali aż do całkowitego zaniku elementu
                     Vector2f scale = sprite.Scale;
                     scale.X -= 0.08f;
                     scale.Y -= 0.08f;
+                    // po całkowitym zaniku usuwamy element
                     if (scale.X < 0f || scale.Y < 0f)
                     {
                         toDelete = true;
@@ -151,7 +165,7 @@ namespace Game
                 }
                 else if (effect && type == TYPE.CAR)
                     return;
-
+                // przesunięcie elementu zgodnie z osią X (offset) i Y (speed)
                 Vector2f position = damageBox.Position;
                 speed = ((dir == DIR.UP) ? 0.6f : 1.5f) * Math.Abs(speed) * dt;
                 position.X = primaryPosX + offset;
@@ -167,9 +181,12 @@ namespace Game
         /// <param name="dy">Przesunięcie po osi Y.</param>
         public void Move(float dx, float dy)
         {
+            // pobranie pozycji
             Vector2f position = damageBox.Position;
+            // przesunięcie o zadaną wielkość
             position.X += dx;
             position.Y += dy;
+            // ustawienie pozycji
             SetPosition(position.X, position.Y);
         }
 
@@ -180,6 +197,7 @@ namespace Game
         /// <param name="Y">Pozycja w osi Y.</param>
         public void SetPosition(float X, float Y)
         {
+            // ustawienie pozycji zarówno dla sprita jak i hitboxa
             sprite.Position = new Vector2f(X, Y);
             damageBox.Position = new Vector2f(X, Y);
         }
@@ -208,6 +226,7 @@ namespace Game
         /// <param name="angle">Kąt obrotu elementu.</param>
         public void SetRotation(float angle)
         {
+            // ustawienie rotacji zarówno dla hitboxa i sprita
             sprite.Rotation = angle / 50f;
             damageBox.Rotation = angle / 50f;
         }
@@ -219,11 +238,13 @@ namespace Game
         /// <param name="Y">Kierunek w osi Y.</param>
         public void DirectionMove(float X, float Y)
         {
+            // ustalenie kierunku ruchu jedynie dla zaawansowanego ruchu
             if (movement != null)
             {
+                // ustalenie kierunku w osi X i Y
                 movement.move.X += X;
                 movement.move.Y += Y;
-
+                // ograniczenie wartości do -1, 0 lub 1 każdej osi
                 if (movement.move.X > 1f)  movement.move.X =  1f;
                 if (movement.move.X < -1f) movement.move.X = -1f;
                 if (movement.move.Y > 1f)  movement.move.Y =  1f;
@@ -234,14 +255,15 @@ namespace Game
         /// <summary>Metoda ustawiająca kolor modelu kolizji.</summary>
         private void SetColor()
         {
+            // ustalenie koloru elementu w zależności od typu
             if (type == TYPE.HEART)
-                damageBox.FillColor = new Color(0, 255, 0, 128);
+                damageBox.FillColor = C.ENTITY_HEART_HITBOX_COLOR;
             else if (type == TYPE.COIN)
-                damageBox.FillColor = new Color(128, 255, 0, 128);
+                damageBox.FillColor = C.ENTITY_COIN_HITBOX_COLOR;
             else if (type == TYPE.BEER)
-                damageBox.FillColor = new Color(255, 128, 255, 128);
+                damageBox.FillColor = C.ENTITY_CAP_HITBOX_COLOR;
             else if (type == TYPE.CAR)
-                damageBox.FillColor = new Color(255, 128, 64, 128);
+                damageBox.FillColor = C.ENTITY_CAR_HITBOX_COLOR;
         }
 
         /// <summary>Metoda ustawiająca parametry ze względu na kierunek poruszania sie elementu.</summary>
@@ -249,10 +271,12 @@ namespace Game
         {
             if (type == TYPE.CAR)
             {
+                // rotacja następuje dla pojazdów
                 SetRotation((dir == DIR.DOWN) ? 9000f : 0f);
             }
             else if (dir == DIR.DOWN)
             {
+                // dla pozostałych elementów występuje jedynie zmiana punktu odniesienia pozycji
                 Vector2f origin = sprite.Origin;
                 origin.Y += damageBox.Size.Y;
                 sprite.Origin = new Vector2f(origin.X, origin.Y);

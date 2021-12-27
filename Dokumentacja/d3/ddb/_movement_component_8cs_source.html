@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Drink&amp;Drive: Plik źródłowy MovementComponent.cs</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Drink&amp;Drive<span id="projectnumber">&#160;index: 179991 - Arkadiusz Borowicki</span>
+   </div>
+   <div id="projectbrief">Serious Game - JPWP Proj. PG</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Wygenerowano przez Doxygen 1.9.2 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "../../search",'Szukaj','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('../../',true,false,'search.php','Szukaj');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('d3/ddb/_movement_component_8cs_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">MovementComponent.cs</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="../../d3/ddb/_movement_component_8cs.html">Idź do dokumentacji tego pliku.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="keyword">using</span> SFML.System;</div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="keyword">namespace </span><a class="code hl_namespace" href="../../d2/d97/namespace_game.html">Game</a></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span>{</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="../../de/d5a/class_game_1_1_movement_component.html">    8</a></span>    <span class="keyword">public</span> <span class="keyword">class </span><a class="code hl_class" href="../../de/d5a/class_game_1_1_movement_component.html">MovementComponent</a></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    {</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">   11</a></span>        <span class="keyword">public</span> Vector2f <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">acceleration</a>;  </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">   13</a></span>        <span class="keyword">public</span> Vector2f <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a>;  </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">   15</a></span>        <span class="keyword">public</span> Vector2f <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a>;      </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">   17</a></span>        <span class="keyword">public</span> Vector2f <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>;    </div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="../../de/d5a/class_game_1_1_movement_component.html#a165da36a6a26c3364e8fccd13705f94d">   19</a></span>        <span class="keyword">public</span> Vector2f <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a165da36a6a26c3364e8fccd13705f94d">move</a>;           </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="../../de/d5a/class_game_1_1_movement_component.html#af8ccab7a714075583bfd8feca0112db6">   27</a></span>        <span class="keyword">public</span> <a class="code hl_function" href="../../de/d5a/class_game_1_1_movement_component.html#af8ccab7a714075583bfd8feca0112db6">MovementComponent</a>(Vector2f <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">acceleration</a>, Vector2f <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a>, Vector2f <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>)</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        {</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>            <span class="comment">// inicjalizacja parametrów ruchu</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>            this.acceleration = <span class="keyword">new</span> Vector2f(<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">acceleration</a>.X, <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">acceleration</a>.Y);</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>            this.deceleration = <span class="keyword">new</span> Vector2f(<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a>.X, <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a>.Y);</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>            this.maxVelocity = <span class="keyword">new</span> Vector2f(<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>.X, <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>.Y);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            <span class="comment">// aktualna prędkość i współczyniki kirunku ruchu zerowe</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> = <span class="keyword">new</span> Vector2f(0f, 0f);</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>            <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a165da36a6a26c3364e8fccd13705f94d">move</a> = <span class="keyword">new</span> Vector2f(0f, 0f);</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        }</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="../../de/d5a/class_game_1_1_movement_component.html#a6b6fe74453f3974f34ac3e5af23a843d">   42</a></span>        <span class="keyword">public</span> <a class="code hl_function" href="../../de/d5a/class_game_1_1_movement_component.html#a6b6fe74453f3974f34ac3e5af23a843d">MovementComponent</a>(<a class="code hl_class" href="../../de/d5a/class_game_1_1_movement_component.html">MovementComponent</a> component)</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        {</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>            <span class="comment">// inicjalizacja parametrów ruchu na podstawie innego obiektu</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">acceleration</a> = <span class="keyword">new</span> Vector2f(component.<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">acceleration</a>.X, component.<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">acceleration</a>.Y);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a> = <span class="keyword">new</span> Vector2f(component.<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a>.X, component.<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a>.Y);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a> = <span class="keyword">new</span> Vector2f(component.<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>.X, component.<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>.Y);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            <span class="comment">// aktualna prędkość i współczynniki kierunku ruchu zerowe</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> = <span class="keyword">new</span> Vector2f(0f, 0f);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a165da36a6a26c3364e8fccd13705f94d">move</a> = <span class="keyword">new</span> Vector2f(0f, 0f);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        }</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="../../de/d5a/class_game_1_1_movement_component.html#a21a25cb6d13a98de1121ae2bee5f1be1">   58</a></span>        <span class="keyword">public</span> Vector2f <a class="code hl_function" href="../../de/d5a/class_game_1_1_movement_component.html#a21a25cb6d13a98de1121ae2bee5f1be1">Update</a>(<span class="keywordtype">float</span> dt)</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        {</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            <span class="comment">// aktualizacja prędkości zgodnie z przyśpieszeniem w danym kierunku (dla dwóch osi)</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a>.X += <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">acceleration</a>.X * dt * <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a165da36a6a26c3364e8fccd13705f94d">move</a>.X;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a>.Y += <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">acceleration</a>.Y * dt * <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a165da36a6a26c3364e8fccd13705f94d">move</a>.Y;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            <span class="comment">// sprawdzenie maksymalnej prędkości, wyznaczenie hamowania w osi X i Y</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            <a class="code hl_function" href="../../de/d5a/class_game_1_1_movement_component.html#af651ca5734de205f4ad445c1f0145132">UpdateVelocity</a>(</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>                dt,</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>                ref <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a>.X,</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>                ref <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>.X,</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>                ref <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a>.X,</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>                <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a165da36a6a26c3364e8fccd13705f94d">move</a>.X );</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            <a class="code hl_function" href="../../de/d5a/class_game_1_1_movement_component.html#af651ca5734de205f4ad445c1f0145132">UpdateVelocity</a>(</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                dt,</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                ref <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a>.Y,</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                ref <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>.Y,</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>                ref <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a>.Y,</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>                1f );</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            <span class="comment">// wyznaczony parametr aktualnej prędkości obiektu</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>            <span class="keywordflow">return</span> <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a>;</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        }</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="../../de/d5a/class_game_1_1_movement_component.html#af651ca5734de205f4ad445c1f0145132">   88</a></span>        <span class="keyword">private</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../de/d5a/class_game_1_1_movement_component.html#af651ca5734de205f4ad445c1f0145132">UpdateVelocity</a>(</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            <span class="keywordtype">float</span> dt,</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            ref <span class="keywordtype">float</span> <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a>,</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>            ref <span class="keywordtype">float</span> <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>,</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>            ref <span class="keywordtype">float</span> <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a>,</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>            <span class="keywordtype">float</span> dir</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        )</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        {</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>            <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> &gt; 0f)</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            {</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>                <span class="comment">// sprawdzenie maksymalnej prędkości obiektu w danej osi.</span></div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>                <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> &gt; <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>)</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>                    <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> = <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>;</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>                <span class="comment">// wyznaczenie współczynnika hamowania.</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>                <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> -= <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a> * dt * ((dir == 0f) ? 8f : 1f);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>                <span class="comment">// sprawdzenie warunku końca przyśpieszenia w danej osi</span></div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>                <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> &lt; 0f)</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>                    <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> = 0f;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>            }</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> &lt; 0f)</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            {</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                <span class="comment">// sprawdzenie maksymalnej prędkości obiektu w danej osi.</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>                <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> &lt; -<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>)</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>                    <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> = -<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">maxVelocity</a>;</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>                <span class="comment">// wyznaczenie współczynnika hamowania.</span></div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> += <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">deceleration</a> * dt * ((dir == 0f) ? 8f : 1f);</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>                <span class="comment">// sprawdzenie warunku końca przyśpieszenia w danej osi.</span></div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>                <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> &gt; 0f)</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>                    <a class="code hl_variable" href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">velocity</a> = 0f;</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>            }</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        }</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    }</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>}</div>
+<div class="ttc" id="aclass_game_1_1_movement_component_html"><div class="ttname"><a href="../../de/d5a/class_game_1_1_movement_component.html">Game.MovementComponent</a></div><div class="ttdoc">Klasa wyznaczająca parametry zaawansowanego ruchu obiektu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/ddb/_movement_component_8cs_source.html#l00008">MovementComponent.cs:9</a></div></div>
+<div class="ttc" id="aclass_game_1_1_movement_component_html_a165da36a6a26c3364e8fccd13705f94d"><div class="ttname"><a href="../../de/d5a/class_game_1_1_movement_component.html#a165da36a6a26c3364e8fccd13705f94d">Game.MovementComponent.move</a></div><div class="ttdeci">Vector2f move</div><div class="ttdoc">Zmienna przechowująca współczynniki kierunku ruchu danego obiektu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/ddb/_movement_component_8cs_source.html#l00019">MovementComponent.cs:19</a></div></div>
+<div class="ttc" id="aclass_game_1_1_movement_component_html_a21a25cb6d13a98de1121ae2bee5f1be1"><div class="ttname"><a href="../../de/d5a/class_game_1_1_movement_component.html#a21a25cb6d13a98de1121ae2bee5f1be1">Game.MovementComponent.Update</a></div><div class="ttdeci">Vector2f Update(float dt)</div><div class="ttdoc">Główna metoda aktualizująca ruch pojazdu, zwraca aktualną prędkość w osi X i Y.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/ddb/_movement_component_8cs_source.html#l00058">MovementComponent.cs:58</a></div></div>
+<div class="ttc" id="aclass_game_1_1_movement_component_html_a5e5d9ee6db51d97cde5e39a226b7bfef"><div class="ttname"><a href="../../de/d5a/class_game_1_1_movement_component.html#a5e5d9ee6db51d97cde5e39a226b7bfef">Game.MovementComponent.velocity</a></div><div class="ttdeci">Vector2f velocity</div><div class="ttdoc">Zmienna przechowująca parametry aktualnej prędkości obiektu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/ddb/_movement_component_8cs_source.html#l00015">MovementComponent.cs:15</a></div></div>
+<div class="ttc" id="aclass_game_1_1_movement_component_html_a65827b914a5cde397114564bdb5d1930"><div class="ttname"><a href="../../de/d5a/class_game_1_1_movement_component.html#a65827b914a5cde397114564bdb5d1930">Game.MovementComponent.acceleration</a></div><div class="ttdeci">Vector2f acceleration</div><div class="ttdoc">Zmienna przechowująca parametry przyśpieszenia obiektu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/ddb/_movement_component_8cs_source.html#l00011">MovementComponent.cs:11</a></div></div>
+<div class="ttc" id="aclass_game_1_1_movement_component_html_a6b6fe74453f3974f34ac3e5af23a843d"><div class="ttname"><a href="../../de/d5a/class_game_1_1_movement_component.html#a6b6fe74453f3974f34ac3e5af23a843d">Game.MovementComponent.MovementComponent</a></div><div class="ttdeci">MovementComponent(MovementComponent component)</div><div class="ttdoc">Konstruktor - kopia parametrów z innego komponentu ruchu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/ddb/_movement_component_8cs_source.html#l00042">MovementComponent.cs:42</a></div></div>
+<div class="ttc" id="aclass_game_1_1_movement_component_html_a71e5cbf47e2771b3237c0efb02cf3a04"><div class="ttname"><a href="../../de/d5a/class_game_1_1_movement_component.html#a71e5cbf47e2771b3237c0efb02cf3a04">Game.MovementComponent.maxVelocity</a></div><div class="ttdeci">Vector2f maxVelocity</div><div class="ttdoc">Zmienna przechowująca parametry maksymalnej prędkości obiektu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/ddb/_movement_component_8cs_source.html#l00017">MovementComponent.cs:17</a></div></div>
+<div class="ttc" id="aclass_game_1_1_movement_component_html_acde22f7805ee9b03e59efa90be45e52c"><div class="ttname"><a href="../../de/d5a/class_game_1_1_movement_component.html#acde22f7805ee9b03e59efa90be45e52c">Game.MovementComponent.deceleration</a></div><div class="ttdeci">Vector2f deceleration</div><div class="ttdoc">Zmienna przechowująca parametry hamowania obiektu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/ddb/_movement_component_8cs_source.html#l00013">MovementComponent.cs:13</a></div></div>
+<div class="ttc" id="aclass_game_1_1_movement_component_html_af651ca5734de205f4ad445c1f0145132"><div class="ttname"><a href="../../de/d5a/class_game_1_1_movement_component.html#af651ca5734de205f4ad445c1f0145132">Game.MovementComponent.UpdateVelocity</a></div><div class="ttdeci">void UpdateVelocity(float dt, ref float velocity, ref float maxVelocity, ref float deceleration, float dir)</div><div class="ttdoc">Metoda aktualizująca jedną oś prędkości obiektu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/ddb/_movement_component_8cs_source.html#l00088">MovementComponent.cs:88</a></div></div>
+<div class="ttc" id="aclass_game_1_1_movement_component_html_af8ccab7a714075583bfd8feca0112db6"><div class="ttname"><a href="../../de/d5a/class_game_1_1_movement_component.html#af8ccab7a714075583bfd8feca0112db6">Game.MovementComponent.MovementComponent</a></div><div class="ttdeci">MovementComponent(Vector2f acceleration, Vector2f deceleration, Vector2f maxVelocity)</div><div class="ttdoc">Konstruktor - inicjalizacja podstawowych parametrów ruchu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/ddb/_movement_component_8cs_source.html#l00027">MovementComponent.cs:27</a></div></div>
+<div class="ttc" id="anamespace_game_html"><div class="ttname"><a href="../../d2/d97/namespace_game.html">Game</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00006">Animation.cs:7</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../d3/ddb/_movement_component_8cs.html">MovementComponent.cs</a></li>
+    <li class="footer">Wygenerowano przez <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2 </li>
+  </ul>
+</div>
+</body>
+</html>

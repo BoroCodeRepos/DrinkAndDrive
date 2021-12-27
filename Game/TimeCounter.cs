@@ -19,6 +19,8 @@
         /// </summary>
         public TimeCounter()
         {
+            // stan początkowy - wyłączenie licznika, ustawienie zerowego czasu
+            // brak konfiguracji zdarzenia
             currentTime = 0d;
             eventTime = 0d;
             run = false;
@@ -31,6 +33,8 @@
         /// <param name="evTime">Czas do zgłoszenia zdarzenia.</param>
         public TimeCounter(double evTime)
         {
+            // stan początkowy - wyłączenie licznika, ustawienie zerowego czasu
+            // konfiguracja czasu zdarzenia
             currentTime = 0d;
             eventTime = evTime;
             run = false;
@@ -43,6 +47,7 @@
         /// <param name="eventTime">Czas do zgłoszenia zdarzenia.</param>
         public void SetEventTime(double eventTime)
         {
+            // ustawienie czasu zdarzenia
             this.eventTime = eventTime;
         }
 
@@ -51,6 +56,7 @@
         /// </summary>
         public void Start()
         {
+            // zmienna odpowiedzialna za pracę ustawiona na true
             run = true;
         }
 
@@ -59,6 +65,7 @@
         /// </summary>
         public void Stop()
         {
+            // zmienna odpowiedzialna za prace ustawiona na false
             run = false;
         }
 
@@ -68,11 +75,13 @@
         /// <param name="dt">Czas od poprzedniego wywołania.</param>
         public void Update(float dt)
         {
+            // jeżeli licznik pracuje, zwiększmy zliczony czas
             if (run)
                 currentTime += (double)(dt / 1000f);
-
+            // sprawdzenie czy doszło do przekroczenia czasu zdarzenia
             if (eventTime > 0d && currentTime >= eventTime)
             {
+                // jeśli tak to ustawiamy znacznik
                 currentTime -= eventTime;
                 isEvent = true;
             }
@@ -92,6 +101,7 @@
         /// </summary>
         public void ClearEventStatus()
         {
+            // zerowanie znacznika zdarzenia
             isEvent = false;
         }
 
@@ -100,6 +110,7 @@
         /// </summary>
         public void ClearTime()
         {
+            // zerowanie aktualnego czasu
             currentTime = 0d;
         }
 
@@ -118,6 +129,7 @@
         /// <returns>Stan pracy licznika.</returns>
         public bool IsRun()
         {
+            // metoda zwraca stan licznika
             return run;
         }
     }

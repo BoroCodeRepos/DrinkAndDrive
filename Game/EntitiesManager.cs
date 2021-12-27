@@ -44,13 +44,13 @@ namespace Game
         public OnCollision onMapCollision;
 
         /// <summary>Zmienna procentowej szansy na utworzenie elementu serca.</summary>
-        public double heartPercent = 0d;
+        public double heartPercent = C.HEART_CHANCE_PERCENT;
         /// <summary>Zmienna procentowej szansy na utworzenie elementu monety.</summary>
-        public double coinPercent = 1d;
+        public double coinPercent = C.COIN_CHANCE_PERCENT;
         /// <summary>Zmienna procentowej szansy na utworzenie elementu kapsla.</summary>
-        public double beerPercent = .1d;
+        public double beerPercent = C.BOTTLE_CAP_CHANCE_PERCENT;
         /// <summary>Zmienna procentowej szansy na utworzenie elementu pojazdu.</summary>
-        public double carPercent = .1d;
+        public double carPercent = C.CAR_CHANCE_PERCENT;
 
         //------------------------------------------------------------------------------------
         //                          Constructor
@@ -61,8 +61,10 @@ namespace Game
         /// <param name="resources">Referencja do obiektu zasobów gry.</param>
         public EntitiesManager(Resources resources)
         {
+            // wskaźnik do zasobów
             this.resources = resources;
-
+            heartPercent = 0d;
+            // utworzenie elementów animacji monet, kapsli i serc
             entities = new Entities();
             animation = new EntitiesAnimation
             {
@@ -70,11 +72,11 @@ namespace Game
                 [TYPE.BEER]  = new AnimationState(),
                 [TYPE.HEART] = new AnimationState()
             };
-
+            // inicjalizacja animacji z dokumentu XML
             InitAnimation("coins",  animation, TYPE.COIN);
             InitAnimation("beers",  animation, TYPE.BEER);
             InitAnimation("hearts", animation, TYPE.HEART);
-
+            // utworzenie timerów do opóźnienia losowanie elementów gry
             timers = new Timers
             {
                 [TYPE.COIN] = new TimeCounter(.2d),
@@ -94,6 +96,7 @@ namespace Game
         /// <param name="type">Typ inicjalizowanej animacji.</param>
         private void InitAnimation(string attrName, EntitiesAnimation Tanimation, TYPE type)
         {
+            // inicjalizacja wartości animation state pobrana z dokumentu XML
             AnimationState animation = Tanimation[type];
             XmlElement root = resources.document.DocumentElement;
             XmlElement element = root["game"]["animation"][attrName];
@@ -116,14 +119,22 @@ namespace Game
         /// <param name="offset">Przesunięcie ze względu na poziom alkoholu.</param>
         public void Update(float dt, float speed, float offset)
         {
-            UpdateTimers(dt);                                   // aktualizacja timerów
-            TryCreateEntities();                                // próba utworzenia nowych elementów gry
-            DeleteEntities();                                   // usunięcie elementów poza mapą
-            mainCar.UpdateMove(dt, speed, 0f);                  // aktualizacja ruchu głównego pojazdu
-            UpdateEntitiesMove(dt, speed, offset);              // aktualizacja ruchu elementów gry
-            UpdateMapBounds();                                  // aktualizacja położenia na mapie głownego samochodu
-            UpdateMapCollision();                               // sprawdzenie wyjazdu gracza poza jezdnię
-            UpdateCollisions();                                 // aktualizacja kolizji obiektów
+            // aktualizacja timerów
+            UpdateTimers(dt);
+            // próba utworzenia nowych elementów gry
+            TryCreateEntities();
+            // usunięcie elementów poza mapą
+            DeleteEntities();
+            // aktualizacja ruchu głównego pojazdu
+            mainCar.UpdateMove(dt, speed, 0f);
+            // aktualizacja ruchu elementów gry
+            UpdateEntitiesMove(dt, speed, offset);
+            // aktualizacja położenia na mapie głownego samochodu
+            UpdateMapBounds();
+            // sprawdzenie wyjazdu gracza poza jezdnię
+            UpdateMapCollision();
+            // aktualizacja kolizji obiektów
+            UpdateCollisions();                                 
         }
 
         /// <summary>
@@ -141,20 +152,26 @@ namespace Game
 
             foreach (var type in types)
             {
+                // przejscie przez wszystkie animowane elementy (taka sama procedura)
                 var animation = this.animation[type];
+                // zwiększenie czasu trawnia ramki
                 animation.currentFrameTime += dt;
-
+                // sprawdzenie maksymalnego czasu trwania ramki
                 if (animation.currentFrameTime >= animation.maxFrameTime)
                 {
-                    animation.currentFrameTime = 0f ;
+                    // czas dobiegł końca - kolejna ramka
+                    animation.currentFrameTime = 0f;
                     animation.currentFrameId += 1;
+                    // sprawdzenie warunku końca ramek
                     if (animation.currentFrameId >= animation.framesNr)
                         animation.currentFrameId = 0;
                 }
-
+                // ustalenie parametrów pod kątem nowo obliczonych wartości animacji
                 animation.currentFrame.Left = animation.currentFrameId * animation.currentFrame.Width;
                 this.animation[type] = animation;
+                // pobranie z listy wszystkich elementów tylko te o danym typie
                 var animatedEntities = entities.Where(entity => entity.type == type);
+                // i zamiana w tych elementach tekstury
                 foreach (var item in animatedEntities)
                     item.sprite.TextureRect = animation.currentFrame;
             }
@@ -168,15 +185,16 @@ namespace Game
         /// <param name="offset">Przesunięcie ze względu na poziom alkoholu.</param>
         private void UpdateEntitiesMove(float dt, float speed, float offset)
         {
-            List<Entity> entitiesToDelete = new List<Entity>();
+            Entities entitiesToDelete = new Entities();
             foreach (var item in entities)
             {
+                // aktualizacja ruchu każdego elementu gry
                 item.UpdateMove(dt, speed, offset);
-
+                // sprawdzenie czy element zgłosił możliwość usunięcia 
                 if (item.toDelete)
                     entitiesToDelete.Add(item);
             }
-
+            // usunięcie elementów z listy
             if (entitiesToDelete.Count > 0)
                 foreach (var item in entitiesToDelete)
                     entities.Remove(item);
@@ -187,15 +205,19 @@ namespace Game
         /// </summary>
         private void UpdateMapBounds()
         {
+            // sprawdzenie wyjechania poza mapę w osi Y
             Vector2f pos = mainCar.damageBox.Position;
+            // warunek na górną krawędź
             if (pos.Y < 0f)
             {
+                // ustalamy że nie może wyjechać poza górną krawędź
                 mainCar.SetPosition(pos.X, 0f);
                 mainCar.movement.velocity.Y = 0f;
             }
             pos.Y += mainCar.damageBox.Size.Y;
             if (pos.Y > resources.options.winHeight)
             {
+                // ustalamy że nie może wyjechać poza dolną krawędź
                 pos.Y = resources.options.winHeight - mainCar.damageBox.Size.Y;
                 mainCar.SetPosition(pos.X, pos.Y);
                 mainCar.movement.velocity.Y = 0f;
@@ -218,10 +240,13 @@ namespace Game
         /// </summary>
         private void UpdateCollisions()
         {
+            // sprawdzenie kolizji wszystkich elementów z głównym pojazdem
             foreach (var entity in entities)
             {
+                // warunek kolizji
                 if (CollisionsCheck(mainCar, entity) && !entity.effect)
                 {
+                    // zaszła kolizja - sprawdzenie typu elementu i wywołanie odpowiedniej funkcji
                     if (entity.type == TYPE.HEART)
                         onHeartCollision(entity);
 
@@ -242,10 +267,13 @@ namespace Game
         /// </summary>
         private void UpdateMapCollision()
         {
+            // sprawdzenie kolizji z poboczem jezdni
             FloatRect carRect = mainCar.damageBox.GetGlobalBounds();
             FloatRect bgRectL = resources.dmgBoxL.GetGlobalBounds();
             FloatRect bgRectR = resources.dmgBoxR.GetGlobalBounds();
+            // warunek zderzenia
             if (carRect.Intersects(bgRectL) || carRect.Intersects(bgRectR))
+                // wywołanie funkcji zderzenia
                 onMapCollision(null);
         }
 
@@ -274,6 +302,9 @@ namespace Game
         {
             if (showDamageBoxes)
             {
+                // jeżeli zezwolono na wyświetlenie hitboxów
+                // zostają one wyświetlone, dla elementów gry i pobocza jezdni
+                // oraz pojazdu gracza
                 window.Draw(resources.dmgBoxL);
                 window.Draw(resources.dmgBoxR);
                 window.Draw(mainCar.damageBox);
@@ -300,9 +331,14 @@ namespace Game
         /// <param name="id">Identyfikator tworzonego pojazdu.</param>
         public  void SetPlayerCarById(int id)
         {
-            id = id % 14;
+            // ograniczenie identyfikatora od 0 do 13
+            // tyle mamy dostępnych pojazdów w grze
+            id %= 14;
+            // utworzenie pojazdu gracza
             mainCar = new Entity(id, resources.carCollection);
-            mainCar.damageBox.FillColor = new Color(0, 255, 255, 128);
+            // ustalenie koloru hitboxa
+            mainCar.damageBox.FillColor = C.ENTITY_MAIN_CAR_HITBOX_COLOR;
+            // ustalenie pozycji początkowej gracza
             mainCar.SetPosition(
                 resources.background.Texture.Size.X / 2f - resources.background.Origin.X,
                 resources.background.Texture.Size.Y / 2f
@@ -314,6 +350,7 @@ namespace Game
         /// </summary>
         private void TryCreateEntities()
         {
+            // określenie offsetu w osi X
             float offset = resources.background.Position.X;
             offset -= resources.background.Origin.X;
             // utworzenie obiektów pasów
@@ -324,15 +361,22 @@ namespace Game
             lanes[3] = new FloatRect(792f + offset, -1f, 144f, 10f);
 
             Random rnd = new Random();
+            // losowanie pasa
             int lane = rnd.Next(4);
+            // losowanie szansy na utworzenie elementu
             double percent = rnd.NextDouble();
-
+            // sprawdzenie zajetości pasa
             if (CheckBusyLane(lanes[lane]))
             {
+                // pas wolny - losowanie typu nowo tworzonego elementu
                 TYPE type = (TYPE)rnd.Next((int)TYPE.COUNT);
+                // kierunek elementu zależny od wylosowanego pasa
                 DIRECTION dir = (lane < 2) ? DIRECTION.DOWN : DIRECTION.UP;
+                // aktualizacja pozycji pasa na domyślny (bez przesuniecia)
                 lanes[lane].Left -= (offset + resources.background.Origin.X);
+                // określenie pozycji początkowej elementu (bez przesunięcia)
                 Vector2f position = new Vector2f(lanes[lane].Left + lanes[lane].Width / 2f, 0f);
+                // sprawdzenie procentowych szans na utworzenie elementu i utworzenie go
                 CheckPercentageChances(type, dir, percent, position);
             }
         }
@@ -344,10 +388,11 @@ namespace Game
         /// <returns>Pas zajęty => false, pas wolny => true.</returns>
         private bool CheckBusyLane(FloatRect lane)
         {
+            // sprawdzenie zajętosci pasa ze wszystkimi elementami gry
             foreach (var item in entities)
                 if (lane.Intersects(item.damageBox.GetGlobalBounds()))
                     return false;
-
+            // przejście przez wszystkie elementy - brak kolizji
             return true;
         }
 
@@ -362,6 +407,7 @@ namespace Game
         {
             // utworzenie obiektu danego typu jeśli zostanie poprawnie określony procentowo
             bool create = false;
+            // pobranie szansy procentowej w zależności od typu elementu
             double chances = 0d;
             if (type == TYPE.HEART)
                 chances = heartPercent;
@@ -371,29 +417,35 @@ namespace Game
                 chances = beerPercent;
             if (type == TYPE.CAR)
                 chances = carPercent;
-
+            // obsługa dla serc nie jest objęta timerem
             if (type != TYPE.HEART)
             {
-                TimeCounter timer = timers[type];
+                // pobranie timera danego typu
+                var timer = timers[type];
+                // jeżeli timer jest w użytku sprawdzamy czy doszło do przekroczenia czasu zdarzenia
                 if (timer.IsRun())
                 {
+                    // sprawdzenie czy doszło do zdarzenia
                     if (timer.GetEventStatus())
                     {
+                        // jeżeli doszło to tworzymy element i zerujemy status zdarzenia.
                         create = true;
                         timer.ClearEventStatus();
                     }
                 }
                 else
                 {
+                    // timer nie został jeszcze załączony - pierwsze tworzenie elementu
                     create = true;
                     timer.Start();
                 }
             }
             else
             {
+                // w przypadku serca bezpośrednio następuje tworzenie elementu
                 create = true;
             }
-
+            // jeżeli jest zezwolenie na tworzenie i zgadza się warunek na szanse to tworzymy element
             if (create && chances > percent)
                 CreateElement(position, type, dir);
         }
@@ -408,30 +460,44 @@ namespace Game
         {
             if (type == TYPE.CAR)
             {
+                // tworzenie elementu pojazdu
                 Random rnd = new Random();
+                // losowanie pojazdu z puli dostepnych i tworzenie encji
                 Entity car = new Entity(rnd.Next(14), resources.carCollection, false, dir);
+                // korekcja pozycji pod kątem kierunku jazdy
                 position.Y -= (dir == DIRECTION.UP) ? car.damageBox.Size.Y : 0f;
+                // pozycja inicjalizująca w osi X
                 car.primaryPosX = position.X;
+                // ustalenie pozycji początkowej
                 car.SetPosition(position.X, position.Y);
+                // dodatnie do listy elementów
                 entities.Add(car);
             }
             else
             {
+                // tworzenie pozostałych elementów (monety, serca lub kapsla)
                 IntRect damageRect = new IntRect()
                 {
+                    // wielkości left i top zostaną ustawione podczas aktualizacji
                     Left = 0, Top = 0,
+                    // wielkość ramek określona na podstawie obiektu animacji
                     Width = animation[type].currentFrame.Width,
                     Height = animation[type].currentFrame.Height
                 };
+                // tworzenie elementu
                 Entity entity = new Entity(
                     resources.GetTexture(type),
                     animation[type].currentFrame,
                     damageRect,
                     type,
                     dir );
+                // aktualizacja pozycji pod kątem kieruku
                 position.Y -= (dir == DIRECTION.UP) ? entity.damageBox.Size.Y : 0f;
+                // ustalenie pozyci początkowej w osi X
                 entity.primaryPosX = position.X;
+                // ustalenie pozycji poczatkowej
                 entity.SetPosition(position.X, position.Y);
+                // dodanie elementu do listy
                 entities.Add(entity);
             }
         }
@@ -445,15 +511,18 @@ namespace Game
             Entities toDelete = new Entities();
             foreach (Entity entity in entities)
             {
+                // przegląd przez wszystkie elementy gry 
+                // pobranie pozycji 
                 position = entity.damageBox.Position;
                 switch (entity.dir)
                 {
+                // obsługa dla kierunku DOWN
                 case DIRECTION.DOWN:
                     position.Y -= entity.damageBox.Size.Y;
                     if (position.Y > resources.options.winHeight)
                         toDelete.Add(entity);
                     break;
-
+                // obsługa dla kierunku UP
                 case DIRECTION.UP:
                     if (position.Y > resources.options.winHeight)
                         toDelete.Add(entity);
@@ -473,12 +542,15 @@ namespace Game
         /// <returns>Doszło do kolizji => true, nie doszło do kolizji => false.</returns>
         private bool CollisionsCheck(Entity A, Entity B)
         {
+            // sprawdzenie kolizji pomiędzy encjami
+            // pobranie FloatRect elementów
             FloatRect rectA = A.damageBox.GetGlobalBounds();
             FloatRect rectB = B.damageBox.GetGlobalBounds();
-
+            // sprawdzenie intersekcji
             if (rectA.Intersects(rectB))
+                // doszlo do kolizji
                 return true;
-
+            // nie doszło do kolizji
             return false;
         }
     }

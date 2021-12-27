@@ -95,10 +95,10 @@ namespace Game
         {
             if (velocity > 0f)
             {
-                // sprawdzenie maksymalnej prędkości obiektu w danej osi
+                // sprawdzenie maksymalnej prędkości obiektu w danej osi.
                 if (velocity > maxVelocity)
                     velocity = maxVelocity;
-                // wyznaczenie współczynnika hamowania
+                // wyznaczenie współczynnika hamowania.
                 velocity -= deceleration * dt * ((dir == 0f) ? 8f : 1f);
                 // sprawdzenie warunku końca przyśpieszenia w danej osi
                 if (velocity < 0f)
@@ -106,12 +106,12 @@ namespace Game
             }
             else if (velocity < 0f)
             {
-                // sprawdzenie maksymalnej prędkości obiektu w danej osi
+                // sprawdzenie maksymalnej prędkości obiektu w danej osi.
                 if (velocity < -maxVelocity)
                     velocity = -maxVelocity;
-                // wyznaczenie współczynnika hamowania
+                // wyznaczenie współczynnika hamowania.
                 velocity += deceleration * dt * ((dir == 0f) ? 8f : 1f);
-                // sprawdzenie warunku końca przyśpieszenia w danej osi
+                // sprawdzenie warunku końca przyśpieszenia w danej osi.
                 if (velocity > 0f)
                     velocity = 0f;
             }

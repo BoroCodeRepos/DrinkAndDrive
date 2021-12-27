@@ -79,13 +79,16 @@ namespace Game
         /// </summary>
         public void Init()
         {
+            // inicjalizacja dokumentu XML i fontów przed wywołaniem wątków
             InitXMLdoc();
             InitFont();
+            // mutext dostępu do xml
             xmlAccess = new Mutex();
+            // utworzenie wątków ładujących zasoby
             tTextures = new Thread(() => SafeExecute(LoadTextures, Program.ShowError));
             tSounds = new Thread(() => SafeExecute(LoadSounds, Program.ShowError));
             tOthers = new Thread(() => SafeExecute(LoadOthers, Program.ShowError));
-
+            // start wątków
             tTextures.Start();
             tSounds.Start();
             tOthers.Start();
@@ -103,10 +106,12 @@ namespace Game
         {
             try
             {
+                // bezpieczne wykonanie akcji
                 action.Invoke();
             }
             catch (Exception ex)
             {
+                // komunikacja błędu
                 handler(ex);
             }
         }
@@ -116,12 +121,12 @@ namespace Game
         /// </summary>
         private void LoadTextures()
         {
+            // inicjalizacja opcji i tekstur w wątku
             InitOptions();
             InitBackground();
             InitCoinsShape();
             InitTextures();
             InitNumbers();
-            InitFilter();
             InitCarsCollection();
         }
 
@@ -130,7 +135,20 @@ namespace Game
         /// </summary>
         private void LoadOthers()
         {
-            InitKeyBindings();
+            // utworzenie obiektu
+            keys = new KeyBindings();
+            // zablokowanie dostępu do xml
+            xmlAccess.WaitOne();
+            XmlNodeList keyBindingsList = document.GetElementsByTagName("keybindings");
+            xmlAccess.ReleaseMutex();
+            // pobranie wartości i odblokowanie xml
+            foreach (XmlNode keyBindings in keyBindingsList)
+            {
+                // zapisanie wszystkich elementów w kolekcji
+                int key = Convert.ToInt32(keyBindings.Attributes["key"].Value);
+                string value = keyBindings.Attributes["value"].Value;
+                keys[(Keyboard.Key)key] = value;
+            }
         }
 
         /// <summary>
@@ -138,14 +156,18 @@ namespace Game
         /// </summary>
         private void LoadSounds()
         {
+            // utworzenie obiektu
             sounds = new Sounds();
-
-            string[] fileNames = Directory.GetFiles("..\\..\\resource\\sounds", "*.*");
+            // pobranie nazwy wszystkich utworów z folderu
+            string[] fileNames = Directory.GetFiles(C.SOUNDS_DIRECTORY_PATH, "*.*");
             foreach (var file in fileNames)
             {
                 var splitedPath = file.Split('\\');
+                // pobranie nazwy z rozszerzeniem
                 var filename = splitedPath[splitedPath.Length - 1];
+                // pobranie samej nazwy
                 var key = filename.Split('.')[0];
+                // utworzenie obiektu
                 sounds[key] = new Sound
                 {
                     SoundBuffer = new SoundBuffer(file)
@@ -159,8 +181,9 @@ namespace Game
         /// <returns>Zwraca listę z wykonującymi się wątkami.</returns>
         public List<string> LoadingStatus()
         {
+            // utworzenie obiektu
             List<string> threadList = new List<string>();
-
+            // jeżeli jakiś wątek jest przy życiu to zostanie dodany do listy
             if (tTextures.IsAlive)
                 threadList.Add("Textures");
 
@@ -181,8 +204,9 @@ namespace Game
         /// </summary>
         private void InitXMLdoc()
         {
+            // utworzenie i załadowanie dokumentu XML
             document = new XmlDocument();
-            document.Load("..\\..\\Config.xml");
+            document.Load(C.XML_DOCUMENT_PATH);
         }
 
         /// <summary>
@@ -190,10 +214,13 @@ namespace Game
         /// </summary>
         private void InitOptions()
         {
+            // utworzenie obiektu
             options = new Options();
+            // blokada dostępu do zasobów XML
             xmlAccess.WaitOne();
             XmlElement root = document.DocumentElement;
             xmlAccess.ReleaseMutex();
+            // zwolnienie mutexa i konwersja wartości pobranych z XML
             options.winWidth = Convert.ToUInt16(root["window"].Attributes["width"].Value);
             options.winHeight = Convert.ToUInt16(root["window"].Attributes["height"].Value);
             options.winTitle = root["window"].Attributes["title"].Value;
@@ -204,25 +231,27 @@ namespace Game
         /// </summary>
         private void InitBackground()
         {
-            background = new Sprite(new Texture("..\\..\\resource\\images\\background.png"));
+            // utworzenie obiektu tła i ustalenie punktu odniesienia
+            background = new Sprite(new Texture(C.BACKGROUND_TEXTURE_PATH));
             background.Origin = new Vector2f(
                 (float)(background.Texture.Size.X - options.winWidth) / 2f,
                 0f
             );
-
+            // obiekt lewego pobocza
             dmgBoxL = new RectangleShape
             {
                 Size = new Vector2f(272f, background.Texture.Size.Y),
                 Origin = background.Origin,
-                FillColor = new Color(255, 0, 0, 128),
+                FillColor = C.ENTITY_LR_ROAD_HITBOX_COLOR,
                 OutlineThickness = 1f,
                 OutlineColor = new Color(Color.Black)
             };
+            // obiekt prawego pobocza
             dmgBoxR = new RectangleShape
             {
                 Size = new Vector2f(272f, background.Texture.Size.Y),
                 Origin = new Vector2f(-871f, 0f),
-                FillColor = new Color(255, 0, 0, 128),
+                FillColor = C.ENTITY_LR_ROAD_HITBOX_COLOR,
                 OutlineThickness = 1f,
                 OutlineColor = new Color(Color.Black)
             };
@@ -233,11 +262,12 @@ namespace Game
         /// </summary>
         private void InitCoinsShape()
         {
+            // utworzenie elementu monet
             coins = new RectangleShape
             {
                 Position = new Vector2f(10f, 10f),
                 Size = new Vector2f(120f, 120f),
-                Texture = new Texture("..\\..\\resource\\images\\coins.png")
+                Texture = new Texture(C.COINS_TEXTURE_PATH)
             };
         }
 
@@ -246,19 +276,24 @@ namespace Game
         /// </summary>
         private void InitTextures()
         {
-            textures = new Dictionary<TYPE, Texture>
+            // inicjalizacja tekstur elementów gry, cyfr i eksplozji 
+            textures = new Textures
             {
-                [TYPE.HEART] = new Texture("..\\..\\resource\\images\\heart_animated.png") { Smooth = true },
-                [TYPE.COIN] = new Texture("..\\..\\resource\\images\\coin_animated.png") { Smooth = true },
-                [TYPE.BEER] = new Texture("..\\..\\resource\\images\\bottle_cap_animated.png") { Smooth = true },
-                [TYPE.CAR] = new Texture("..\\..\\resource\\images\\cars.png") { Smooth = true }
+                [TYPE.HEART] = new Texture(C.HEART_ANIMATION_PATH) { Smooth = true },
+                [TYPE.COIN] = new Texture(C.COIN_ANIMATION_PATH) { Smooth = true },
+                [TYPE.BEER] = new Texture(C.BOTTLE_CAP_ANIMATION_PATH) { Smooth = true },
+                [TYPE.CAR] = new Texture(C.CARS_TEXTURE_PATH) { Smooth = true }
             };
-            Tnumbers = new Texture("..\\..\\resource\\images\\numbers.png")
+            Tnumbers = new Texture(C.NUMBERS_TEXTURE_PATH)
             {
                 Smooth = true
             };
 
-            Texplosion = new Texture("..\\..\\resource\\images\\explosion_animated.png")
+            Texplosion = new Texture(C.EXPLOSION_ANIMATION_PATH)
+            {
+                Smooth = true
+            };
+            Tfilter = new Texture(C.FILTER_TEXTURE_PATH)
             {
                 Smooth = true
             };
@@ -271,22 +306,29 @@ namespace Game
         {
             try
             {
+                // utworzenie obiektu
                 carCollection = new Entities();
+                // blokada dostępu do XML
                 xmlAccess.WaitOne();
                 XmlNodeList carsList = document.GetElementsByTagName("car");
                 xmlAccess.ReleaseMutex();
+                // zwolnienie dostępu do XML
                 IntRect textureRect, damageRect;
                 foreach (XmlNode car in carsList)
                 {
+                    // przegląd przez wszystkie samochody i zapisanie ich obiektów w pamięci
+                    // pobranie i analiza wartości IntRect z atrybutów
                     textureRect = ParseAttributeRect(car.Attributes["texture_rect"]);
                     damageRect  = ParseAttributeRect(car.Attributes["damage_rect"]);
-
+                    // utworzenie obiektu pojazdu
                     Entity entity = new Entity(GetTexture(TYPE.CAR), textureRect, damageRect, TYPE.CAR);
+                    // utworzenie movement komponentu
                     entity.CreateMovementCompontent(
                         ParseAttributeMoving(car.Attributes["acceleration"]),
                         ParseAttributeMoving(car.Attributes["deceleration"]),
                         ParseAttributeMoving(car.Attributes["max_velocity"])
                     );
+                    // dodanie do kolekcji
                     carCollection.Add(entity);
                 }
             }
@@ -301,6 +343,7 @@ namespace Game
         /// </summary>
         private void InitNumbers()
         {
+            // utworzenie i dodanie do kolekcji kolejnych cyfr
             numbers = new Numbers();
             for (int i = 0; i < 11; i++)
                 numbers.Add(i, new Sprite(Tnumbers, new IntRect(i*64, 0, 64, 82)));
@@ -311,32 +354,7 @@ namespace Game
         /// </summary>
         private void InitFont()
         {
-            font = new Font("..\\..\\resource\\fonts\\MPLUSCodeLatin-Bold.ttf");
-        }
-
-        /// <summary>
-        /// Metoda inicjalizująca teksturę filtru zmiany percepcji.
-        /// </summary>
-        private void InitFilter()
-        {
-            Tfilter = new Texture("..\\..\\resource\\images\\vignette_filter.png");
-        }
-
-        /// <summary>
-        /// Metoda inicjalizująca słownik z dostępnymi klawiszami.
-        /// </summary>
-        private void InitKeyBindings()
-        {
-            keys = new KeyBindings();
-            xmlAccess.WaitOne();
-            XmlNodeList keyBindingsList = document.GetElementsByTagName("keybindings");
-            xmlAccess.ReleaseMutex();
-            foreach (XmlNode keyBindings in keyBindingsList)
-            {
-                int key = Convert.ToInt32(keyBindings.Attributes["key"].Value);
-                string value = keyBindings.Attributes["value"].Value;
-                keys[(Keyboard.Key)key] = value;
-            }
+            font = new Font(C.FONT_PATH);
         }
 
         /// <summary>
@@ -346,8 +364,10 @@ namespace Game
         /// <returns>Zwraca przeanalizowany parametr.</returns>
         private IntRect ParseAttributeRect(XmlAttribute attribute)
         {
+            // analiza wartości atrybutu XML i przejście na wartości IntRect
             string[] values = attribute.Value.Split(' ');
             IntRect rect;
+            // pobranie kolejnych wartości z atrybutu
             rect.Left   = Convert.ToInt16(values[0]);
             rect.Top    = Convert.ToInt16(values[1]);
             rect.Width  = Convert.ToInt16(values[2]);
@@ -362,8 +382,10 @@ namespace Game
         /// <returns>Zwraca przeanalizowany wektor.</returns>
         private Vector2f ParseAttributeMoving(XmlAttribute attribute)
         {
+            // analiza atrybutu XML i przejście na wartości wektora
             string[] values = attribute.Value.Split(' ');
             Vector2f vector;
+            // pierwsza zmienna X, druga Y
             vector.X = float.Parse(values[0]);
             vector.Y = float.Parse(values[1]);
             return vector;

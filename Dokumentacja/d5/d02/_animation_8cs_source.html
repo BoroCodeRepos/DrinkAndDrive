@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Drink&amp;Drive: Plik źródłowy Animation.cs</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Drink&amp;Drive<span id="projectnumber">&#160;index: 179991 - Arkadiusz Borowicki</span>
+   </div>
+   <div id="projectbrief">Serious Game - JPWP Proj. PG</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Wygenerowano przez Doxygen 1.9.2 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "../../search",'Szukaj','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('../../',true,false,'search.php','Szukaj');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('d5/d02/_animation_8cs_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">Animation.cs</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="../../d5/d02/_animation_8cs.html">Idź do dokumentacji tego pliku.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="keyword">using</span> SFML.Graphics;</div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="keyword">using</span> SFML.System;</div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="keyword">using</span> System.Collections.Generic;</div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno"><a class="line" href="../../d2/d97/namespace_game.html">    6</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="../../d2/d97/namespace_game.html">Game</a></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span>{</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="../../dc/d2e/class_game_1_1_animation.html">   11</a></span>    <span class="keyword">static</span> <span class="keyword">public</span> <span class="keyword">class </span><a class="code hl_class" href="../../dc/d2e/class_game_1_1_animation.html">Animation</a></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    {</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="../../dc/d2e/class_game_1_1_animation.html#a5432efb45d048b43d30dc92a7da3792c">   16</a></span>        <span class="keyword">static</span> <span class="keyword">public</span> Texture <a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#a5432efb45d048b43d30dc92a7da3792c">texture</a>;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="../../dc/d2e/class_game_1_1_animation.html#ae4bc1a8ea1856d575f02ce325b7a9691">   20</a></span>        <span class="keyword">static</span> <span class="keyword">public</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#ae4bc1a8ea1856d575f02ce325b7a9691">tSize</a>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="../../dc/d2e/class_game_1_1_animation.html#adf14465003dfd0a3c90180aab41160f2">   24</a></span>        <span class="keyword">static</span> <span class="keyword">public</span> List&lt;AnimationState&gt; <a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#adf14465003dfd0a3c90180aab41160f2">states</a>;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="../../dc/d2e/class_game_1_1_animation.html#a3feeb60bb2a02ceb640a9b7dda167e14">   30</a></span>        <span class="keyword">static</span> <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../dc/d2e/class_game_1_1_animation.html#a3feeb60bb2a02ceb640a9b7dda167e14">Create</a>(Vector2f position)</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        {</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>            <span class="comment">// tworzenie nowej animacji</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            <a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#adf14465003dfd0a3c90180aab41160f2">states</a>.Add(<span class="keyword">new</span> <a class="code hl_class" href="../../d8/d2f/class_game_1_1_animation_state.html">AnimationState</a>(12, 65f, position));</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        }</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="../../dc/d2e/class_game_1_1_animation.html#a2288d28156760c2fb49d4adc14ebc02e">   40</a></span>        <span class="keyword">static</span> <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../dc/d2e/class_game_1_1_animation.html#a2288d28156760c2fb49d4adc14ebc02e">Update</a>(<span class="keywordtype">float</span> dt)</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        {</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>            <span class="comment">// inicjalizacja obiektów do usunięcia</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>            List&lt;AnimationState&gt; toDelete = <span class="keyword">new</span> List&lt;AnimationState&gt;();</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>            <span class="keywordflow">foreach</span> (var state <span class="keywordflow">in</span> <a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#adf14465003dfd0a3c90180aab41160f2">states</a>)</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            {</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>                <span class="comment">// zwiększenie czasu ramki</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>                state.currentFrameTime += dt;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                <span class="comment">// sprawdzenie warunku wyświetlenia następnej ramki animacji</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>                <span class="keywordflow">if</span> (state.currentFrameTime &gt; state.maxFrameTime)</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>                {</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>                    <span class="comment">// aktualizacja czasu ramki</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>                    state.currentFrameTime -= state.maxFrameTime;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>                    <span class="comment">// sprawdzenie warunku końca animacji</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>                    <span class="keywordflow">if</span> (++state.currentFrameId &gt;= state.framesNr)</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>                        <span class="comment">// koniec animacji - obiekt do usunięcia</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>                        toDelete.Add(state);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>                    <span class="comment">// aktualizacja obecnej ramki</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>                    state.currentFrame = <span class="keyword">new</span> IntRect(<a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#ae4bc1a8ea1856d575f02ce325b7a9691">tSize</a> * state.currentFrameId, 0, <a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#ae4bc1a8ea1856d575f02ce325b7a9691">tSize</a>, <a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#ae4bc1a8ea1856d575f02ce325b7a9691">tSize</a>);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>                }</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            }</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            <span class="comment">// usunięcie obiektów</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            <span class="keywordflow">foreach</span> (var state <span class="keywordflow">in</span> toDelete)</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>                <a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#adf14465003dfd0a3c90180aab41160f2">states</a>.Remove(state);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        }</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="../../dc/d2e/class_game_1_1_animation.html#ae6447af1362cdb3cef960267156a28ca">   70</a></span>        <span class="keyword">static</span> <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../dc/d2e/class_game_1_1_animation.html#ae6447af1362cdb3cef960267156a28ca">Render</a>(ref RenderWindow window)</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        {</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>            <span class="comment">// utworzenie obiektu sprita</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            Sprite s = <span class="keyword">new</span> Sprite(<a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#a5432efb45d048b43d30dc92a7da3792c">texture</a>);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            <span class="keywordflow">foreach</span> (var state <span class="keywordflow">in</span> <a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#adf14465003dfd0a3c90180aab41160f2">states</a>)</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            {</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>                <span class="comment">// aktualizacja parametrów sprita</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>                s.Position = <span class="keyword">new</span> Vector2f(state.position.X, state.position.Y);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>                s.Origin = <span class="keyword">new</span> Vector2f(<a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#ae4bc1a8ea1856d575f02ce325b7a9691">tSize</a> / 2f, <a class="code hl_variable" href="../../dc/d2e/class_game_1_1_animation.html#ae4bc1a8ea1856d575f02ce325b7a9691">tSize</a> / 2f);</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>                s.TextureRect = state.currentFrame;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>                <span class="comment">// wyświetlenie sprita na ekranie</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>                window.Draw(s);</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>            }</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        }</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    }</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>}</div>
+<div class="ttc" id="aclass_game_1_1_animation_html"><div class="ttname"><a href="../../dc/d2e/class_game_1_1_animation.html">Game.Animation</a></div><div class="ttdoc">Statyczna klasa animacji wybuchu po kolizji pojazdu gracza.</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00011">Animation.cs:12</a></div></div>
+<div class="ttc" id="aclass_game_1_1_animation_html_a2288d28156760c2fb49d4adc14ebc02e"><div class="ttname"><a href="../../dc/d2e/class_game_1_1_animation.html#a2288d28156760c2fb49d4adc14ebc02e">Game.Animation.Update</a></div><div class="ttdeci">static void Update(float dt)</div><div class="ttdoc">Aktualizacja stanów animacji.</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00040">Animation.cs:40</a></div></div>
+<div class="ttc" id="aclass_game_1_1_animation_html_a3feeb60bb2a02ceb640a9b7dda167e14"><div class="ttname"><a href="../../dc/d2e/class_game_1_1_animation.html#a3feeb60bb2a02ceb640a9b7dda167e14">Game.Animation.Create</a></div><div class="ttdeci">static void Create(Vector2f position)</div><div class="ttdoc">Metoda tworząca nowy obiekt animacji wybuchu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00030">Animation.cs:30</a></div></div>
+<div class="ttc" id="aclass_game_1_1_animation_html_a5432efb45d048b43d30dc92a7da3792c"><div class="ttname"><a href="../../dc/d2e/class_game_1_1_animation.html#a5432efb45d048b43d30dc92a7da3792c">Game.Animation.texture</a></div><div class="ttdeci">static Texture texture</div><div class="ttdoc">Obiekt tekstury wybuchu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00016">Animation.cs:16</a></div></div>
+<div class="ttc" id="aclass_game_1_1_animation_html_adf14465003dfd0a3c90180aab41160f2"><div class="ttname"><a href="../../dc/d2e/class_game_1_1_animation.html#adf14465003dfd0a3c90180aab41160f2">Game.Animation.states</a></div><div class="ttdeci">static List&lt; AnimationState &gt; states</div><div class="ttdoc">Lista animowanych obiektów.</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00024">Animation.cs:24</a></div></div>
+<div class="ttc" id="aclass_game_1_1_animation_html_ae4bc1a8ea1856d575f02ce325b7a9691"><div class="ttname"><a href="../../dc/d2e/class_game_1_1_animation.html#ae4bc1a8ea1856d575f02ce325b7a9691">Game.Animation.tSize</a></div><div class="ttdeci">static int tSize</div><div class="ttdoc">Wielkość tekstury animacji.</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00020">Animation.cs:20</a></div></div>
+<div class="ttc" id="aclass_game_1_1_animation_html_ae6447af1362cdb3cef960267156a28ca"><div class="ttname"><a href="../../dc/d2e/class_game_1_1_animation.html#ae6447af1362cdb3cef960267156a28ca">Game.Animation.Render</a></div><div class="ttdeci">static void Render(ref RenderWindow window)</div><div class="ttdoc">Metoda renderująca animacje we wskazanym oknie.</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00070">Animation.cs:70</a></div></div>
+<div class="ttc" id="aclass_game_1_1_animation_state_html"><div class="ttname"><a href="../../d8/d2f/class_game_1_1_animation_state.html">Game.AnimationState</a></div><div class="ttdoc">Klasa stanu animacji.</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/d31/_animation_state_8cs_source.html#l00009">AnimationState.cs:10</a></div></div>
+<div class="ttc" id="anamespace_game_html"><div class="ttname"><a href="../../d2/d97/namespace_game.html">Game</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00006">Animation.cs:7</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../d5/d02/_animation_8cs.html">Animation.cs</a></li>
+    <li class="footer">Wygenerowano przez <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2 </li>
+  </ul>
+</div>
+</body>
+</html>

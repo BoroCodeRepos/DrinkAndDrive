@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Drink&amp;Drive: Plik źródłowy Program.cs</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Drink&amp;Drive<span id="projectnumber">&#160;index: 179991 - Arkadiusz Borowicki</span>
+   </div>
+   <div id="projectbrief">Serious Game - JPWP Proj. PG</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Wygenerowano przez Doxygen 1.9.2 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "../../search",'Szukaj','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('../../',true,false,'search.php','Szukaj');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('dd/d5c/_program_8cs_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">Program.cs</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="../../dd/d5c/_program_8cs.html">Idź do dokumentacji tego pliku.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="keyword">using</span> SFML.Graphics;</div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="keyword">using</span> SFML.System;</div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="keyword">using</span> SFML.Window;</div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="keyword">using</span> System;</div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">using</span> System.Collections.Generic;</div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">using</span> System.Diagnostics;</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">using</span> System.Windows.Forms;</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span><a class="code hl_namespace" href="../../d2/d97/namespace_game.html">Game</a></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>{</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6f">   15</a></span>    <span class="keyword">public</span> <span class="keyword">enum</span> <a class="code hl_enumeration" href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6f">DIRECTION</a> { <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fafbaedde498cdead4f2780217646e9ba1">UP</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fac4e0e4e3118472beeb2ae75827450f1f">DOWN</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fa21507b40c80068eda19865706fdc2403">RIGHT</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fa684d325a7303f52e64011467ff5c5758">LEFT</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fa4905ac9d6a22bdfc1ae096094ce6248d">COUNT</a> };</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aee">   19</a></span>    <span class="keyword">public</span> <span class="keyword">enum</span> <a class="code hl_enumeration" href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aee">TYPE</a> { <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aeea60a63c9a983ad6966ffe95a8a6f003d8">HEART</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aeea25361d987423542afaf03cacdc76932f">COIN</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aeeaa8e8a7e2daba6f81ea8c403dc2649659">BEER</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aeeaedc860e2d30b3a5c8823c026e7a79e03">CAR</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fa4905ac9d6a22bdfc1ae096094ce6248d">COUNT</a> };</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887c">   23</a></span>    <span class="keyword">public</span> <span class="keyword">enum</span> <a class="code hl_enumeration" href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887c">STATE</a> { <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887ca71a74f5026f5642a42a229e04cf1efdc">OPENING</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887caa38bd5138bf35514df41a1795ebbf5c3">OPEN</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887caa71a44c4c886bfc66b1edd511e6a677e">CLOSING</a>, <a class="code hl_enumvalue" href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887ca110ccf2f5d2ff4eda1fd1a494293467d">CLOSED</a> };</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html">   28</a></span>    <span class="keyword">static</span> <span class="keyword">class </span><a class="code hl_class" href="../../d2/d40/class_game_1_1_program.html">Program</a></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    {</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">   33</a></span>        <span class="keyword">static</span> <span class="keyword">public</span> RenderWindow <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">   37</a></span>        <span class="keyword">static</span> <span class="keyword">public</span> <a class="code hl_class" href="../../d9/dea/class_game_1_1_resources.html">Resources</a> <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">resources</a>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a3ee10b6838f3ebf682070da524da0b76">   41</a></span>        <span class="keyword">static</span> <span class="keyword">public</span> <a class="code hl_class" href="../../d7/d42/class_game_1_1_engine.html">Engine</a> <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a3ee10b6838f3ebf682070da524da0b76">engine</a>;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#aff10119a8f022965e002174dc6e55eb6">   46</a></span>        <span class="keyword">static</span> <span class="keyword">private</span> Stopwatch <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#aff10119a8f022965e002174dc6e55eb6">stopwatch</a>;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a435686df56dd233d86de30ced5c6b9e6">   50</a></span>        <span class="keyword">static</span> <span class="keyword">private</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a435686df56dd233d86de30ced5c6b9e6">deltaTime</a> = 0f;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a5099f88fddeaa990444b55feafc63457">   55</a></span>        <span class="keyword">static</span> <span class="keyword">private</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a5099f88fddeaa990444b55feafc63457">GlobalInitialization</a>()</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        {</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>            <span class="comment">// utworzenie okna inicjalizacyjnego</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>            RenderWindow initWin = <span class="keyword">new</span> RenderWindow(<span class="keyword">new</span> VideoMode(800, 600), <span class="stringliteral">&quot;&quot;</span>, Styles.None);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            <span class="comment">// utworzenie obiektu progres baru</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            RectangleShape progressBar = <span class="keyword">new</span> RectangleShape(<span class="keyword">new</span> Vector2f(20f, 5f));</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            <span class="comment">// utworzenie obiektu wyświetlanej informacji o inicjalizowanych zasobach</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            Text text = <span class="keyword">new</span> Text();</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            <span class="comment">// utworzenie obiektu tła okna inicjalizującego</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            RectangleShape initBackground = <span class="keyword">new</span> RectangleShape(<span class="keyword">new</span> Vector2f(initWin.Size.X, initWin.Size.Y));</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>            <span class="keywordflow">try</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>            {</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>                <span class="comment">// próba inicjalizacji obiektów</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>                <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a468f600e317d2cb5840fb28870f9a391">InitDeltaTime</a>();</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>                <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#af83cf22118094c8619c34be1577e4250">InitResources</a>();</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                text.CharacterSize = 32;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                text.Font = <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">resources</a>.<a class="code hl_variable" href="../../d9/dea/class_game_1_1_resources.html#a573d5f9c88ce50184adbafb056e665d6">font</a>;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                text.FillColor = <span class="keyword">new</span> Color(Color.Red);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>                progressBar.Position = <span class="keyword">new</span> Vector2f(0f, initWin.Size.Y - progressBar.Size.Y);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>                progressBar.FillColor = <span class="keyword">new</span> Color(Color.Red);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>                initBackground.Texture = <span class="keyword">new</span> Texture(<span class="stringliteral">&quot;..\\..\\resource\\images\\background_init.jpg&quot;</span>);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>            }</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>            <span class="keywordflow">catch</span> (Exception exception)</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>            {</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>                <span class="comment">// bład podczas inicjalizacji jest ukazywany użytkownikowi</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>                <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a3582b07a94eb48c5470578184f022022">ShowError</a>(exception);</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>            }</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>            <span class="keywordflow">while</span> (<span class="keyword">true</span>)</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>            {</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                <span class="comment">// czyszczenie okna</span></div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>                initWin.Clear();</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>                <span class="comment">// ładowanie inicjalizujących zasobów</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>                var tList = <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">resources</a>.<a class="code hl_function" href="../../d9/dea/class_game_1_1_resources.html#af40b014360176532297baae334ab81c8">LoadingStatus</a>();</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>                tList.Add(<span class="stringliteral">&quot;Engine&quot;</span>);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>                <span class="comment">// aktualizacja wypełnienia progresbaru</span></div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>                progressBar.Size = <span class="keyword">new</span> Vector2f((4 - tList.Count) * 145f + 20f, 5f);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>                <span class="comment">// aktualizacja wyświetlanego tekstu</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>                text.DisplayedString = <span class="stringliteral">&quot;Loading... &quot;</span> + <span class="keywordtype">string</span>.Join(<span class="stringliteral">&quot;, &quot;</span>, tList);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>                text.Origin = <span class="keyword">new</span> Vector2f(text.GetGlobalBounds().Width / 2f, text.GetGlobalBounds().Height / 2f);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>                text.Position = <span class="keyword">new</span> Vector2f(initWin.Size.X / 2f, initWin.Size.Y - 35f);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>                <span class="comment">// wyświetlenie obiektów na ekranie</span></div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>                initWin.Draw(initBackground);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>                initWin.Draw(text);</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>                initWin.Draw(progressBar);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>                initWin.Display();</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>                <span class="keywordflow">if</span> (tList.Count == 1)</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>                {</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>                    <span class="comment">// inicjalizacja silnika gry i okna głównego</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>                    initWin.Close();</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>                    <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#af0abb363cf74e3fbf56e88b0b820ffd3">CalcElapsedTime</a>();</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                    <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a91aa56dd2105b79ce2941e60ee45b560">InitWindow</a>();</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>                    <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a2d97019350b79434260241ddbf95ade6">InitEngine</a>();</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>                    <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a5eb456f729a7dcc04b9e44c3bad8d8e8">InitWindowEvents</a>();</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>                    </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                    <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>                }</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>            }</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        }</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a468f600e317d2cb5840fb28870f9a391">  121</a></span>        <span class="keyword">static</span> <span class="keyword">private</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a468f600e317d2cb5840fb28870f9a391">InitDeltaTime</a>()</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        {</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#aff10119a8f022965e002174dc6e55eb6">stopwatch</a> = <span class="keyword">new</span> Stopwatch(); <span class="comment">// utworzenie nowego obiektu</span></div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#aff10119a8f022965e002174dc6e55eb6">stopwatch</a>.Start(); <span class="comment">// start timera</span></div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        }</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#af83cf22118094c8619c34be1577e4250">  130</a></span>        <span class="keyword">static</span> <span class="keyword">private</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#af83cf22118094c8619c34be1577e4250">InitResources</a>()</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>        {</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            <span class="comment">// utworzenie obiektu zasobów i inicjalizacja wątków</span></div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">resources</a> = <span class="keyword">new</span> <a class="code hl_class" href="../../d9/dea/class_game_1_1_resources.html">Resources</a>();</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">resources</a>.<a class="code hl_function" href="../../d9/dea/class_game_1_1_resources.html#a1cc217a04ba0c51995b746a5f3c72c3a">Init</a>();</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>        }</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a2d97019350b79434260241ddbf95ade6">  140</a></span>        <span class="keyword">static</span> <span class="keyword">private</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a2d97019350b79434260241ddbf95ade6">InitEngine</a>()</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>        {</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>            <span class="comment">// inicjalizacja silnika gry</span></div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>            <span class="comment">// konieczne wcześniejsze utworzenie zasobów gry</span></div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a3ee10b6838f3ebf682070da524da0b76">engine</a> = <span class="keyword">new</span> <a class="code hl_class" href="../../d7/d42/class_game_1_1_engine.html">Engine</a>(<a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">resources</a>);</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        }</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span> </div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a91aa56dd2105b79ce2941e60ee45b560">  150</a></span>        <span class="keyword">static</span> <span class="keyword">private</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a91aa56dd2105b79ce2941e60ee45b560">InitWindow</a>()</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>        {</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>            <span class="comment">// utworzenie wielkości ekranu (pobrane z dokumentu XML)</span></div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>            VideoMode mode = <span class="keyword">new</span> VideoMode(<a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">resources</a>.<a class="code hl_variable" href="../../d9/dea/class_game_1_1_resources.html#a1f3fab7fa4ebba09796bdc59b9d665df">options</a>.<a class="code hl_variable" href="../../d8/d7d/class_game_1_1_resources_1_1_options.html#a03ad9e620df06d322c899b660147be71">winWidth</a>, <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">resources</a>.<a class="code hl_variable" href="../../d9/dea/class_game_1_1_resources.html#a1f3fab7fa4ebba09796bdc59b9d665df">options</a>.<a class="code hl_variable" href="../../d8/d7d/class_game_1_1_resources_1_1_options.html#a4e45d1427035ac5d8b39cc4a55d7318a">winHeight</a>);</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>            <span class="comment">// pobranie nazwy okna z dokumentu XML</span></div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>            <span class="keywordtype">string</span> title = <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">resources</a>.<a class="code hl_variable" href="../../d9/dea/class_game_1_1_resources.html#a1f3fab7fa4ebba09796bdc59b9d665df">options</a>.<a class="code hl_variable" href="../../d8/d7d/class_game_1_1_resources_1_1_options.html#af868d24a65e05953b1e34d0762cdf804">winTitle</a>;</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>            <span class="comment">// utworzenie okna gry</span></div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a> = <span class="keyword">new</span> RenderWindow(mode, title);</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>            <span class="comment">// inicjalizacja</span></div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>.SetVerticalSyncEnabled(<span class="keyword">true</span>);</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>.SetActive(<span class="keyword">true</span>);</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        }</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a5eb456f729a7dcc04b9e44c3bad8d8e8">  166</a></span>        <span class="keyword">static</span> <span class="keyword">private</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a5eb456f729a7dcc04b9e44c3bad8d8e8">InitWindowEvents</a>()</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        {</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>            <span class="comment">// przpisanie metod silnika do zdarzeń okna głównego</span></div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>.Closed += <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a3ee10b6838f3ebf682070da524da0b76">engine</a>.<a class="code hl_function" href="../../d7/d42/class_game_1_1_engine.html#a1229abb978ecfae6bb7f431c7678b2ea">OnClose</a>;</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>.KeyPressed += <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a3ee10b6838f3ebf682070da524da0b76">engine</a>.<a class="code hl_function" href="../../d7/d42/class_game_1_1_engine.html#a4af6d6b9eeb76c3344b02081ad8d883b">OnKeyPressed</a>;</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>.KeyReleased += <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a3ee10b6838f3ebf682070da524da0b76">engine</a>.<a class="code hl_function" href="../../d7/d42/class_game_1_1_engine.html#afad6fb3f40667ce78e30a1419afa4de9">OnKeyReleased</a>;</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        }</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span> </div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#af0abb363cf74e3fbf56e88b0b820ffd3">  177</a></span>        <span class="keyword">static</span> <span class="keyword">private</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#af0abb363cf74e3fbf56e88b0b820ffd3">CalcElapsedTime</a>()</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        {</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>            <span class="comment">// pobranie czasu, jaki upłynął od poprzedniego wywołania</span></div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a435686df56dd233d86de30ced5c6b9e6">deltaTime</a> = <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#aff10119a8f022965e002174dc6e55eb6">stopwatch</a>.ElapsedMilliseconds;</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>            <span class="comment">// restart licznika</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>            <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#aff10119a8f022965e002174dc6e55eb6">stopwatch</a>.Restart();</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        }</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a3582b07a94eb48c5470578184f022022">  189</a></span>        <span class="keyword">static</span> <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a3582b07a94eb48c5470578184f022022">ShowError</a>(Exception exception)</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        {</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>            <span class="comment">// pobranie wiadomości</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>            <span class="keywordtype">string</span> Message = exception.Message;</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>            <span class="comment">// pobranie źródła błędu</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>            <span class="keywordtype">string</span> Source = exception.Source;</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>            <span class="comment">// ustawienie przycisków okna błędu</span></div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>            MessageBoxButtons Buttons = MessageBoxButtons.OK;</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>            <span class="comment">// pokazanie okna błędu</span></div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>            MessageBox.Show(Message, Source, Buttons);</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            <span class="comment">// zamknięcie aplikacji</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>            Environment.Exit(1);</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>        }</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span> </div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno"><a class="line" href="../../d2/d40/class_game_1_1_program.html#a567bd62391d7a3ae5a10eeed78351432">  206</a></span>        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a567bd62391d7a3ae5a10eeed78351432">Main</a>()</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>        {</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>            <span class="comment">// inicjalizacja zasobów gry</span></div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>            <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#a5099f88fddeaa990444b55feafc63457">GlobalInitialization</a>();</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            <span class="comment">// pętla główna programu</span></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            <span class="keywordflow">while</span> (<a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>.IsOpen)</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            {</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>                <span class="comment">// czyszczenie okna</span></div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>                <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>.DispatchEvents();</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>                <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>.Clear();</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span> </div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>                <span class="comment">// wyznaczenie upłyniętego czasu</span></div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>                <a class="code hl_function" href="../../d2/d40/class_game_1_1_program.html#af0abb363cf74e3fbf56e88b0b820ffd3">CalcElapsedTime</a>();</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span> </div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>                <span class="comment">// aktualizacja silnika gry</span></div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>                <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a3ee10b6838f3ebf682070da524da0b76">engine</a>.<a class="code hl_function" href="../../d7/d42/class_game_1_1_engine.html#a82b408583120534fa8d3b26ed10c75e9">Update</a>(<a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a435686df56dd233d86de30ced5c6b9e6">deltaTime</a>, ref <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>);</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>                <span class="comment">// rendering elementów w oknie</span></div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a3ee10b6838f3ebf682070da524da0b76">engine</a>.<a class="code hl_function" href="../../d7/d42/class_game_1_1_engine.html#a8b6610e10290c45e5d9cea1c1dc1e652">Render</a>(ref <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>);</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>                <span class="comment">// wyświetlenie okna</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>                <a class="code hl_variable" href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">window</a>.Display();</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>            }</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>        }</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>    }</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>}</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span> </div>
+<div class="ttc" id="aclass_game_1_1_engine_html"><div class="ttname"><a href="../../d7/d42/class_game_1_1_engine.html">Game.Engine</a></div><div class="ttdoc">Klasa sterująca całą logiką gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/df1/_engine_8cs_source.html#l00013">Engine.cs:14</a></div></div>
+<div class="ttc" id="aclass_game_1_1_engine_html_a1229abb978ecfae6bb7f431c7678b2ea"><div class="ttname"><a href="../../d7/d42/class_game_1_1_engine.html#a1229abb978ecfae6bb7f431c7678b2ea">Game.Engine.OnClose</a></div><div class="ttdeci">void OnClose(object sender, EventArgs e)</div><div class="ttdoc">Metoda obsługująca zdarzenie zamknięcia głównego okna gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/df1/_engine_8cs_source.html#l00605">Engine.cs:605</a></div></div>
+<div class="ttc" id="aclass_game_1_1_engine_html_a4af6d6b9eeb76c3344b02081ad8d883b"><div class="ttname"><a href="../../d7/d42/class_game_1_1_engine.html#a4af6d6b9eeb76c3344b02081ad8d883b">Game.Engine.OnKeyPressed</a></div><div class="ttdeci">void OnKeyPressed(object sender, KeyEventArgs key)</div><div class="ttdoc">Metoda obsługująca zdarzenie naciśnięcia przycisku na klawiaturze.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/df1/_engine_8cs_source.html#l00528">Engine.cs:528</a></div></div>
+<div class="ttc" id="aclass_game_1_1_engine_html_a82b408583120534fa8d3b26ed10c75e9"><div class="ttname"><a href="../../d7/d42/class_game_1_1_engine.html#a82b408583120534fa8d3b26ed10c75e9">Game.Engine.Update</a></div><div class="ttdeci">void Update(float dt, ref RenderWindow window)</div><div class="ttdoc">Głowna metoda aktualizująca stan gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/df1/_engine_8cs_source.html#l00178">Engine.cs:178</a></div></div>
+<div class="ttc" id="aclass_game_1_1_engine_html_a8b6610e10290c45e5d9cea1c1dc1e652"><div class="ttname"><a href="../../d7/d42/class_game_1_1_engine.html#a8b6610e10290c45e5d9cea1c1dc1e652">Game.Engine.Render</a></div><div class="ttdeci">void Render(ref RenderWindow window)</div><div class="ttdoc">Główna metoda renderująca wszystkie obiekty na wskazanym oknie.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/df1/_engine_8cs_source.html#l00364">Engine.cs:364</a></div></div>
+<div class="ttc" id="aclass_game_1_1_engine_html_afad6fb3f40667ce78e30a1419afa4de9"><div class="ttname"><a href="../../d7/d42/class_game_1_1_engine.html#afad6fb3f40667ce78e30a1419afa4de9">Game.Engine.OnKeyReleased</a></div><div class="ttdeci">void OnKeyReleased(object sender, KeyEventArgs key)</div><div class="ttdoc">Metoda obsługująca zdarzenie zwoleniani przycisku z klawiatury.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/df1/_engine_8cs_source.html#l00584">Engine.cs:584</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html">Game.Program</a></div><div class="ttdoc">Główna klasa gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00028">Program.cs:29</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a18384e230996554aed937cefbd147c5d"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a18384e230996554aed937cefbd147c5d">Game.Program.window</a></div><div class="ttdeci">static RenderWindow window</div><div class="ttdoc">Obiekt z oknem głównym gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00033">Program.cs:33</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a2d97019350b79434260241ddbf95ade6"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a2d97019350b79434260241ddbf95ade6">Game.Program.InitEngine</a></div><div class="ttdeci">static void InitEngine()</div><div class="ttdoc">Metoda inicjalizująca silnik gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00140">Program.cs:140</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a3582b07a94eb48c5470578184f022022"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a3582b07a94eb48c5470578184f022022">Game.Program.ShowError</a></div><div class="ttdeci">static void ShowError(Exception exception)</div><div class="ttdoc">Metoda komunikująca błąd w programie.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00189">Program.cs:189</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a3ee10b6838f3ebf682070da524da0b76"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a3ee10b6838f3ebf682070da524da0b76">Game.Program.engine</a></div><div class="ttdeci">static Engine engine</div><div class="ttdoc">Obiekt z logiką gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00041">Program.cs:41</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a435686df56dd233d86de30ced5c6b9e6"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a435686df56dd233d86de30ced5c6b9e6">Game.Program.deltaTime</a></div><div class="ttdeci">static float deltaTime</div><div class="ttdoc">Zmienna przechowująca czas (tick time).</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00050">Program.cs:50</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a468f600e317d2cb5840fb28870f9a391"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a468f600e317d2cb5840fb28870f9a391">Game.Program.InitDeltaTime</a></div><div class="ttdeci">static void InitDeltaTime()</div><div class="ttdoc">Metoda inicjalizująca zegar do ponownego wywołania programu.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00121">Program.cs:121</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a5099f88fddeaa990444b55feafc63457"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a5099f88fddeaa990444b55feafc63457">Game.Program.GlobalInitialization</a></div><div class="ttdeci">static void GlobalInitialization()</div><div class="ttdoc">Metoda inicjalizująca wszystkie obiekty gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00055">Program.cs:55</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a567bd62391d7a3ae5a10eeed78351432"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a567bd62391d7a3ae5a10eeed78351432">Game.Program.Main</a></div><div class="ttdeci">static void Main()</div><div class="ttdoc">Metoda główna, z pętlą programu i globalną inicjalizacją zasobów.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00206">Program.cs:206</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a5d01b908c6dc400e6fbe8fe4ab9c6edb"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a5d01b908c6dc400e6fbe8fe4ab9c6edb">Game.Program.resources</a></div><div class="ttdeci">static Resources resources</div><div class="ttdoc">Obiekt ze wszystkimi zasobami gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00037">Program.cs:37</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a5eb456f729a7dcc04b9e44c3bad8d8e8"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a5eb456f729a7dcc04b9e44c3bad8d8e8">Game.Program.InitWindowEvents</a></div><div class="ttdeci">static void InitWindowEvents()</div><div class="ttdoc">Metoda inicjalizująca zdarzenia głownego okna gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00166">Program.cs:166</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_a91aa56dd2105b79ce2941e60ee45b560"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#a91aa56dd2105b79ce2941e60ee45b560">Game.Program.InitWindow</a></div><div class="ttdeci">static void InitWindow()</div><div class="ttdoc">Metoda inicjalizująca okno gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00150">Program.cs:150</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_af0abb363cf74e3fbf56e88b0b820ffd3"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#af0abb363cf74e3fbf56e88b0b820ffd3">Game.Program.CalcElapsedTime</a></div><div class="ttdeci">static void CalcElapsedTime()</div><div class="ttdoc">Metoda wyznaczająca czas ponownego wywołania.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00177">Program.cs:177</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_af83cf22118094c8619c34be1577e4250"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#af83cf22118094c8619c34be1577e4250">Game.Program.InitResources</a></div><div class="ttdeci">static void InitResources()</div><div class="ttdoc">Metoda inicjalizująca zasoby gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00130">Program.cs:130</a></div></div>
+<div class="ttc" id="aclass_game_1_1_program_html_aff10119a8f022965e002174dc6e55eb6"><div class="ttname"><a href="../../d2/d40/class_game_1_1_program.html#aff10119a8f022965e002174dc6e55eb6">Game.Program.stopwatch</a></div><div class="ttdeci">static Stopwatch stopwatch</div><div class="ttdoc">Obiekt liczący czas do ponownego wywołania.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00046">Program.cs:46</a></div></div>
+<div class="ttc" id="aclass_game_1_1_resources_1_1_options_html_a03ad9e620df06d322c899b660147be71"><div class="ttname"><a href="../../d8/d7d/class_game_1_1_resources_1_1_options.html#a03ad9e620df06d322c899b660147be71">Game.Resources.Options.winWidth</a></div><div class="ttdeci">uint winWidth</div><div class="ttdoc">Zmienna przechowująca szerokość okna.</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d21/_resources_8cs_source.html#l00031">Resources.cs:31</a></div></div>
+<div class="ttc" id="aclass_game_1_1_resources_1_1_options_html_a4e45d1427035ac5d8b39cc4a55d7318a"><div class="ttname"><a href="../../d8/d7d/class_game_1_1_resources_1_1_options.html#a4e45d1427035ac5d8b39cc4a55d7318a">Game.Resources.Options.winHeight</a></div><div class="ttdeci">uint winHeight</div><div class="ttdoc">Zmienna przechowująca wysokość okna.</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d21/_resources_8cs_source.html#l00033">Resources.cs:33</a></div></div>
+<div class="ttc" id="aclass_game_1_1_resources_1_1_options_html_af868d24a65e05953b1e34d0762cdf804"><div class="ttname"><a href="../../d8/d7d/class_game_1_1_resources_1_1_options.html#af868d24a65e05953b1e34d0762cdf804">Game.Resources.Options.winTitle</a></div><div class="ttdeci">string winTitle</div><div class="ttdoc">Zmienna przechowująca tytuł okna.</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d21/_resources_8cs_source.html#l00035">Resources.cs:35</a></div></div>
+<div class="ttc" id="aclass_game_1_1_resources_html"><div class="ttname"><a href="../../d9/dea/class_game_1_1_resources.html">Game.Resources</a></div><div class="ttdoc">Klasa inicjalizująca i przechowująca zasoby gry.</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d21/_resources_8cs_source.html#l00023">Resources.cs:24</a></div></div>
+<div class="ttc" id="aclass_game_1_1_resources_html_a1cc217a04ba0c51995b746a5f3c72c3a"><div class="ttname"><a href="../../d9/dea/class_game_1_1_resources.html#a1cc217a04ba0c51995b746a5f3c72c3a">Game.Resources.Init</a></div><div class="ttdeci">void Init()</div><div class="ttdoc">Metoda inicjalizująca zasoby i wątki.</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d21/_resources_8cs_source.html#l00080">Resources.cs:80</a></div></div>
+<div class="ttc" id="aclass_game_1_1_resources_html_a1f3fab7fa4ebba09796bdc59b9d665df"><div class="ttname"><a href="../../d9/dea/class_game_1_1_resources.html#a1f3fab7fa4ebba09796bdc59b9d665df">Game.Resources.options</a></div><div class="ttdeci">Options options</div><div class="ttdoc">Obiekt opcji okna.</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d21/_resources_8cs_source.html#l00057">Resources.cs:57</a></div></div>
+<div class="ttc" id="aclass_game_1_1_resources_html_a573d5f9c88ce50184adbafb056e665d6"><div class="ttname"><a href="../../d9/dea/class_game_1_1_resources.html#a573d5f9c88ce50184adbafb056e665d6">Game.Resources.font</a></div><div class="ttdeci">Font font</div><div class="ttdoc">Obiekt dostępnego fontu.</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d21/_resources_8cs_source.html#l00063">Resources.cs:63</a></div></div>
+<div class="ttc" id="aclass_game_1_1_resources_html_af40b014360176532297baae334ab81c8"><div class="ttname"><a href="../../d9/dea/class_game_1_1_resources.html#af40b014360176532297baae334ab81c8">Game.Resources.LoadingStatus</a></div><div class="ttdeci">List&lt; string &gt; LoadingStatus()</div><div class="ttdoc">Metoda sprawdzająca status wykonania wątków łądujących zasoby do pamięci.</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d21/_resources_8cs_source.html#l00182">Resources.cs:182</a></div></div>
+<div class="ttc" id="anamespace_game_html"><div class="ttname"><a href="../../d2/d97/namespace_game.html">Game</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00006">Animation.cs:7</a></div></div>
+<div class="ttc" id="anamespace_game_html_a126d999138acc80d63a8f96909b7887c"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887c">Game.STATE</a></div><div class="ttdeci">STATE</div><div class="ttdoc">Typ wyliczeniowy stanów shadera.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00023">Program.cs:23</a></div></div>
+<div class="ttc" id="anamespace_game_html_a126d999138acc80d63a8f96909b7887ca110ccf2f5d2ff4eda1fd1a494293467d"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887ca110ccf2f5d2ff4eda1fd1a494293467d">Game.STATE.CLOSED</a></div><div class="ttdeci">@ CLOSED</div></div>
+<div class="ttc" id="anamespace_game_html_a126d999138acc80d63a8f96909b7887ca71a74f5026f5642a42a229e04cf1efdc"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887ca71a74f5026f5642a42a229e04cf1efdc">Game.STATE.OPENING</a></div><div class="ttdeci">@ OPENING</div></div>
+<div class="ttc" id="anamespace_game_html_a126d999138acc80d63a8f96909b7887caa38bd5138bf35514df41a1795ebbf5c3"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887caa38bd5138bf35514df41a1795ebbf5c3">Game.STATE.OPEN</a></div><div class="ttdeci">@ OPEN</div></div>
+<div class="ttc" id="anamespace_game_html_a126d999138acc80d63a8f96909b7887caa71a44c4c886bfc66b1edd511e6a677e"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a126d999138acc80d63a8f96909b7887caa71a44c4c886bfc66b1edd511e6a677e">Game.STATE.CLOSING</a></div><div class="ttdeci">@ CLOSING</div></div>
+<div class="ttc" id="anamespace_game_html_a232d2d33bf42ee4ce6fa2585806fcb6f"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6f">Game.DIRECTION</a></div><div class="ttdeci">DIRECTION</div><div class="ttdoc">Typ wyliczeniowy dotyczący kierunków.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00015">Program.cs:15</a></div></div>
+<div class="ttc" id="anamespace_game_html_a232d2d33bf42ee4ce6fa2585806fcb6fa21507b40c80068eda19865706fdc2403"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fa21507b40c80068eda19865706fdc2403">Game.DIRECTION.RIGHT</a></div><div class="ttdeci">@ RIGHT</div></div>
+<div class="ttc" id="anamespace_game_html_a232d2d33bf42ee4ce6fa2585806fcb6fa4905ac9d6a22bdfc1ae096094ce6248d"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fa4905ac9d6a22bdfc1ae096094ce6248d">Game.DIRECTION.COUNT</a></div><div class="ttdeci">@ COUNT</div></div>
+<div class="ttc" id="anamespace_game_html_a232d2d33bf42ee4ce6fa2585806fcb6fa684d325a7303f52e64011467ff5c5758"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fa684d325a7303f52e64011467ff5c5758">Game.DIRECTION.LEFT</a></div><div class="ttdeci">@ LEFT</div></div>
+<div class="ttc" id="anamespace_game_html_a232d2d33bf42ee4ce6fa2585806fcb6fac4e0e4e3118472beeb2ae75827450f1f"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fac4e0e4e3118472beeb2ae75827450f1f">Game.DIRECTION.DOWN</a></div><div class="ttdeci">@ DOWN</div></div>
+<div class="ttc" id="anamespace_game_html_a232d2d33bf42ee4ce6fa2585806fcb6fafbaedde498cdead4f2780217646e9ba1"><div class="ttname"><a href="../../d2/d97/namespace_game.html#a232d2d33bf42ee4ce6fa2585806fcb6fafbaedde498cdead4f2780217646e9ba1">Game.DIRECTION.UP</a></div><div class="ttdeci">@ UP</div></div>
+<div class="ttc" id="anamespace_game_html_ac0d97ffc9fb569833d096323578a2aee"><div class="ttname"><a href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aee">Game.TYPE</a></div><div class="ttdeci">TYPE</div><div class="ttdoc">Typ wyliczeniowy dotyczący wyświetlanych obiektów.</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d5c/_program_8cs_source.html#l00019">Program.cs:19</a></div></div>
+<div class="ttc" id="anamespace_game_html_ac0d97ffc9fb569833d096323578a2aeea25361d987423542afaf03cacdc76932f"><div class="ttname"><a href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aeea25361d987423542afaf03cacdc76932f">Game.TYPE.COIN</a></div><div class="ttdeci">@ COIN</div></div>
+<div class="ttc" id="anamespace_game_html_ac0d97ffc9fb569833d096323578a2aeea60a63c9a983ad6966ffe95a8a6f003d8"><div class="ttname"><a href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aeea60a63c9a983ad6966ffe95a8a6f003d8">Game.TYPE.HEART</a></div><div class="ttdeci">@ HEART</div></div>
+<div class="ttc" id="anamespace_game_html_ac0d97ffc9fb569833d096323578a2aeeaa8e8a7e2daba6f81ea8c403dc2649659"><div class="ttname"><a href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aeeaa8e8a7e2daba6f81ea8c403dc2649659">Game.TYPE.BEER</a></div><div class="ttdeci">@ BEER</div></div>
+<div class="ttc" id="anamespace_game_html_ac0d97ffc9fb569833d096323578a2aeeaedc860e2d30b3a5c8823c026e7a79e03"><div class="ttname"><a href="../../d2/d97/namespace_game.html#ac0d97ffc9fb569833d096323578a2aeeaedc860e2d30b3a5c8823c026e7a79e03">Game.TYPE.CAR</a></div><div class="ttdeci">@ CAR</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dd/d5c/_program_8cs.html">Program.cs</a></li>
+    <li class="footer">Wygenerowano przez <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2 </li>
+  </ul>
+</div>
+</body>
+</html>

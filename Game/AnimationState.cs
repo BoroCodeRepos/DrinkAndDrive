@@ -38,6 +38,7 @@ namespace Game
         /// </summary>
         public AnimationState() 
         {
+            // start wyświetlania ramki od id = 0
             currentFrameId = 0;
             currentFrameTime = 0f;
         }
@@ -50,10 +51,13 @@ namespace Game
         /// <param name="position">Pozycja wyświetlania animacji.</param>
         public AnimationState(int framesNr, float maxFrameTime, Vector2f position)
         {
+            // ilość ramek animacji
             this.framesNr = framesNr;
+            // czas trawnia jednej ramki
             this.maxFrameTime = maxFrameTime;
+            // pozycja animacji
             this.position = position;
-
+            // start animacji od 0 ramki
             currentFrameId = 0;
             currentFrameTime = 0f;
             currentFrame = new IntRect(0, 0, Animation.tSize, Animation.tSize);

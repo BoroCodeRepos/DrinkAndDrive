@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Drink&amp;Drive: Plik źródłowy TimeCounter.cs</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Drink&amp;Drive<span id="projectnumber">&#160;index: 179991 - Arkadiusz Borowicki</span>
+   </div>
+   <div id="projectbrief">Serious Game - JPWP Proj. PG</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Wygenerowano przez Doxygen 1.9.2 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "../../search",'Szukaj','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('../../',true,false,'search.php','Szukaj');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('df/d80/_time_counter_8cs_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">TimeCounter.cs</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="../../df/d80/_time_counter_8cs.html">Idź do dokumentacji tego pliku.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="keyword">namespace </span><a class="code hl_namespace" href="../../d2/d97/namespace_game.html">Game</a></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span>{</div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html">    6</a></span>    <span class="keyword">class </span><a class="code hl_class" href="../../d0/dc5/class_game_1_1_time_counter.html">TimeCounter</a></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span>    {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#ab546267f3809c9f18807c2e92905d039">    9</a></span>        <span class="keyword">private</span> <span class="keywordtype">double</span> <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab546267f3809c9f18807c2e92905d039">currentTime</a>;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#ab082dc1a894cbaac74a6b2306e37fb12">   11</a></span>        <span class="keyword">private</span> <span class="keywordtype">double</span> <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab082dc1a894cbaac74a6b2306e37fb12">eventTime</a>;</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#a1dca08274c00f1a72d72f90a3e7e25d6">   13</a></span>        <span class="keyword">private</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a1dca08274c00f1a72d72f90a3e7e25d6">isEvent</a>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#a09edad8baa2986bd7169f7df3cb53e65">   15</a></span>        <span class="keyword">private</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a09edad8baa2986bd7169f7df3cb53e65">run</a>;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#addc5563b4ed291d46ccdef7d76d52ea8">   20</a></span>        <span class="keyword">public</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#addc5563b4ed291d46ccdef7d76d52ea8">TimeCounter</a>()</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>            <span class="comment">// stan początkowy - wyłączenie licznika, ustawienie zerowego czasu</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>            <span class="comment">// brak konfiguracji zdarzenia</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab546267f3809c9f18807c2e92905d039">currentTime</a> = 0d;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab082dc1a894cbaac74a6b2306e37fb12">eventTime</a> = 0d;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a09edad8baa2986bd7169f7df3cb53e65">run</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a1dca08274c00f1a72d72f90a3e7e25d6">isEvent</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        }</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#a8bf758613a71c956d40e29395f1fb6fa">   34</a></span>        <span class="keyword">public</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#a8bf758613a71c956d40e29395f1fb6fa">TimeCounter</a>(<span class="keywordtype">double</span> evTime)</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        {</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>            <span class="comment">// stan początkowy - wyłączenie licznika, ustawienie zerowego czasu</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>            <span class="comment">// konfiguracja czasu zdarzenia</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab546267f3809c9f18807c2e92905d039">currentTime</a> = 0d;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab082dc1a894cbaac74a6b2306e37fb12">eventTime</a> = evTime;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a09edad8baa2986bd7169f7df3cb53e65">run</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a1dca08274c00f1a72d72f90a3e7e25d6">isEvent</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        }</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#ab72d8e90dd88d87470e65eca115a94f3">   48</a></span>        <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#ab72d8e90dd88d87470e65eca115a94f3">SetEventTime</a>(<span class="keywordtype">double</span> <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab082dc1a894cbaac74a6b2306e37fb12">eventTime</a>)</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        {</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            <span class="comment">// ustawienie czasu zdarzenia</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            this.eventTime = <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab082dc1a894cbaac74a6b2306e37fb12">eventTime</a>;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        }</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#acdeffd93267eb7e4446840e7f288ac7f">   57</a></span>        <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#acdeffd93267eb7e4446840e7f288ac7f">Start</a>()</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        {</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            <span class="comment">// zmienna odpowiedzialna za pracę ustawiona na true</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a09edad8baa2986bd7169f7df3cb53e65">run</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        }</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#afc3310d789d3e33eae917b7e0d5a8e3f">   66</a></span>        <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#afc3310d789d3e33eae917b7e0d5a8e3f">Stop</a>()</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        {</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            <span class="comment">// zmienna odpowiedzialna za prace ustawiona na false</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a09edad8baa2986bd7169f7df3cb53e65">run</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        }</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#af8f6a3f750f6dc917779c5b790603cd0">   76</a></span>        <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#af8f6a3f750f6dc917779c5b790603cd0">Update</a>(<span class="keywordtype">float</span> dt)</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        {</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>            <span class="comment">// jeżeli licznik pracuje, zwiększmy zliczony czas</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>            <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a09edad8baa2986bd7169f7df3cb53e65">run</a>)</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>                <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab546267f3809c9f18807c2e92905d039">currentTime</a> += (double)(dt / 1000f);</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>            <span class="comment">// sprawdzenie czy doszło do przekroczenia czasu zdarzenia</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>            <span class="keywordflow">if</span> (<a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab082dc1a894cbaac74a6b2306e37fb12">eventTime</a> &gt; 0d &amp;&amp; <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab546267f3809c9f18807c2e92905d039">currentTime</a> &gt;= <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab082dc1a894cbaac74a6b2306e37fb12">eventTime</a>)</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            {</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>                <span class="comment">// jeśli tak to ustawiamy znacznik</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>                <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab546267f3809c9f18807c2e92905d039">currentTime</a> -= <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab082dc1a894cbaac74a6b2306e37fb12">eventTime</a>;</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a1dca08274c00f1a72d72f90a3e7e25d6">isEvent</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>            }</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        }</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#a81f953556ee14f4aeff4926a0c955bf9">   94</a></span>        <span class="keyword">public</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#a81f953556ee14f4aeff4926a0c955bf9">GetEventStatus</a>()</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        {</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>            <span class="keywordflow">return</span> <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a1dca08274c00f1a72d72f90a3e7e25d6">isEvent</a>;</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        }</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#af99041080fbabd5fd06f88a395c3e2a7">  102</a></span>        <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#af99041080fbabd5fd06f88a395c3e2a7">ClearEventStatus</a>()</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        {</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>            <span class="comment">// zerowanie znacznika zdarzenia</span></div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a1dca08274c00f1a72d72f90a3e7e25d6">isEvent</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        }</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#abf3646fd490bc6345f9a684aa0675061">  111</a></span>        <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#abf3646fd490bc6345f9a684aa0675061">ClearTime</a>()</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        {</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>            <span class="comment">// zerowanie aktualnego czasu</span></div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>            <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab546267f3809c9f18807c2e92905d039">currentTime</a> = 0d;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        }</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#a96143c65a09f60bc0aa1a11263b5d5de">  121</a></span>        <span class="keyword">public</span> <span class="keywordtype">double</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#a96143c65a09f60bc0aa1a11263b5d5de">GetCurrentTime</a>()</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        {</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>            <span class="keywordflow">return</span> <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#ab546267f3809c9f18807c2e92905d039">currentTime</a>;</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        }</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno"><a class="line" href="../../d0/dc5/class_game_1_1_time_counter.html#a308ffe7ab370df5ccef18571b1511018">  130</a></span>        <span class="keyword">public</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="../../d0/dc5/class_game_1_1_time_counter.html#a308ffe7ab370df5ccef18571b1511018">IsRun</a>()</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>        {</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            <span class="comment">// metoda zwraca stan licznika</span></div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            <span class="keywordflow">return</span> <a class="code hl_variable" href="../../d0/dc5/class_game_1_1_time_counter.html#a09edad8baa2986bd7169f7df3cb53e65">run</a>;</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>        }</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    }</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>}</div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html">Game.TimeCounter</a></div><div class="ttdoc">Klasa zliczająca czas i informująca o wystąpieniu zdarzenia.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00006">TimeCounter.cs:7</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_a09edad8baa2986bd7169f7df3cb53e65"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#a09edad8baa2986bd7169f7df3cb53e65">Game.TimeCounter.run</a></div><div class="ttdeci">bool run</div><div class="ttdoc">Zmienna stanu pracy licznika.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00015">TimeCounter.cs:15</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_a1dca08274c00f1a72d72f90a3e7e25d6"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#a1dca08274c00f1a72d72f90a3e7e25d6">Game.TimeCounter.isEvent</a></div><div class="ttdeci">bool isEvent</div><div class="ttdoc">Zmienna stanu wystąpienia zdarzenia.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00013">TimeCounter.cs:13</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_a308ffe7ab370df5ccef18571b1511018"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#a308ffe7ab370df5ccef18571b1511018">Game.TimeCounter.IsRun</a></div><div class="ttdeci">bool IsRun()</div><div class="ttdoc">Metoda zwracająca stan pracy licznika.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00130">TimeCounter.cs:130</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_a81f953556ee14f4aeff4926a0c955bf9"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#a81f953556ee14f4aeff4926a0c955bf9">Game.TimeCounter.GetEventStatus</a></div><div class="ttdeci">bool GetEventStatus()</div><div class="ttdoc">Metoda zwracająca wystąpienie zdarzenia.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00094">TimeCounter.cs:94</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_a8bf758613a71c956d40e29395f1fb6fa"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#a8bf758613a71c956d40e29395f1fb6fa">Game.TimeCounter.TimeCounter</a></div><div class="ttdeci">TimeCounter(double evTime)</div><div class="ttdoc">Konstruktor - inicjalizacja parametrów wraz z czasem zdarzenia.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00034">TimeCounter.cs:34</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_a96143c65a09f60bc0aa1a11263b5d5de"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#a96143c65a09f60bc0aa1a11263b5d5de">Game.TimeCounter.GetCurrentTime</a></div><div class="ttdeci">double GetCurrentTime()</div><div class="ttdoc">Metoda zwracająca aktualnie zliczony czas.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00121">TimeCounter.cs:121</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_ab082dc1a894cbaac74a6b2306e37fb12"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#ab082dc1a894cbaac74a6b2306e37fb12">Game.TimeCounter.eventTime</a></div><div class="ttdeci">double eventTime</div><div class="ttdoc">Czas wystąpienia zdarzenia.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00011">TimeCounter.cs:11</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_ab546267f3809c9f18807c2e92905d039"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#ab546267f3809c9f18807c2e92905d039">Game.TimeCounter.currentTime</a></div><div class="ttdeci">double currentTime</div><div class="ttdoc">Aktualnie zliczony czas.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00009">TimeCounter.cs:9</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_ab72d8e90dd88d87470e65eca115a94f3"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#ab72d8e90dd88d87470e65eca115a94f3">Game.TimeCounter.SetEventTime</a></div><div class="ttdeci">void SetEventTime(double eventTime)</div><div class="ttdoc">Metoda ustawiająca czas zdarzenia.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00048">TimeCounter.cs:48</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_abf3646fd490bc6345f9a684aa0675061"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#abf3646fd490bc6345f9a684aa0675061">Game.TimeCounter.ClearTime</a></div><div class="ttdeci">void ClearTime()</div><div class="ttdoc">Metoda zerująca zliczony czas.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00111">TimeCounter.cs:111</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_acdeffd93267eb7e4446840e7f288ac7f"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#acdeffd93267eb7e4446840e7f288ac7f">Game.TimeCounter.Start</a></div><div class="ttdeci">void Start()</div><div class="ttdoc">Start licznika.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00057">TimeCounter.cs:57</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_addc5563b4ed291d46ccdef7d76d52ea8"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#addc5563b4ed291d46ccdef7d76d52ea8">Game.TimeCounter.TimeCounter</a></div><div class="ttdeci">TimeCounter()</div><div class="ttdoc">Konstruktor - inicjalizacja podstawowych parametrów licznika.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00020">TimeCounter.cs:20</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_af8f6a3f750f6dc917779c5b790603cd0"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#af8f6a3f750f6dc917779c5b790603cd0">Game.TimeCounter.Update</a></div><div class="ttdeci">void Update(float dt)</div><div class="ttdoc">Aktualizacja pracy licznika.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00076">TimeCounter.cs:76</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_af99041080fbabd5fd06f88a395c3e2a7"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#af99041080fbabd5fd06f88a395c3e2a7">Game.TimeCounter.ClearEventStatus</a></div><div class="ttdeci">void ClearEventStatus()</div><div class="ttdoc">Metoda zerująca status zdarzenia.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00102">TimeCounter.cs:102</a></div></div>
+<div class="ttc" id="aclass_game_1_1_time_counter_html_afc3310d789d3e33eae917b7e0d5a8e3f"><div class="ttname"><a href="../../d0/dc5/class_game_1_1_time_counter.html#afc3310d789d3e33eae917b7e0d5a8e3f">Game.TimeCounter.Stop</a></div><div class="ttdeci">void Stop()</div><div class="ttdoc">Stop licznika.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d80/_time_counter_8cs_source.html#l00066">TimeCounter.cs:66</a></div></div>
+<div class="ttc" id="anamespace_game_html"><div class="ttname"><a href="../../d2/d97/namespace_game.html">Game</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d02/_animation_8cs_source.html#l00006">Animation.cs:7</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../df/d80/_time_counter_8cs.html">TimeCounter.cs</a></li>
+    <li class="footer">Wygenerowano przez <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2 </li>
+  </ul>
+</div>
+</body>
+</html>

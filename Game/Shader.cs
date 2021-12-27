@@ -32,15 +32,18 @@ namespace Game
         /// <param name="state">Stan początkowy filtru.</param>
         public Shader(uint width, uint height, byte alphaTarget, bool state = false)
         {
+            // ustawienie początkowych wartości parametrów
             shader = new RectangleShape(new Vector2f(width, height));
             timeToAlphaStep = 1f;
             alphaStep = 1;
             time = 0f;
+            // jeżeli znacznik jest ustawiony, stan wyświetlania 
             if (state)
             {
                 this.state = STATE.OPEN;
                 alpha = alphaTarget;
             }
+            // w przeciwnym wypadku, filtr nie jest wyświetlany
             else
             {
                 this.state = STATE.CLOSED;
@@ -86,14 +89,21 @@ namespace Game
         /// <param name="dt">Czas od poprzedniego wywołania.</param>
         public void Update(float dt)
         {
+            // aktualizacja zachodzi w momencie przejścia stanów
+            // z otwartego do zamkniętego (closing)
+            // lub z zamkniętego do otwartego (opening)
             if (state == STATE.OPENING || state == STATE.CLOSING)
             {
+                // zwiększany jest czas aktualnego stanu alpha
                 time += dt / 1000f;
                 if (time >= timeToAlphaStep)
                 {
+                    // następne odliczanie czasu
                     time -= timeToAlphaStep;
+                    // aktualizacja stanu alpha dla otwierania
                     if (state == STATE.OPENING)
                     {
+                        // sprawdzenie warunku przekroczenia zadanego alpha
                         if (alpha >= alphaTarget)
                         {
                             alpha = alphaTarget;
@@ -101,6 +111,7 @@ namespace Game
                             time = 0f;
                             return;
                         }
+                        // w przeciwnym razie zwiększamy alpha
                         else
                         {
                             int i = (int)alpha + (int)alphaStep;
@@ -108,15 +119,17 @@ namespace Game
                             else alpha = (byte)i;
                         }
                     }
-
+                    // aktualizacja stanu alpha dla zamykania
                     if (state == STATE.CLOSING)
                     {
+                        // sprawdzenie warunku minimalnego alpha
                         if (alpha == byte.MinValue)
                         {
                             state = STATE.CLOSED;
                             time = 0f;
                             return;
                         }
+                        // w przeciwnym razie zmniejszamy alpha
                         else
                         {
                             int i = (int)alpha - (int)alphaStep;
@@ -124,6 +137,7 @@ namespace Game
                             else alpha = (byte)i;
                         }
                     }
+                    // aktualizacja koloru filtru (zmiana alpha)
                     shader.FillColor = new Color(0, 0, 0, alpha);
                 }
             }

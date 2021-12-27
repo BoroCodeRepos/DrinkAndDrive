@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Animation.cs" />
     <Compile Include="AnimationState.cs" />
+    <Compile Include="C.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="EntitiesManager.cs" />
     <Compile Include="Entity.cs" />

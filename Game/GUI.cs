@@ -44,6 +44,7 @@ namespace Game
             /// </summary>
             public Component()
             {
+                // przypisanie stanów początkowych przycisku myszy i stany componentu
                 oldButtonState = Mouse.IsButtonPressed(Mouse.Button.Left);
                 state = STATE.IDLE;
             }
@@ -58,8 +59,10 @@ namespace Game
             /// <param name="shapeColor">Kolor tła komponentu.</param>
             public Component(uint characterSize, string text, Font font, Color textColor, Color shapeColor)
             {
+                // przypisanie wartości początkowych komponentu
                 state = STATE.IDLE;
                 oldButtonState = Mouse.IsButtonPressed(Mouse.Button.Left);
+                // przypisanie wartości tekstu i kolorów komponentu
                 this.textColor = textColor;
                 this.shapeColor = shapeColor;
                 this.text = new SFML.Graphics.Text(text, font, characterSize);
@@ -114,17 +117,19 @@ namespace Game
                 Color active
             ) : base(characterSize, text, font, idle, new Color(Color.Transparent))
             {
+                // przypisanie wartości początkowych komponentu
                 gainSound = false;
                 textIdleColor = idle;
                 textHoverColor = hover;
                 textActiveColor = active;
+                // utworzenie zewnętrznego kształtu komponentu
                 shape = new RectangleShape(shapeSize)
                 {
                     FillColor = new Color(0, 0, 0, 0),
                     Origin = new Vector2f(shapeSize.X / 2f, shapeSize.Y / 2f),
                     Position = new Vector2f(centrePos.X, centrePos.Y)
                 };
-
+                // utworzenie wyświetlanego tekstu buttona
                 this.text = new SFML.Graphics.Text(text, font)
                 {
                     CharacterSize = characterSize,
@@ -133,7 +138,7 @@ namespace Game
                     OutlineColor = new Color(Color.Black),
                     OutlineThickness = 1f
                 };
-
+                // organizacja tekstu na środku buttona
                 Vector2f origin = new Vector2f(0f, 0f)
                 {
                     X = this.text.GetGlobalBounds().Width / 2f,
@@ -148,28 +153,38 @@ namespace Game
             /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Update(ref RenderWindow window)
             {
+                // pobranie stanu przycisku
                 Vector2i mousePos = Mouse.GetPosition(window);
+                // sprawdzenie najechania myszą nad komponent
                 if (shape.GetGlobalBounds().Contains(mousePos.X, mousePos.Y))
                 {
+                    // mysz nad komponentem - stan HOVER
                     text.FillColor = new Color(textHoverColor);
+                    // wywołanie funkcji MouseOver
                     onMouseOver?.Invoke();
                     if (!gainSound)
                     {
+                        // wywołanie dźwięku najechania na komponent
                         Program.resources.sounds["btn_hover"].Play();
                         gainSound = true;
                     }
-
+                    // sprawdzenie 
                     if (Mouse.IsButtonPressed(Mouse.Button.Left))
                     {
+                        // wywołanie dźwieku kliknięcia
                         if (onClick != null)
                             Program.resources.sounds["btn_click"].Play();
+                        // stan ACTIVE
                         text.FillColor = new Color(textActiveColor);
+                        // wywołanie funkcji Click
                         onClick?.Invoke();
                     }
                 }
                 else
                 {
+                    // mysz poza komponentem - stan IDLE
                     text.FillColor = new Color(textIdleColor);
+                    // zezwolenie na odtworzenie dźwieu najechania 
                     gainSound = false;
                 }
             }
@@ -179,6 +194,7 @@ namespace Game
             /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Render(ref RenderWindow window)
             {
+                // wyświetlenie kształtu i tekstu
                 window.Draw(shape);
                 window.Draw(text);
             }
@@ -205,6 +221,7 @@ namespace Game
                 Color color
             ) : base(characterSize, text, font, color, new Color(Color.Transparent))
             {
+                // utworzenie wyświetlanego tekstu 
                 this.text = new SFML.Graphics.Text(text, font)
                 {
                     CharacterSize = characterSize,
@@ -213,7 +230,7 @@ namespace Game
                     OutlineColor = new Color(Color.Black),
                     OutlineThickness = 1f,
                 };
-
+                // utworzenie kształtu komponentu
                 this.shape = new RectangleShape()
                 {
                     Size = new Vector2f(this.text.GetGlobalBounds().Width, this.text.GetGlobalBounds().Height),
@@ -224,7 +241,7 @@ namespace Game
                         this.text.GetGlobalBounds().Height / 2f
                     )
                 };
-
+                // organizacja pozycji tekstu
                 this.text.Origin = new Vector2f(
                     (this.text.GetGlobalBounds().Width + characterSize / 8f) / 2f,
                     (this.text.GetGlobalBounds().Height + characterSize / 2f) / 2f
@@ -245,6 +262,7 @@ namespace Game
             /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Render(ref RenderWindow window)
             {
+                // wyświetlenie elementów komponentu na wskazanym oknie
                 window.Draw(shape);
                 window.Draw(text);
             }
@@ -288,10 +306,13 @@ namespace Game
                 float rotation = 0f
             )
             {
+                // przypisanie wartości początkowych 
                 gainSound = false;
                 this.OutlineIdle = OutlineIdle;
                 this.OutlineHover = OutlineHover;
                 this.OutlineActive = OutlineActive;
+                Sprite car = carCollection[id].sprite;
+                // utworzenie kształtu komponentu
                 shape = new RectangleShape(shapeSize)
                 {
                     FillColor = new Color(0, 0, 0, 0),
@@ -301,7 +322,7 @@ namespace Game
                     OutlineColor = new Color(OutlineIdle),
                     Rotation = rotation,
                 };
-                Sprite car = carCollection[id].sprite;
+                // utworzenie kształtu tekstury
                 textureShape = new RectangleShape(textureSize)
                 {
                     Origin = new Vector2f(textureSize.X / 2f, textureSize.Y / 2f),
@@ -331,7 +352,9 @@ namespace Game
                 float rotation = 0f
             )
             {
+                // przypisanie wartości początkowych 
                 gainSound = false;
+                // utworzenie obiektów kształtu tekstury
                 shape = new RectangleShape();
                 textureShape = new RectangleShape(textureSize)
                 {
@@ -348,31 +371,33 @@ namespace Game
             /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Update(ref RenderWindow window)
             {
+                // pobranie pozycji myszy
                 Vector2i mousePos = Mouse.GetPosition(window);
+                // sprawdzenie pozycji myszy
                 if (shape.GetGlobalBounds().Contains(mousePos.X, mousePos.Y))
                 {
+                    // mysz znajduje się nad komponentem - stan HOVER
                     shape.OutlineColor = new Color(OutlineHover);
                     onMouseOver?.Invoke();
-
+                    // odtworzenie dźwięku hover
                     if (!gainSound)
                     {
                         Program.resources.sounds["btn_hover"].Play();
                         gainSound = true;
                     }
-
+                    // pobranie stanu przycisku i sprawdzenie warunku kliknięcia
                     bool buttonState = Mouse.IsButtonPressed(Mouse.Button.Left);
-
                     if (buttonState && !oldButtonState)
                     {
                         Program.resources.sounds["btn_click"].Play();
                         shape.OutlineColor = new Color(OutlineActive);
                         onClick?.Invoke();
                     }
-
                     oldButtonState = buttonState;
                 }
                 else
                 {
+                    // stan IDLE
                     shape.OutlineColor = new Color(OutlineIdle);
                     gainSound = false;
                 }
@@ -383,6 +408,7 @@ namespace Game
             /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Render(ref RenderWindow window)
             {
+                // wyświetlenie elementów komponentu
                 window.Draw(shape);
                 window.Draw(textureShape);
             }
@@ -420,12 +446,13 @@ namespace Game
                 uint maxLen = 21
             ) : base(characterSize, null, font, textColor, new Color(Color.Transparent))
             {
+                // przypisanie wartości początkowych
                 this.maxLen = maxLen;
                 keyStates = new Dictionary<Keyboard.Key, bool>();
                 this.keys = keys;
                 foreach (var key in keys.Keys.ToList())
                     keyStates[key] = true;
-
+                // utworzenie obiektu tekstu
                 text = new SFML.Graphics.Text(null, font)
                 {
                     CharacterSize = characterSize,
@@ -442,36 +469,40 @@ namespace Game
             /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Update(ref RenderWindow window)
             {
+                // sprawdzenie warunku zatwierdzenia (ENTER)
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Return))
                     onEnter?.Invoke();
-
+                // przelot przez wszystkie wartości kluczy
+                // obsługiwanych przycisków
                 var keyList = keys.Keys.ToList();
-
                 foreach (var key in keyList)
                 {
-                    string value = keys[key];
-
-                    bool currKeyState = Keyboard.IsKeyPressed(key);
-                    bool oldKeyState = keyStates[key];
-
+                    // pobranie potrzebnych wartości
+                    // obecnego stanu, poprzedniego oraz wartości klawisza
+                    var value = keys[key];
+                    var currKeyState = Keyboard.IsKeyPressed(key);
+                    var oldKeyState = keyStates[key];
+                    // sprawdzenie warunku naciśnięcia klawisza
                     if (currKeyState && !oldKeyState)
                     {
                         string str = text.DisplayedString;
-
+                        // w przypadku backspace usuwamy ostatni znak
                         if (value == "BackSpace")
                         {
-                            text.DisplayedString = str.Remove(str.Length - 1); ;
+                            text.DisplayedString = str.Remove(str.Length - 1); 
                         }
                         else
                         {
+                            // sprawdzenie warunku dużych liter
                             if (!Keyboard.IsKeyPressed(Keyboard.Key.LShift) &&
                                 !Keyboard.IsKeyPressed(Keyboard.Key.RShift))
                                 value = value.ToLower();
-
+                            // jeżeli nie przekroczono maksymalnej długości to zwiększamy tekst
                             if (str.Length < maxLen)
                                 text.DisplayedString = str + value;
                         }
-                    }                    
+                    }                  
+                    // przypisanie poprzedniej wartości
                     keyStates[key] = currKeyState;
                 }
             }
@@ -481,6 +512,7 @@ namespace Game
             /// <param name="window">Referencja do głównego okna gry.</param>
             public override void Render(ref RenderWindow window)
             {
+                // wyświetlenie komponentu w oknie
                 window.Draw(text);
             }
         }

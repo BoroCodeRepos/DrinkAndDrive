@@ -129,6 +129,7 @@ namespace Game
         /// </summary>
         static private void InitResources()
         {
+            // utworzenie obiektu zasobów i inicjalizacja wątków
             resources = new Resources();
             resources.Init();
         }
@@ -138,6 +139,8 @@ namespace Game
         /// </summary>
         static private void InitEngine()
         {
+            // inicjalizacja silnika gry
+            // konieczne wcześniejsze utworzenie zasobów gry
             engine = new Engine(resources);
         }
 
@@ -146,10 +149,13 @@ namespace Game
         /// </summary>
         static private void InitWindow()
         {
+            // utworzenie wielkości ekranu (pobrane z dokumentu XML)
             VideoMode mode = new VideoMode(resources.options.winWidth, resources.options.winHeight);
+            // pobranie nazwy okna z dokumentu XML
             string title = resources.options.winTitle;
-
+            // utworzenie okna gry
             window = new RenderWindow(mode, title);
+            // inicjalizacja
             window.SetVerticalSyncEnabled(true);
             window.SetActive(true);
         }
@@ -159,6 +165,7 @@ namespace Game
         /// </summary>
         static private void InitWindowEvents()
         {
+            // przpisanie metod silnika do zdarzeń okna głównego
             window.Closed += engine.OnClose;
             window.KeyPressed += engine.OnKeyPressed;
             window.KeyReleased += engine.OnKeyReleased;
@@ -169,7 +176,9 @@ namespace Game
         /// </summary>
         static private void CalcElapsedTime()
         {
+            // pobranie czasu, jaki upłynął od poprzedniego wywołania
             deltaTime = stopwatch.ElapsedMilliseconds;
+            // restart licznika
             stopwatch.Restart();
         }
 
@@ -179,10 +188,15 @@ namespace Game
         /// <param name="exception">Obiekt wskazujący meijsce błędu.</param>
         static public void ShowError(Exception exception)
         {
+            // pobranie wiadomości
             string Message = exception.Message;
+            // pobranie źródła błędu
             string Source = exception.Source;
+            // ustawienie przycisków okna błędu
             MessageBoxButtons Buttons = MessageBoxButtons.OK;
+            // pokazanie okna błędu
             MessageBox.Show(Message, Source, Buttons);
+            // zamknięcie aplikacji
             Environment.Exit(1);
         }
 

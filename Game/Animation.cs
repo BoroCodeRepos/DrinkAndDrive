@@ -29,6 +29,7 @@ namespace Game
         /// <param name="position">Wskazanie pozycji wyświetlania animacji.</param>
         static public void Create(Vector2f position)
         {
+            // tworzenie nowej animacji
             states.Add(new AnimationState(12, 65f, position));
         }
 
