@@ -639,9 +639,11 @@ namespace Game
             pause = false;
             iniTime = 0f;
             alcoLevel = 0f;
+            currLevel = 0f;
+            lives = 3;
             score = 0;
             speed = startSpeed;
-            shader.SetUp(210, 1, .005f);
+            shader.SetUp(210, 1, .002f);
             eManager.ClearAll();
             InitPlayerCar();
             alcoTime.ClearTime();

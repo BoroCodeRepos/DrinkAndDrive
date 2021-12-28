@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
   <window width="1024" height="768" title="DrinkAndDrive" />
-  <game total_time="127">
+  <game total_time="503">
     <animation>
       <coins frame_nr="10" max_frame_time="65" width="87" height="87" />
       <beers frame_nr="18" max_frame_time="50" width="87" height="87" />
@@ -76,17 +76,18 @@
     </keyboard>
   </game>
   <players>
-    <player name="Arek2" score="1" time="15" />
-    <player name="Arek1" score="1" time="20" />
-    <player name="Arek3" score="1" time="7" />
-    <player name="asdasdas" score="24" time="22" />
-    <player name="asdasd" score="0" time="4" />
-    <player name="d" score="41" time="36" />
-    <player name="Arek2" score="1" time="15" />
-    <player name="Arek1" score="1" time="20" />
-    <player name="Arek3" score="1" time="7" />
-    <player name="asdasdas" score="24" time="22" />
-    <player name="asdasd" score="0" time="4" />
-    <player name="d" score="41" time="36" />
+    <player name="Arkadiusz" score="30" time="15" />
+    <player name="Borowicki" score="45" time="20" />
+    <player name="s179991" score="17" time="7" />
+    <player name="Arek2" score="24" time="22" />
+    <player name="Tomasz" score="0" time="4" />
+    <player name="Dariusz" score="99" time="36" />
+    <player name="Mateusz" score="19" time="15" />
+    <player name="Kazimierz12" score="36" time="20" />
+    <player name="Bartek99" score="19" time="7" />
+    <player name="Maciej 70" score="24" time="22" />
+    <player name="Grzechu40" score="40" time="4" />
+    <player name="Slawomir" score="45" time="36" />
+    <player name="Prezentacja" score="138" time="118" />
   </players>
 </config>

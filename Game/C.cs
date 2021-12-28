@@ -32,7 +32,7 @@ namespace Game
         /// <summary>Procentowe szanse na utworzenie kapsla.</summary>
         public static double BOTTLE_CAP_CHANCE_PERCENT = .1d;
         /// <summary>Procentowe szanse na utworzenie serca.</summary>
-        public static double HEART_CHANCE_PERCENT = .001d;
+        public static double HEART_CHANCE_PERCENT = .05d;
         /// <summary>Procentowe szanse na utworzenie monety.</summary>
         public static double COIN_CHANCE_PERCENT = .9d;
         /// <summary>Procentowe szanse na utworzenie samochodu.</summary>
